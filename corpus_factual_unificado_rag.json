@@ -1,0 +1,1842 @@
+[
+  {
+    "claim_id": "DCA-C001",
+    "doc_id": "DCA-001",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Intervención",
+    "dato_factual_objetivo": "La guía recomienda una dosis total acumulada de terapia logopédica de al menos 20 horas.",
+    "localizador_pdf": "Pág. 2 (20 hours)",
+    "alerta_seguridad": "Recomendación ESO; distinguir dosis total de intensidad semanal. | No imponer una dosis idéntica sin individualización."
+  },
+  {
+    "claim_id": "DCA-C002",
+    "doc_id": "DCA-001",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Intervención",
+    "dato_factual_objetivo": "La guía sugiere una frecuencia de al menos cuatro días semanales.",
+    "localizador_pdf": "Pág. 3 (four times weekly)",
+    "alerta_seguridad": "Sugerencia, no requisito universal. | Considerar fatiga, tolerancia y recursos."
+  },
+  {
+    "claim_id": "DCA-C003",
+    "doc_id": "DCA-001",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Intervención",
+    "dato_factual_objetivo": "La guía sugiere una intensidad de al menos tres horas de terapia semanales.",
+    "localizador_pdf": "Pág. 3 (3 h weekly)",
+    "alerta_seguridad": "Interpretar con certeza y contexto clínico. | No confundir intensidad y dosis acumulada."
+  },
+  {
+    "claim_id": "DCA-C004",
+    "doc_id": "DCA-001",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Intervención",
+    "dato_factual_objetivo": "La intervención debe adaptarse a relevancia funcional y nivel de dificultad lingüística.",
+    "localizador_pdf": "Pág. 1 (individually-tailored)",
+    "alerta_seguridad": "No inferir que un protocolo fijo sea óptimo para toda afasia. | Personalizar tareas."
+  },
+  {
+    "claim_id": "DCA-C005",
+    "doc_id": "DCA-001",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Modalidad",
+    "dato_factual_objetivo": "La terapia digital y grupal puede complementar la atención individual y presencial.",
+    "localizador_pdf": "Pág. 2 (digital)",
+    "alerta_seguridad": "No equivale a superioridad general de formato. | Verificar accesibilidad cognitiva y tecnológica."
+  },
+  {
+    "claim_id": "DCA-C006",
+    "doc_id": "DCA-001",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Seguridad",
+    "dato_factual_objetivo": "El consenso ESO propone usar tDCS combinada con terapia del lenguaje solo en el contexto de ensayos clínicos de alta calidad.",
+    "localizador_pdf": "Pág. 2 (high-quality trials)",
+    "alerta_seguridad": "Consenso experto basado en evidencia muy baja. | No recomendar tDCS como práctica rutinaria."
+  },
+  {
+    "claim_id": "DCA-C007",
+    "doc_id": "DCA-002",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Cribado",
+    "dato_factual_objetivo": "Se recomienda cribado de disfagia en personas con ictus para reducir complicaciones.",
+    "localizador_pdf": "Pág. 1 (screening)",
+    "alerta_seguridad": "Recomendación GRADE con evidencia moderada indicada por autores. | No iniciar ingesta oral sin evaluación apropiada."
+  },
+  {
+    "claim_id": "DCA-C008",
+    "doc_id": "DCA-002",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "Los pacientes con riesgo de disfagia deben recibir evaluación especializada.",
+    "localizador_pdf": "Pág. 1 (assessment)",
+    "alerta_seguridad": "La recomendación se apoya en evidencia de menor certeza. | Un cribado negativo no anula sospecha clínica persistente."
+  },
+  {
+    "claim_id": "DCA-C009",
+    "doc_id": "DCA-002",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Evaluación instrumental",
+    "dato_factual_objetivo": "La guía aborda la valoración mediante FEES y videofluoroscopia en el contexto postictus.",
+    "localizador_pdf": "Pág. 1 (endoscopic)",
+    "alerta_seguridad": "Selección según pregunta clínica y accesibilidad. | No equiparar un signo aislado a aspiración confirmada."
+  },
+  {
+    "claim_id": "DCA-C010",
+    "doc_id": "DCA-002",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Intervención",
+    "dato_factual_objetivo": "La guía analiza intervenciones dietéticas, conductuales y de higiene oral con distintos niveles de certeza.",
+    "localizador_pdf": "Pág. 1 (oral health)",
+    "alerta_seguridad": "No adjudicar igual eficacia a todas las técnicas. | Adaptar dieta solo tras evaluación clínica."
+  },
+  {
+    "claim_id": "DCA-C011",
+    "doc_id": "DCA-002",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Seguridad",
+    "dato_factual_objetivo": "La disfagia postictus se asocia a neumonía por aspiración, deshidratación y desnutrición.",
+    "localizador_pdf": "Pág. 1 (aspiration pneumonia)",
+    "alerta_seguridad": "Asociación clínica; no implica que todo paciente aspire. | Documentar riesgo respiratorio y nutricional."
+  },
+  {
+    "claim_id": "DCA-C012",
+    "doc_id": "DCA-003",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Comunicación",
+    "fase_clinica": "Organización",
+    "dato_factual_objetivo": "La rehabilitación del ictus requiere un equipo multidisciplinar que incluya logopedia.",
+    "localizador_pdf": "Pág. 7 (speech and language therapists)",
+    "alerta_seguridad": "Recomendación organizativa NICE. | Coordinar objetivos de atención."
+  },
+  {
+    "claim_id": "DCA-C013",
+    "doc_id": "DCA-003",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "La guía contiene recomendaciones específicas sobre deglución en el apartado 1.11.",
+    "localizador_pdf": "Pág. 3 (1.11 Swallowing)",
+    "alerta_seguridad": "No equivale a una intervención concreta sin consultar cada recomendación. | Priorizar seguridad alimentaria."
+  },
+  {
+    "claim_id": "DCA-C014",
+    "doc_id": "DCA-003",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Comunicación",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "La guía contiene recomendaciones específicas sobre comunicación en el apartado 1.12.",
+    "localizador_pdf": "Pág. 3 (1.12 Communication)",
+    "alerta_seguridad": "Separar afasia, disartria y trastornos cognitivo-comunicativos. | No deducir diagnóstico de una sola alteración."
+  },
+  {
+    "claim_id": "DCA-C015",
+    "doc_id": "DCA-003",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Rehabilitación",
+    "fase_clinica": "Seguimiento",
+    "dato_factual_objetivo": "Se aconseja continuar la rehabilitación tras el alta mientras contribuya a los objetivos de la persona.",
+    "localizador_pdf": "Pág. 9 (continue their care)",
+    "alerta_seguridad": "No equivale a tratamiento indefinido en todos los casos. | Reevaluar necesidades."
+  },
+  {
+    "claim_id": "DCA-C016",
+    "doc_id": "DCA-003",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Rehabilitación",
+    "fase_clinica": "Accesibilidad",
+    "dato_factual_objetivo": "NICE aborda la telerehabilitación de forma específica, además de la rehabilitación presencial.",
+    "localizador_pdf": "Pág. 3 (Telerehabilitation)",
+    "alerta_seguridad": "La pertinencia depende de objetivos y barreras. | Evaluar idoneidad y consentimiento."
+  },
+  {
+    "claim_id": "DCA-C017",
+    "doc_id": "DCA-004",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Seguimiento",
+    "dato_factual_objetivo": "La GPC española 2024 aborda evaluación de disfagia en atención primaria tras el alta por ictus.",
+    "localizador_pdf": "Pág. 5 (Evaluación de la disfagia en AP)",
+    "alerta_seguridad": "No extrapolar las indicaciones de atención primaria a la fase aguda. | Derivar ante signos de riesgo."
+  },
+  {
+    "claim_id": "DCA-C018",
+    "doc_id": "DCA-004",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Intervención",
+    "dato_factual_objetivo": "La guía dedica un apartado al plan domiciliario, dieta y ejercicios en la disfagia posictus.",
+    "localizador_pdf": "Pág. 5 (Plan terapéutico en el domicilio)",
+    "alerta_seguridad": "Las decisiones requieren criterios de selección individual. | Evitar prescripciones de textura sin valoración."
+  },
+  {
+    "claim_id": "DCA-C019",
+    "doc_id": "DCA-004",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Ictus",
+    "fase_clinica": "Continuidad asistencial",
+    "dato_factual_objetivo": "La guía trata el manejo del ictus tras el alta hospitalaria y las derivaciones apropiadas.",
+    "localizador_pdf": "Pág. 5 (Manejo del ictus tras el alta hospitalaria)",
+    "alerta_seguridad": "Alcance centrado en atención primaria. | Reconocer límites del contexto asistencial."
+  },
+  {
+    "claim_id": "DCA-C020",
+    "doc_id": "DCA-005",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Diseño",
+    "dato_factual_objetivo": "El ensayo reclutó 44 personas con afasia tras lesión del hemisferio izquierdo y asignó 22 a PHOLEXSEM y 22 a PACE.",
+    "localizador_pdf": "Pág. 1 (44 adults)",
+    "alerta_seguridad": "La tabla de características reporta 21 controles en el análisis descriptivo; verificar pérdidas. | No equiparar número asignado con analizado."
+  },
+  {
+    "claim_id": "DCA-C021",
+    "doc_id": "DCA-005",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Intervención",
+    "dato_factual_objetivo": "PHOLEXSEM entrenó repetición de pseudopalabras, palabras y frases, análisis de rasgos semánticos y recuperación léxica.",
+    "localizador_pdf": "Pág. 1 (non-word)",
+    "alerta_seguridad": "Protocolo específico comparado con PACE. | No aplicarlo sin valorar perfil lingüístico."
+  },
+  {
+    "claim_id": "DCA-C022",
+    "doc_id": "DCA-005",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Dosis",
+    "dato_factual_objetivo": "Los dos grupos recibieron sesiones diarias de 30 minutos durante dos semanas.",
+    "localizador_pdf": "Pág. 1 (30-min daily)",
+    "alerta_seguridad": "La duración corresponde a este ensayo, no a una dosis universal. | Respetar tolerancia del paciente."
+  },
+  {
+    "claim_id": "DCA-C023",
+    "doc_id": "DCA-005",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Resultados",
+    "dato_factual_objetivo": "El grupo PHOLEXSEM mejoró más que PACE en repetición, denominación, recuperación léxica y comprensión de oraciones; los autores reportan generalización a ítems no entrenados.",
+    "localizador_pdf": "Pág. 1 (generalizing)",
+    "alerta_seguridad": "Revisar tamaños de efecto y subpruebas antes de calificar magnitud. | No concluir eficacia en afasia global, excluida del estudio."
+  },
+  {
+    "claim_id": "DCA-C024",
+    "doc_id": "DCA-005",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Elegibilidad",
+    "dato_factual_objetivo": "El estudio excluyó afasia global y requería habilidades de repetición relativamente preservadas.",
+    "localizador_pdf": "Pág. 2 (global aphasia)",
+    "alerta_seguridad": "Limitación importante de extrapolación. | No recomendar como opción universal."
+  },
+  {
+    "claim_id": "DCA-C025",
+    "doc_id": "DCA-006",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Diseño",
+    "dato_factual_objetivo": "La investigación aplicó VNeST mediante telerehabilitación en dos personas con afasia postictus y líneas base múltiples.",
+    "localizador_pdf": "Pág. 2 (multiple baselines)",
+    "alerta_seguridad": "Diseño experimental de caso único, no ECA. | Registrar heterogeneidad."
+  },
+  {
+    "claim_id": "DCA-C026",
+    "doc_id": "DCA-006",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Resultados",
+    "dato_factual_objetivo": "La participante con afasia de Wernicke mostró mejoría en recuperación léxica en frases con verbos entrenados y no entrenados relacionados.",
+    "localizador_pdf": "Pág. 2 (Wernicke)",
+    "alerta_seguridad": "Generalización limitada en denominación aislada. | No afirmar eficacia global."
+  },
+  {
+    "claim_id": "DCA-C027",
+    "doc_id": "DCA-006",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Resultados",
+    "dato_factual_objetivo": "El participante con afasia de Broca interrumpió antes de completar el programa y no mostró mejoras en objetivos evaluados.",
+    "localizador_pdf": "Pág. 2 (withdrew)",
+    "alerta_seguridad": "Resultado negativo clínicamente informativo. | Registrar aceptabilidad y abandono."
+  },
+  {
+    "claim_id": "DCA-C028",
+    "doc_id": "DCA-006",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Intervención",
+    "dato_factual_objetivo": "VNeST se centra en la red semántica del verbo y sus argumentos para favorecer recuperación de palabras y producción de oraciones.",
+    "localizador_pdf": "Pág. 2 (verb-centred)",
+    "alerta_seguridad": "Requiere seleccionar objetivos en función de perfil lingüístico. | Evaluar comprensión de consignas."
+  },
+  {
+    "claim_id": "DCA-C029",
+    "doc_id": "DCA-007",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Diseño",
+    "dato_factual_objetivo": "Se presenta una mujer de 62 años con ictus hemisférico izquierdo, afasia global, apraxia verbal grave y disfagia moderada.",
+    "localizador_pdf": "Pág. 2 (subacute global aphasia)",
+    "alerta_seguridad": "Caso único; coocurrencia de varios trastornos. | No atribuir todas las dificultades a afasia."
+  },
+  {
+    "claim_id": "DCA-C030",
+    "doc_id": "DCA-007",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Intervención",
+    "dato_factual_objetivo": "Se combinó estimulación tDCS, terapia del lenguaje presencial y rehabilitación informatizada VRRS durante cuatro semanas.",
+    "localizador_pdf": "Pág. 1 (4 consecutive weeks)",
+    "alerta_seguridad": "Intervenciones simultáneas, sin aislamiento del efecto de tDCS. | No recomendar tDCS fuera de investigación especializada."
+  },
+  {
+    "claim_id": "DCA-C031",
+    "doc_id": "DCA-007",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "Se utilizaron AAT y BDAE para valorar lenguaje; GUSS para disfagia y pruebas de apraxia.",
+    "localizador_pdf": "Pág. 4 (Aachen Aphasia Test)",
+    "alerta_seguridad": "Herramientas utilizadas en ese caso, con adaptación cultural e idiomática. | No confundir GUSS con confirmación instrumental de aspiración."
+  },
+  {
+    "claim_id": "DCA-C032",
+    "doc_id": "DCA-007",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Afasia",
+    "fase_clinica": "Resultados",
+    "dato_factual_objetivo": "Los autores comunicaron mejoras tras el tratamiento en comprensión y otras medidas, sin poder establecer causalidad por el diseño.",
+    "localizador_pdf": "Pág. 4 (improvement)",
+    "alerta_seguridad": "No existe grupo control independiente. | Contrastar con guía ESO 2025 sobre tDCS."
+  },
+  {
+    "claim_id": "DCA-C033",
+    "doc_id": "DCA-008",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Apraxia adquirida del habla",
+    "fase_clinica": "Diseño",
+    "dato_factual_objetivo": "Caso de persona con afasia de Broca grave y apraxia adquirida del habla grave.",
+    "localizador_pdf": "Pág. 2 (severe Broca)",
+    "alerta_seguridad": "Caso único y alteraciones concurrentes. | Diferenciar déficit lingüístico de programación motora."
+  },
+  {
+    "claim_id": "DCA-C034",
+    "doc_id": "DCA-008",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Apraxia adquirida del habla",
+    "fase_clinica": "Intervención",
+    "dato_factual_objetivo": "Entrenamiento de completar oraciones tres veces por semana durante seis semanas, sobre diez palabras objetivo y diez no entrenadas.",
+    "localizador_pdf": "Pág. 2 (three times a week)",
+    "alerta_seguridad": "Diseño de ítems entrenados/no entrenados. | No asumir transferencia a conversación espontánea."
+  },
+  {
+    "claim_id": "DCA-C035",
+    "doc_id": "DCA-008",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Apraxia adquirida del habla",
+    "fase_clinica": "Resultados",
+    "dato_factual_objetivo": "Mejoró la producción de palabras personales entrenadas y su emisión como respuesta a preguntas simples.",
+    "localizador_pdf": "Pág. 2 (improved production)",
+    "alerta_seguridad": "Resultado limitado al paciente y tareas examinadas. | No afirmar eficacia general sin replicación."
+  },
+  {
+    "claim_id": "DCA-C036",
+    "doc_id": "DCA-009",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Comunicación cognitiva",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "ASHA describe alteraciones de atención, memoria, funciones ejecutivas y pragmática tras traumatismo craneoencefálico.",
+    "localizador_pdf": "Pág. 4 (executive functioning)",
+    "alerta_seguridad": "Síntesis profesional, no estudio de intervención. | Explorar comunicación funcional y contexto."
+  },
+  {
+    "claim_id": "DCA-C037",
+    "doc_id": "DCA-009",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Comunicación cognitiva",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "La evaluación de TCE debe considerar también el lenguaje, los procesos motores del habla y el impacto funcional.",
+    "localizador_pdf": "Pág. 6 (Cognitive-Communication)",
+    "alerta_seguridad": "No todos los TCE presentan el mismo perfil. | Evitar diagnóstico por etiología solamente."
+  },
+  {
+    "claim_id": "DCA-C038",
+    "doc_id": "DCA-009",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Comunicación cognitiva",
+    "fase_clinica": "Intervención",
+    "dato_factual_objetivo": "La atención debe considerar comunicación social, autonomía y participación en actividades cotidianas.",
+    "localizador_pdf": "Pág. 6 (Social Communication)",
+    "alerta_seguridad": "Orientación clínica del portal. | No inferir eficacia de técnica específica."
+  },
+  {
+    "claim_id": "DCA-C039",
+    "doc_id": "DCA-010",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "ASHA diferencia evaluación clínica y estudios instrumentales para definir fisiología y seguridad de la deglución.",
+    "localizador_pdf": "Pág. 3 (instrumental)",
+    "alerta_seguridad": "Página profesional transversal; no restringida a ictus. | No diagnosticar aspiración silente solo por síntomas."
+  },
+  {
+    "claim_id": "DCA-C040",
+    "doc_id": "DCA-010",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Seguridad",
+    "dato_factual_objetivo": "La aspiración silente puede ocurrir sin tos ni signos manifiestos.",
+    "localizador_pdf": "Pág. 5 (Silent aspiration)",
+    "alerta_seguridad": "La ausencia de tos no descarta aspiración. | Valorar FEES/VFSS según indicación."
+  },
+  {
+    "claim_id": "DCA-C041",
+    "doc_id": "DCA-010",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Seguridad",
+    "dato_factual_objetivo": "Voz húmeda, tos, cambios respiratorios y residuos son indicios que deben interpretarse conjuntamente con el contexto.",
+    "localizador_pdf": "Pág. 5 (wet or gurgly)",
+    "alerta_seguridad": "Ningún signo aislado confirma aspiración. | No recomendar líquidos finos automáticamente."
+  },
+  {
+    "claim_id": "DCA-C042",
+    "doc_id": "DCA-010",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Intervención",
+    "dato_factual_objetivo": "El manejo puede incluir rehabilitación, compensaciones, modificaciones de consistencia y educación, según evaluación.",
+    "localizador_pdf": "Pág. 1 (compensatory)",
+    "alerta_seguridad": "Recomendaciones generales no equivalen a pauta individual. | Considerar hidratación/nutrición al modificar viscosidad."
+  },
+  {
+    "claim_id": "DCA-C043",
+    "doc_id": "DCA-011",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "ASHA organiza la exploración de disartria por respiración, fonación, resonancia, articulación y prosodia.",
+    "localizador_pdf": "Pág. 3 (respiration)",
+    "alerta_seguridad": "Referencia profesional transversal a DCA, Parkinson y ataxias. | No confundir con afasia."
+  },
+  {
+    "claim_id": "DCA-C044",
+    "doc_id": "DCA-011",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "Diagnóstico diferencial",
+    "dato_factual_objetivo": "La clasificación distingue disartrias flácida, espástica, atáxica, hipocinética, hipercinética, unilateral y mixta.",
+    "localizador_pdf": "Pág. 2 (Flaccid)",
+    "alerta_seguridad": "La clasificación perceptiva requiere correlato neurológico. | No deducir etiología solo por acústica."
+  },
+  {
+    "claim_id": "DCA-C045",
+    "doc_id": "DCA-011",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "La inteligibilidad y la naturalidad del habla son resultados clínicamente relevantes.",
+    "localizador_pdf": "Pág. 1 (intelligibility)",
+    "alerta_seguridad": "No extrapolar de una sola medida de intensidad vocal. | Integrar participación funcional."
+  },
+  {
+    "claim_id": "DCA-C046",
+    "doc_id": "DCA-011",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "Seguridad",
+    "dato_factual_objetivo": "Se requiere competencia especializada para diagnosticar e intervenir sobre procesos motores del habla.",
+    "localizador_pdf": "Pág. 7 (specialized)",
+    "alerta_seguridad": "Guía profesional, no ensayo de eficacia. | Derivar si excede competencia."
+  },
+  {
+    "claim_id": "DCA-C047",
+    "doc_id": "DCA-012",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Ámbito profesional",
+    "dato_factual_objetivo": "La resolución del CGCL aprobada el 25 de abril de 2026 aborda la formación y competencias logopédicas en disfagia.",
+    "localizador_pdf": "Pág. 1 (25 de abril de 2026)",
+    "alerta_seguridad": "Posicionamiento colegial, no guía GRADE ni ensayo. | No sustituye evaluación del caso."
+  },
+  {
+    "claim_id": "DCA-C048",
+    "doc_id": "DCA-012",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "La resolución describe cribado, evaluación clínica y, cuando corresponde, pruebas instrumentales FEES o videofluoroscopia.",
+    "localizador_pdf": "Pág. 3 (fibroendoscopia)",
+    "alerta_seguridad": "Contexto de ordenación del ejercicio profesional. | Respetar competencias y protocolos locales."
+  },
+  {
+    "claim_id": "DCA-C049",
+    "doc_id": "DCA-012",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Intervención",
+    "dato_factual_objetivo": "La resolución reconoce prevención, modificación de dieta, estrategias compensatorias y terapias como ámbitos del abordaje.",
+    "localizador_pdf": "Pág. 3 (biofeedback)",
+    "alerta_seguridad": "Enumeración de modalidades, no evidencia de eficacia de cada una. | No indicar estrategias indiscriminadamente."
+  },
+  {
+    "claim_id": "DCA-C050",
+    "doc_id": "DCA-012",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Seguridad",
+    "dato_factual_objetivo": "El documento vincula disfagia con riesgos de desnutrición, deshidratación y neumonía por aspiración.",
+    "localizador_pdf": "Pág. 2 (deshidratación)",
+    "alerta_seguridad": "No utilizar estadísticas agregadas como pronóstico individual. | Priorizar seguridad y seguimiento."
+  },
+  {
+    "claim_id": "DCA-C001",
+    "doc_id": "DCA-001",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C002",
+    "doc_id": "DCA-001",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C003",
+    "doc_id": "DCA-001",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C004",
+    "doc_id": "DCA-001",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C005",
+    "doc_id": "DCA-001",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C006",
+    "doc_id": "DCA-001",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C007",
+    "doc_id": "DCA-002",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C008",
+    "doc_id": "DCA-002",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C009",
+    "doc_id": "DCA-002",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C010",
+    "doc_id": "DCA-002",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C011",
+    "doc_id": "DCA-002",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C012",
+    "doc_id": "DCA-003",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C013",
+    "doc_id": "DCA-003",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C014",
+    "doc_id": "DCA-003",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C015",
+    "doc_id": "DCA-003",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C016",
+    "doc_id": "DCA-003",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C017",
+    "doc_id": "DCA-004",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C018",
+    "doc_id": "DCA-004",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C019",
+    "doc_id": "DCA-004",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C020",
+    "doc_id": "DCA-005",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C021",
+    "doc_id": "DCA-005",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C022",
+    "doc_id": "DCA-005",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C023",
+    "doc_id": "DCA-005",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C024",
+    "doc_id": "DCA-005",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C025",
+    "doc_id": "DCA-006",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C026",
+    "doc_id": "DCA-006",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C027",
+    "doc_id": "DCA-006",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C028",
+    "doc_id": "DCA-006",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C029",
+    "doc_id": "DCA-007",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C030",
+    "doc_id": "DCA-007",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C031",
+    "doc_id": "DCA-007",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C032",
+    "doc_id": "DCA-007",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C033",
+    "doc_id": "DCA-008",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C034",
+    "doc_id": "DCA-008",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C035",
+    "doc_id": "DCA-008",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C036",
+    "doc_id": "DCA-009",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C037",
+    "doc_id": "DCA-009",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C038",
+    "doc_id": "DCA-009",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C039",
+    "doc_id": "DCA-010",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C040",
+    "doc_id": "DCA-010",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C041",
+    "doc_id": "DCA-010",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C042",
+    "doc_id": "DCA-010",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C043",
+    "doc_id": "DCA-011",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C044",
+    "doc_id": "DCA-011",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C045",
+    "doc_id": "DCA-011",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C046",
+    "doc_id": "DCA-011",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C047",
+    "doc_id": "DCA-012",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C048",
+    "doc_id": "DCA-012",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C049",
+    "doc_id": "DCA-012",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "DCA-C050",
+    "doc_id": "DCA-012",
+    "patologia": "Daño Cerebral Adquirido",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-001",
+    "doc_id": "EP-001",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "evaluación",
+    "dato_factual_objetivo": "Cribado positivo de disfagia debe conducir a evaluación clínica especializada por logopeda formado; establecer derivación cuando no exista profesional disponible.",
+    "localizador_pdf": "PDF p. 10 Box 2",
+    "alerta_seguridad": "No sustituye juicio clínico ni instrumental"
+  },
+  {
+    "claim_id": "EP-CLM-002",
+    "doc_id": "EP-001",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "seguridad",
+    "dato_factual_objetivo": "El consenso reconoce la posibilidad de aspiración silente no detectada clínicamente y debate la indicación de FEES/VFSS en personas sin signos; no postula instrumentación obligatoria para toda EP.",
+    "localizador_pdf": "PDF pp. 9–10",
+    "alerta_seguridad": "No convertir riesgo en diagnóstico de aspiración"
+  },
+  {
+    "claim_id": "EP-CLM-003",
+    "doc_id": "EP-001",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "instrumentos",
+    "dato_factual_objetivo": "ROMP evalúa dominios de habla, deglución y saliva; las herramientas de cribado requieren considerar adaptación lingüística y cultural.",
+    "localizador_pdf": "PDF p. 8",
+    "alerta_seguridad": "No equiparar cribado con diagnóstico"
+  },
+  {
+    "claim_id": "EP-CLM-004",
+    "doc_id": "EP-003",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Comunicación",
+    "fase_clinica": "caso",
+    "dato_factual_objetivo": "El caso de enfermería presenta hipofonía y disartria hipocinética con apoyo a estrategias de comunicación y coordinación con logopedia.",
+    "localizador_pdf": "PDF pp. 3–5",
+    "alerta_seguridad": "No se informa eficacia acústica estandarizada"
+  },
+  {
+    "claim_id": "EP-CLM-005",
+    "doc_id": "EP-004",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Diferencial neurológico",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "La disfagia o disartria bulbar grave en los primeros cinco años figura entre señales de alerta para evaluar diagnóstico de parkinsonismo atípico.",
+    "localizador_pdf": "PDF p. 4",
+    "alerta_seguridad": "Derivación neurológica; no diagnóstico automático"
+  },
+  {
+    "claim_id": "EP-CLM-006",
+    "doc_id": "EP-005",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "evaluación",
+    "dato_factual_objetivo": "El cribado de disartria identifica necesidad de evaluación adicional; la clasificación diagnóstica requiere evaluación más amplia de subsistemas y participación.",
+    "localizador_pdf": "PDF pp. 7–8",
+    "alerta_seguridad": "Recurso transversal; no evidencia individual EP"
+  },
+  {
+    "claim_id": "EP-CLM-007",
+    "doc_id": "EP-006",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "instrumentos",
+    "dato_factual_objetivo": "Se emplearon CAPE-V, PAIF y un protocolo de disartria, junto con TMF y medidas acústicas de fuente glótica con MDVP.",
+    "localizador_pdf": "PDF p. 2",
+    "alerta_seguridad": "Comparar tareas equivalentes y condiciones de adquisición"
+  },
+  {
+    "claim_id": "EP-CLM-008",
+    "doc_id": "EP-006",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "resultados",
+    "dato_factual_objetivo": "La inteligibilidad de palabras no mejora uniformemente en los dos casos a pesar de cambios en algunas medidas de voz y frases.",
+    "localizador_pdf": "PDF p. 3 tabla 2",
+    "alerta_seguridad": "Prohibido afirmar superioridad causal de tDCS+logopedia"
+  },
+  {
+    "claim_id": "EP-CLM-009",
+    "doc_id": "EP-007",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "diagnóstico",
+    "dato_factual_objetivo": "El artículo describe neumonía por neumococo y considera posible contribución aspirativa; la certeza causal no queda demostrada en las páginas examinadas.",
+    "localizador_pdf": "PDF pp. 5–7",
+    "alerta_seguridad": "No codificar como aspiración confirmada instrumentalmente"
+  },
+  {
+    "claim_id": "EP-CLM-010",
+    "doc_id": "EP-007",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "evaluación",
+    "dato_factual_objetivo": "Tras el episodio agudo se describen problemas de transporte oral del bolo, residuos y tos durante la valoración logopédica.",
+    "localizador_pdf": "PDF p. 6",
+    "alerta_seguridad": "Requiere exploración y decisiones individualizadas"
+  },
+  {
+    "claim_id": "EP-CLM-011",
+    "doc_id": "EP-008",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Comunicación",
+    "fase_clinica": "intervención",
+    "dato_factual_objetivo": "NICE recomienda facilitar terapia de habla y lenguaje para comunicación y deglución y considerar ayudas de comunicación aumentativa según necesidades.",
+    "localizador_pdf": "PDF pp. 21–22 sec. 1.7",
+    "alerta_seguridad": "Respeto de objetivos personales y reevaluación"
+  },
+  {
+    "claim_id": "EP-CLM-012",
+    "doc_id": "EP-009",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Voz",
+    "fase_clinica": "metodología",
+    "dato_factual_objetivo": "Seis hombres con EP realizaron 12 sesiones SPEAK OUT! y seguimiento grupal LOUD Crowd; grabaciones en 4 momentos y análisis Praat.",
+    "localizador_pdf": "PDF pp. 2–3",
+    "alerta_seguridad": "Contexto solo hombres anglófonos, no extrapolar"
+  },
+  {
+    "claim_id": "EP-CLM-013",
+    "doc_id": "EP-009",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Voz",
+    "fase_clinica": "resultados",
+    "dato_factual_objetivo": "Se registraron aumentos acústicos en intensidad y cambios en F1/F2; V-RQOL fisiológico mejoró, mientras la dimensión socioemocional no mostró mejora significativa.",
+    "localizador_pdf": "PDF pp. 3–5",
+    "alerta_seguridad": "No atribuir eficacia definitiva a grupo sin control"
+  },
+  {
+    "claim_id": "EP-CLM-014",
+    "doc_id": "EP-010",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Parkinson",
+    "fase_clinica": "contexto",
+    "dato_factual_objetivo": "Se describen fluctuaciones ON/OFF y su impacto potencial en voz, inteligibilidad y deglución en etapas avanzadas.",
+    "localizador_pdf": "PDF p. 7",
+    "alerta_seguridad": "No usar como sustituto de registro farmacológico formal"
+  },
+  {
+    "claim_id": "EP-CLM-015",
+    "doc_id": "EP-011",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Licencias",
+    "fase_clinica": "gobernanza",
+    "dato_factual_objetivo": "Manual SEN 2024 explicita restricciones de reproducción y reutilización sin permiso escrito.",
+    "localizador_pdf": "PDF p. 4",
+    "alerta_seguridad": "No habilitar ingestión RAG/SFT del texto completo"
+  },
+  {
+    "claim_id": "EP-CLM-016",
+    "doc_id": "EP-012",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "metodología",
+    "dato_factual_objetivo": "La revisión expone la necesidad de valorar evidencia, aplicabilidad y nivel metodológico al elegir técnicas para disartria.",
+    "localizador_pdf": "PDF pp. 1–3",
+    "alerta_seguridad": "No prueba intervención concreta en EP"
+  },
+  {
+    "claim_id": "EP-CLM-017",
+    "doc_id": "EP-013",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "revisión",
+    "dato_factual_objetivo": "La revisión universitaria enumera biofeedback y estimulación entre métodos usados en trastornos neurológicos de deglución.",
+    "localizador_pdf": "PDF p. 9",
+    "alerta_seguridad": "No inferir utilidad específica de NMES en EP"
+  },
+  {
+    "claim_id": "EP-CLM-018",
+    "doc_id": "EP-014",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "revisión",
+    "dato_factual_objetivo": "El TFG resume intervenciones para disartria hipocinética, en particular LSVT LOUD y teleterapia, sobre estudios publicados 2019–2024.",
+    "localizador_pdf": "PDF p. 8",
+    "alerta_seguridad": "Confirmar ensayos originales"
+  },
+  {
+    "claim_id": "EP-CLM-019",
+    "doc_id": "EP-015",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "revisión",
+    "dato_factual_objetivo": "La revisión selecciona siete artículos y sus autores advierten límites de generalización de la evidencia sobre LSVT.",
+    "localizador_pdf": "PDF p. 1",
+    "alerta_seguridad": "Revisión 2017; no desplazar estudios nuevos"
+  },
+  {
+    "claim_id": "EP-CLM-020",
+    "doc_id": "EP-016",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Atención comunitaria",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "El TFG describe un programa de atención integral desde modelo comunitario, sin aplicación ni resultados empíricos.",
+    "localizador_pdf": "PDF pp. 1–5",
+    "alerta_seguridad": "Propuesta no equivale a intervención eficaz"
+  },
+  {
+    "claim_id": "EP-CLM-021",
+    "doc_id": "EP-017",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "métodos",
+    "dato_factual_objetivo": "El TFG propone programa de intervención para EP rígido-acinética y cita evaluación clínica MECV-V, Frenchay y VHI.",
+    "localizador_pdf": "PDF pp. 5–9",
+    "alerta_seguridad": "No asumir seguridad ni validez diagnóstica universal"
+  },
+  {
+    "claim_id": "EP-CLM-022",
+    "doc_id": "EP-017",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "seguridad",
+    "dato_factual_objetivo": "El trabajo trata la desaturación en el MECV-V como posible indicador; no es prueba diagnóstica independiente de aspiración.",
+    "localizador_pdf": "PDF pp. 7–9",
+    "alerta_seguridad": "No afirmar aspiración silente por SpO₂ sola"
+  },
+  {
+    "claim_id": "EP-CLM-023",
+    "doc_id": "EP-018",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "diseño",
+    "dato_factual_objetivo": "Se incluyen seis participantes con Parkinson (cinco hombres, una mujer), con perfiles clínicos y registro observacional.",
+    "localizador_pdf": "PDF pp. 14–16",
+    "alerta_seguridad": "Valoraciones no todas instrumentales"
+  },
+  {
+    "claim_id": "EP-CLM-024",
+    "doc_id": "EP-018",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Intervención",
+    "fase_clinica": "resultados",
+    "dato_factual_objetivo": "Tras alrededor de 13 sesiones se informan mejoras en algunos indicadores; la mejoría de calidad de vida se observa también en grupo de comparación sin Parkinson.",
+    "localizador_pdf": "PDF pp. 21–26",
+    "alerta_seguridad": "No deducir ralentización de progresión ni causalidad"
+  },
+  {
+    "claim_id": "EP-CLM-025",
+    "doc_id": "EP-019",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Revisión logopédica",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "El TFG sintetiza tratamientos de disartria, disfagia y voz, incluidos LSVT y EMST, sin intervención propia.",
+    "localizador_pdf": "PDF pp. 2–3",
+    "alerta_seguridad": "Volver a ensayos originales"
+  },
+  {
+    "claim_id": "EP-CLM-026",
+    "doc_id": "EP-020",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "evaluación",
+    "dato_factual_objetivo": "Protocolo FEP identifica FDA-2, protocolo de evaluación del habla y análisis acústico como herramientas para evaluación de disartria.",
+    "localizador_pdf": "PDF p. 32",
+    "alerta_seguridad": "La elección depende de competencia y validación idiomática"
+  },
+  {
+    "claim_id": "EP-CLM-027",
+    "doc_id": "EP-020",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "cribado",
+    "dato_factual_objetivo": "Se describe EAT-10 y Dysfapark para cribado, con necesidad de diferenciar evaluación clínica de instrumental.",
+    "localizador_pdf": "PDF p. 36",
+    "alerta_seguridad": "No diagnosticar aspiración por resultado de cuestionario"
+  },
+  {
+    "claim_id": "EP-CLM-028",
+    "doc_id": "EP-020",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "intervención",
+    "dato_factual_objetivo": "Las estrategias se describen como individualizadas; el protocolo reconoce evidencia no concluyente para algunos procedimientos de intervención en disfagia.",
+    "localizador_pdf": "PDF pp. 48–50",
+    "alerta_seguridad": "No aplicar de modo universal maniobras ni espesamiento"
+  },
+  {
+    "claim_id": "EP-CLM-029",
+    "doc_id": "EP-021",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "Logopedia",
+    "fase_clinica": "contexto histórico",
+    "dato_factual_objetivo": "La GPC SNS 2014 aborda tratamiento logopédico de comunicación y deglución y revisiones existentes, pero su vigencia figura sin revisar.",
+    "localizador_pdf": "PDF pp. 110–119",
+    "alerta_seguridad": "No usar como estándar actual sin corroboración"
+  },
+  {
+    "claim_id": "EP-CLM-001",
+    "doc_id": "EP-001",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-002",
+    "doc_id": "EP-001",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-003",
+    "doc_id": "EP-001",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-004",
+    "doc_id": "EP-003",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-005",
+    "doc_id": "EP-004",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-006",
+    "doc_id": "EP-005",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-007",
+    "doc_id": "EP-006",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-008",
+    "doc_id": "EP-006",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-009",
+    "doc_id": "EP-007",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-010",
+    "doc_id": "EP-007",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-011",
+    "doc_id": "EP-008",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-012",
+    "doc_id": "EP-009",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-013",
+    "doc_id": "EP-009",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-014",
+    "doc_id": "EP-010",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-015",
+    "doc_id": "EP-011",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-016",
+    "doc_id": "EP-012",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-017",
+    "doc_id": "EP-013",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-018",
+    "doc_id": "EP-014",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-019",
+    "doc_id": "EP-015",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-020",
+    "doc_id": "EP-016",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-021",
+    "doc_id": "EP-017",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-022",
+    "doc_id": "EP-017",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-023",
+    "doc_id": "EP-018",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-024",
+    "doc_id": "EP-018",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-025",
+    "doc_id": "EP-019",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-026",
+    "doc_id": "EP-020",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-027",
+    "doc_id": "EP-020",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-028",
+    "doc_id": "EP-020",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "EP-CLM-029",
+    "doc_id": "EP-021",
+    "patologia": "Enfermedad de Parkinson",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación/Intervención",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "PDF p. ",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "ATX-CL-001",
+    "doc_id": "ATX-006",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "A favor condicional",
+    "dato_factual_objetivo": "Se sugiere terapia conductual intensiva orientada a objetivos de habla en Friedreich; evidencia preliminar de estudios pequeños",
+    "localizador_pdf": "Pág. 5 (GRADE: Baja)",
+    "alerta_seguridad": "No presentar eficacia como establecida ni extrapolar por defecto a otras SCA"
+  },
+  {
+    "claim_id": "ATX-CL-002",
+    "doc_id": "ATX-006",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "Sin recomendación a favor/en contra",
+    "dato_factual_objetivo": "No se puede recomendar a favor o en contra para tratamiento de disartria por ausencia de estudios específicos; puede considerarse en casos graves según necesidades",
+    "localizador_pdf": "Pág. 5 (GRADE: Muy baja)",
+    "alerta_seguridad": "No interpretar ausencia de recomendación como contraindicación de CAA"
+  },
+  {
+    "claim_id": "ATX-CL-003",
+    "doc_id": "ATX-006",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "Disartria",
+    "fase_clinica": "Buenas prácticas",
+    "dato_factual_objetivo": "Considerar estrategias del interlocutor, reducción de ruido y reparación de fallos comunicativos",
+    "localizador_pdf": "Pág. 4 (GRADE: Consenso)",
+    "alerta_seguridad": "Individualizar, valorar accesibilidad"
+  },
+  {
+    "claim_id": "ATX-CL-004",
+    "doc_id": "ATX-007",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "En contra condicional",
+    "dato_factual_objetivo": "Panel desaconseja condicionalmente terapias conductuales para tratar disfagia en Friedreich ante ausencia de ensayos específicos",
+    "localizador_pdf": "Pág. 5 (GRADE: Muy baja)",
+    "alerta_seguridad": "No convertir recomendación en prohibición universal; distinguir FRDA de SCA3"
+  },
+  {
+    "claim_id": "ATX-CL-005",
+    "doc_id": "ATX-007",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "A favor condicional",
+    "dato_factual_objetivo": "Panel sugiere algunas estrategias compensatorias para mejorar seguridad deglutoria",
+    "localizador_pdf": "Pág. 5 (GRADE: Muy baja)",
+    "alerta_seguridad": "Deben individualizarse y basarse en valoración clínica suficiente"
+  },
+  {
+    "claim_id": "ATX-CL-006",
+    "doc_id": "ATX-007",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Sin recomendación a favor/en contra",
+    "dato_factual_objetivo": "No se formula recomendación a favor ni en contra de modificaciones de dieta o fluidos espesados por falta de evidencia específica",
+    "localizador_pdf": "Pág. 5 (GRADE: Muy baja)",
+    "alerta_seguridad": "No prescribir viscosidad automáticamente sin evaluación"
+  },
+  {
+    "claim_id": "ATX-CL-007",
+    "doc_id": "ATX-007",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "En contra condicional",
+    "dato_factual_objetivo": "Panel desaconseja condicionalmente NMES como tratamiento de disfagia en Friedreich ante falta de ensayos específicos",
+    "localizador_pdf": "Pág. 5 (GRADE: Muy baja)",
+    "alerta_seguridad": "No extrapolar la recomendación a otras etiologías; precaución terapéutica"
+  },
+  {
+    "claim_id": "ATX-CL-008",
+    "doc_id": "ATX-007",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "Disfagia",
+    "fase_clinica": "Evaluación / buena práctica",
+    "dato_factual_objetivo": "Se mencionan VFSS y FEES como evaluaciones para caracterizar alteración y penetración/aspiración",
+    "localizador_pdf": "Pág. 3 (GRADE: No aplica)",
+    "alerta_seguridad": "La exploración clínica no confirma por sí sola aspiración silente"
+  },
+  {
+    "claim_id": "ATX-CL-009",
+    "doc_id": "ATX-003",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "Comprensión del habla",
+    "fase_clinica": "Evaluación / buena práctica",
+    "dato_factual_objetivo": "Evaluar percepción del habla en silencio y ruido, además de función auditiva periférica y central",
+    "localizador_pdf": "Pág. 4 (GRADE: No aplica)",
+    "alerta_seguridad": "No atribuir dificultades de comprensión únicamente a lenguaje o cognición"
+  },
+  {
+    "claim_id": "ATX-CL-010",
+    "doc_id": "ATX-002",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "Comunicación",
+    "fase_clinica": "Contextual",
+    "dato_factual_objetivo": "La función de extremidades superiores puede condicionar uso de teclado, dispositivos y actividades de alimentación",
+    "localizador_pdf": "Pág. 3 (GRADE: No aplica)",
+    "alerta_seguridad": "Considerar necesidades de acceso alternativo"
+  },
+  {
+    "claim_id": "ATX-CL-011",
+    "doc_id": "ATX-014",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "Disartria / disfagia",
+    "fase_clinica": "Hallazgo de caso único",
+    "dato_factual_objetivo": "En un relato de un caso de SCA3 se observaron mejoras acústicas, perceptivas y signos disfágicos después de intervención intensiva",
+    "localizador_pdf": "Pág. 1 (GRADE: No aplica)",
+    "alerta_seguridad": "No atribuir eficacia causal general ni recomendar protocolo indiscriminadamente"
+  },
+  {
+    "claim_id": "ATX-CL-012",
+    "doc_id": "ATX-011",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "Comunicación oral",
+    "fase_clinica": "Hallazgo de caso único",
+    "dato_factual_objetivo": "Un caso de Friedreich evaluó un programa grupal de ocho sesiones, con medidas acústicas y perceptivas",
+    "localizador_pdf": "Pág. 1 (GRADE: No aplica)",
+    "alerta_seguridad": "Resultados del participante no equivalen a evidencia de eficacia general"
+  },
+  {
+    "claim_id": "ATX-CL-013",
+    "doc_id": "ATX-015",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "Metodología",
+    "fase_clinica": "Marco metodológico",
+    "dato_factual_objetivo": "Guía utiliza evidencia directa, indirecta, observaciones expertas y perspectiva de pacientes para recomendaciones",
+    "localizador_pdf": "Pág. 1 (GRADE: No aplica)",
+    "alerta_seguridad": "No contar capítulos y artículo resumen como ensayos independientes"
+  },
+  {
+    "claim_id": "ATX-CL-001",
+    "doc_id": "",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "Pág.  ()",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "ATX-CL-002",
+    "doc_id": "",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "Pág.  ()",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "ATX-CL-003",
+    "doc_id": "",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "Pág.  ()",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "ATX-CL-004",
+    "doc_id": "",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "Pág.  ()",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "ATX-CL-005",
+    "doc_id": "",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "Pág.  ()",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "ATX-CL-006",
+    "doc_id": "",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "Pág.  ()",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "ATX-CL-007",
+    "doc_id": "",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "Pág.  ()",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "ATX-CL-008",
+    "doc_id": "",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "Pág.  ()",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "ATX-CL-009",
+    "doc_id": "",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "Pág.  ()",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "ATX-CL-010",
+    "doc_id": "",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "Pág.  ()",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "ATX-CL-011",
+    "doc_id": "",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "Pág.  ()",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "ATX-CL-012",
+    "doc_id": "",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "Pág.  ()",
+    "alerta_seguridad": ""
+  },
+  {
+    "claim_id": "ATX-CL-013",
+    "doc_id": "",
+    "patologia": "Ataxia Hereditaria",
+    "dominio_clinico": "General",
+    "fase_clinica": "Evaluación",
+    "dato_factual_objetivo": "",
+    "localizador_pdf": "Pág.  ()",
+    "alerta_seguridad": ""
+  }
+]
