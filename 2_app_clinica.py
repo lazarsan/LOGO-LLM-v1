@@ -130,7 +130,7 @@ st.markdown("""
     }
 </style>
 <div class="header-cdss">
-    <h2>🧭 LogoCopilot · Soporte Clínico Basado en Evidencia</h2>
+    <h2> LogoCopilot · CDSS Logopedia Neurológica</h2>
     <p>Tu copiloto para la toma de decisiones en Logopedia Neurológica · DCA, Parkinson y Ataxias Hereditarias</p>
     <span class="badge-rag">Corpus Auditado: 184 Hechos Factuales · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
 </div>
