@@ -98,15 +98,20 @@ st.set_page_config(page_title="LogoCopilot | CDSS Logopedia Neurológica", page_
 
 st.markdown("""
 <style>
-    .block-container { padding-top: 1.5rem; padding-bottom: 2rem; }
+    .block-container { 
+        padding-top: 3.2rem; 
+        padding-bottom: 2.5rem; 
+    }
     .header-cdss {
         background: linear-gradient(90deg, #0F2C59 0%, #1E4E8C 100%);
         color: white;
-        padding: 1.1rem 1.5rem;
-        border-radius: 8px;
-        margin-bottom: 1.2rem;
+        padding: 1.8rem 2.2rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
         border-left: 6px solid #38BDF8;
+        box-shadow: 0 4px 12px rgba(15, 44, 89, 0.15);
     }
+
     .header-cdss h2 { margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.3px; }
     .header-cdss p { margin: 0.3rem 0 0 0; font-size: 0.9rem; color: #E2E8F0; }
     .badge-rag {
