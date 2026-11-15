@@ -273,7 +273,7 @@ if analizar and notas:
                
             st.divider()
             resumen_txt = (
-                            resumen_txt = (
+                            
                 f"INFORME CLÍNICO GENERADO CON LOGOCOPILOT\n"
                 ...
                 f"CIE-11: {reporte.diagnostico.codigo_cie11} | Patología: {reporte.diagnostico.patologia_neuro_base.value}\n\n"
