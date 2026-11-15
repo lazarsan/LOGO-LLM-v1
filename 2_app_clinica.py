@@ -94,7 +94,7 @@ def inicializar_indice():
     return VectorStoreIndex.from_documents(docs)
 
 # 3. INTERFAZ VISUAL DE TRES PANELES
-st.set_page_config(page_title="LogoAssist | CDSS Logopedia Neurológica", page_icon="🧭", layout="wide")
+st.set_page_config(page_title="LogoPilot | CDSS Logopedia Neurológica", page_icon="🧭", layout="wide")
 
 st.markdown("""
 <style>
@@ -129,12 +129,21 @@ st.markdown("""
         background-color: #F8FAFC;
     }
 </style>
-<div class="header-cdss">
-    <h2> LogoAssist · CDSS Logopedia Neurológica</h2>
-    <p>Copiloto para la toma de decisiones en Logopedia Neurológica · DCA, Parkinson y Ataxias Hereditarias</p>
-    <span class="badge-rag">Corpus Auditado · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
+<div class="header-cdss" style="display: flex; align-items: center; gap: 1.5rem;">
+    <svg xmlns="http://w3.org" viewBox="0 0 120 120" width="68" height="68" style="flex-shrink: 0;">
+        <!-- Letra L Bold -->
+        <path d="M 22 24 L 22 94 L 84 94" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="square" stroke-linejoin="miter"/>
+        <!-- Letra P geométrica integrada -->
+        <path d="M 48 76 L 48 38 L 66 38 A 12 12 0 0 1 66 62 L 48 62" fill="none" stroke="#E2E8F0" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Puntero direccional en Naranja Brillante -->
+        <polygon points="100,20 76,31 87,35 91,46" fill="#FF5722"/>
+    </svg>
+    <div>
+        <h2>LOGO-Pilot</h2>
+        <p>Sistema de navegación y apoyo para la toma de decisiones en Logopedia Neurológica · DCA, Parkinson y Ataxias Hereditarias</p>
+        <span class="badge-rag">Corpus Auditado: 184 Hechos Factuales · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
+    </div>
 </div>
-""", unsafe_allow_html=True)
 
 if not os.getenv("OPENAI_API_KEY"):
     st.error("Falta configurar OPENAI_API_KEY en la terminal antes de iniciar.")
@@ -278,7 +287,7 @@ if analizar and notas:
                
             st.divider()
             resumen_txt = (
-                f"INFORME CLÍNICO GENERADO CON LOGOCOPILOT\n"
+                f"INFORME CLÍNICO GENERADO CON LOGO-PILOT\n"
                 f"CIE-11: {reporte.diagnostico.codigo_cie11} | Patología: {reporte.diagnostico.patologia_neuro_base.value}\n\n"
                 f"ANÁLISIS FISIOPATOLÓGICO:\n{reporte.diagnostico.analisis_fisiopatologico}\n\n"
                 f"DIAGNÓSTICO DIFERENCIAL:\n{reporte.diagnostico.diagnostico_diferencial}\n\n"
