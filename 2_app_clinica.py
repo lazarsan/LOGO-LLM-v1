@@ -270,9 +270,7 @@ if analizar and notas:
             )
             if hay_disfagia and reporte.intervencion.adaptacion_dietetica_iddsi:
                 st.markdown(f"**Pauta IDDSI:** {reporte.intervencion.adaptacion_dietetica_iddsi}")
-
-                st.markdown(f"**Pauta IDDSI:** {reporte.intervencion.adaptacion_dietetica_iddsi}")
-
+               
             st.divider()
             resumen_txt = (
                 f"REPORTE CLÍNICO LOGO-LLM\n"
