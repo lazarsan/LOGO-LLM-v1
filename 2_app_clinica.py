@@ -135,9 +135,9 @@ st.markdown("""
         <polygon points="100,20 76,31 87,35 91,46" fill="#FF5722"/>
     </svg>
     <div>
-        <h2>LOGO-Pilot · Soporte Clínico Basado en Evidencia</h2>
-        <p>Sistema de navegación y apoyo a la decisión en Logopedia Neurológica · DCA, Parkinson y Ataxias Hereditarias</p>
-        <span class="badge-rag">Corpus Auditado: 184 Hechos Factuales · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
+        <h2>LOGO-Pilot · Soporte Clínico para Logopedia Neurológica</h2>
+        <p>Sistema de navegación y apoyo a la toma de decisiones en DCA, Parkinson y Ataxias Hereditarias</p>
+        <span class="badge-rag">Corpus Auditado · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
