@@ -273,16 +273,14 @@ if analizar and notas:
                
             st.divider()
             resumen_txt = (
-                            
                 f"INFORME CLÍNICO GENERADO CON LOGOCOPILOT\n"
-                ...
                 f"CIE-11: {reporte.diagnostico.codigo_cie11} | Patología: {reporte.diagnostico.patologia_neuro_base.value}\n\n"
                 f"ANÁLISIS FISIOPATOLÓGICO:\n{reporte.diagnostico.analisis_fisiopatologico}\n\n"
                 f"DIAGNÓSTICO DIFERENCIAL:\n{reporte.diagnostico.diagnostico_diferencial}\n\n"
                 f"RESOLUCIÓN DEL DILEMA:\n{reporte.intervencion.respuesta_dilema_clinico}\n\n"
                 f"PAUTA IDDSI:\n{reporte.intervencion.adaptacion_dietetica_iddsi}"
             )
-                st.download_button("Validar y Descargar para Historia Clínica", data=resumen_txt, file_name="informe_LogoCopilot.txt", use_container_width=True)
+            st.download_button("Validar y Descargar para Historia Clínica", data=resumen_txt, file_name="informe_LogoCopilot.txt", use_container_width=True)
 
         with col_der:
             st.subheader("3. Inspector CitaRAG")
