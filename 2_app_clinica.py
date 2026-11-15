@@ -94,8 +94,42 @@ def inicializar_indice():
     return VectorStoreIndex.from_documents(docs)
 
 # 3. INTERFAZ VISUAL DE TRES PANELES
-st.set_page_config(page_title="LOGO-LLM | CDSS Logopedia", layout="wide")
-st.markdown("### LOGO-LLM · Soporte a la Decisión Clínica en Logopedia Neurológica")
+st.set_page_config(page_title="LOGO-LLM | CDSS Logopedia Neurológica", page_icon="🩺", layout="wide")
+
+st.markdown("""
+<style>
+    .block-container { padding-top: 1.5rem; padding-bottom: 2rem; }
+    .header-cdss {
+        background: linear-gradient(90deg, #0F2C59 0%, #1E4E8C 100%);
+        color: white;
+        padding: 1.1rem 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.2rem;
+        border-left: 6px solid #38BDF8;
+    }
+    .header-cdss h2 { margin: 0; font-size: 1.45rem; font-weight: 700; letter-spacing: 0.3px; }
+    .header-cdss p { margin: 0.3rem 0 0 0; font-size: 0.88rem; color: #E2E8F0; }
+    .badge-rag {
+        display: inline-block;
+        background-color: rgba(255,255,255,0.15);
+        padding: 2px 10px;
+        border-radius: 12px;
+        font-size: 0.78rem;
+        margin-top: 0.5rem;
+        font-weight: 600;
+    }
+    div[data-testid="stExpander"] {
+        border: 1px solid #CBD5E1;
+        border-radius: 6px;
+        background-color: #F8FAFC;
+    }
+</style>
+<div class="header-cdss">
+    <h2>LOGO-LLM · Sistema de Soporte a la Decisión Clínica (CDSS)</h2>
+    <p>Logopedia Neurológica Basada en Evidencia · Daño Cerebral Adquirido, Parkinson y Ataxias Hereditarias</p>
+    <span class="badge-rag">Corpus Auditado: 184 Hechos Factuales · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
+</div>
+""", unsafe_allow_html=True)
 
 if not os.getenv("OPENAI_API_KEY"):
     st.error("Falta configurar OPENAI_API_KEY en la terminal antes de iniciar.")
@@ -156,7 +190,10 @@ with col_izq:
     pat_sel = st.selectbox("Patología Neurológica Base", opciones_pat, index=idx_pat)
     trast_sel = st.selectbox("Dominio Logopédico", [t.value for t in TipoTrastorno])
     instrumental = st.checkbox("Consta prueba instrumental previa (FEES / VFSS)")
-    notas = st.text_area("Hallazgos clínicos consolidados (Revisar antes de enviar):", value=texto_auto, height=160)
+    lineas_estimadas = texto_auto.count("\n") + (len(texto_auto) // 48) + 3
+    altura_dinamica = max(150, min(lineas_estimadas * 22, 650))
+    notas = st.text_area("Hallazgos clínicos consolidados (Revisar antes de enviar):", value=texto_auto, height=altura_dinamica)
+
     analizar = st.button("Analizar Caso Clínico", type="primary", use_container_width=True)
 
 if analizar and notas:
@@ -174,7 +211,7 @@ if analizar and notas:
         "1. Desarrolla de forma exhaustiva el análisis fisiopatológico por subsistemas y el diagnóstico diferencial.\n"
         "2. Responde explícitamente en 'respuesta_dilema_clinico' por qué la propuesta planteada en la consulta es adecuada o contraindicada.\n"
         "3. Detalla la dosificación, frecuencia y control de fatiga en cada procedimiento de intervención.\n"
-        "4. No prescribas niveles IDDSI ni espesamientos automáticos sin valoración instrumental (FEES/VFSS).\n"
+        "4. Si el caso involucra disfagia o sospecha de alteración deglutoria, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay sospecha de disfagia, deja 'adaptacion_dietetica_iddsi' como cadena vacía ''.\n"
         "5. Declara explícitamente en 'informacion_clinica_no_disponible' todo dato ausente en el caso y en 'evidencia_cientifica_insuficiente' cualquier limitación metodológica o grado de certeza bajo de las fuentes."
     )
 
@@ -224,7 +261,16 @@ if analizar and notas:
             for r in reporte.intervencion.reactivacion_neuromuscular:
                 st.checkbox(f"[Reactivación] {r}", key=f"r_{r}")
 
-            if reporte.intervencion.adaptacion_dietetica_iddsi:
+            hay_disfagia = (
+                trast_sel == TipoTrastorno.DISFAGIA.value
+                or "disfagia" in notas.lower()
+                or "deglu" in notas.lower()
+                or "atragantamiento" in notas.lower()
+                or "aspiraci" in notas.lower()
+            )
+            if hay_disfagia and reporte.intervencion.adaptacion_dietetica_iddsi:
+                st.markdown(f"**Pauta IDDSI:** {reporte.intervencion.adaptacion_dietetica_iddsi}")
+
                 st.markdown(f"**Pauta IDDSI:** {reporte.intervencion.adaptacion_dietetica_iddsi}")
 
             st.divider()
