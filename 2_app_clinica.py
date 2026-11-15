@@ -94,7 +94,7 @@ def inicializar_indice():
     return VectorStoreIndex.from_documents(docs)
 
 # 3. INTERFAZ VISUAL DE TRES PANELES
-st.set_page_config(page_title="LOGO-LLM | CDSS Logopedia Neurológica", page_icon="🩺", layout="wide")
+st.set_page_config(page_title="LogoCopilot | CDSS Logopedia Neurológica", page_icon="🧭", layout="wide")
 
 st.markdown("""
 <style>
@@ -107,12 +107,12 @@ st.markdown("""
         margin-bottom: 1.2rem;
         border-left: 6px solid #38BDF8;
     }
-    .header-cdss h2 { margin: 0; font-size: 1.45rem; font-weight: 700; letter-spacing: 0.3px; }
-    .header-cdss p { margin: 0.3rem 0 0 0; font-size: 0.88rem; color: #E2E8F0; }
+    .header-cdss h2 { margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.3px; }
+    .header-cdss p { margin: 0.3rem 0 0 0; font-size: 0.9rem; color: #E2E8F0; }
     .badge-rag {
         display: inline-block;
         background-color: rgba(255,255,255,0.15);
-        padding: 2px 10px;
+        padding: 3px 10px;
         border-radius: 12px;
         font-size: 0.78rem;
         margin-top: 0.5rem;
@@ -125,8 +125,8 @@ st.markdown("""
     }
 </style>
 <div class="header-cdss">
-    <h2>LOGO-LLM · Sistema de Soporte a la Decisión Clínica (CDSS)</h2>
-    <p>Logopedia Neurológica Basada en Evidencia · Daño Cerebral Adquirido, Parkinson y Ataxias Hereditarias</p>
+    <h2>🧭 LogoCopilot · Soporte Clínico Basado en Evidencia</h2>
+    <p>Tu copiloto para la toma de decisiones en Logopedia Neurológica · DCA, Parkinson y Ataxias Hereditarias</p>
     <span class="badge-rag">Corpus Auditado: 184 Hechos Factuales · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
 </div>
 """, unsafe_allow_html=True)
@@ -273,14 +273,16 @@ if analizar and notas:
                
             st.divider()
             resumen_txt = (
-                f"REPORTE CLÍNICO LOGO-LLM\n"
+                            resumen_txt = (
+                f"INFORME CLÍNICO GENERADO CON LOGOCOPILOT\n"
+                ...
                 f"CIE-11: {reporte.diagnostico.codigo_cie11} | Patología: {reporte.diagnostico.patologia_neuro_base.value}\n\n"
                 f"ANÁLISIS FISIOPATOLÓGICO:\n{reporte.diagnostico.analisis_fisiopatologico}\n\n"
                 f"DIAGNÓSTICO DIFERENCIAL:\n{reporte.diagnostico.diagnostico_diferencial}\n\n"
                 f"RESOLUCIÓN DEL DILEMA:\n{reporte.intervencion.respuesta_dilema_clinico}\n\n"
                 f"PAUTA IDDSI:\n{reporte.intervencion.adaptacion_dietetica_iddsi}"
             )
-            st.download_button("Validar y Descargar para Historia Clínica", data=resumen_txt, file_name="reporte_logopedia.txt", use_container_width=True)
+                st.download_button("Validar y Descargar para Historia Clínica", data=resumen_txt, file_name="informe_LogoCopilot.txt", use_container_width=True)
 
         with col_der:
             st.subheader("3. Inspector CitaRAG")
