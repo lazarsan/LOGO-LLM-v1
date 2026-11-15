@@ -111,7 +111,6 @@ st.markdown("""
         border-left: 6px solid #38BDF8;
         box-shadow: 0 4px 12px rgba(15, 44, 89, 0.15);
     }
-
     .header-cdss h2 { margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.3px; }
     .header-cdss p { margin: 0.3rem 0 0 0; font-size: 0.9rem; color: #E2E8F0; }
     .badge-rag {
@@ -131,19 +130,17 @@ st.markdown("""
 </style>
 <div class="header-cdss" style="display: flex; align-items: center; gap: 1.5rem;">
     <svg xmlns="http://w3.org" viewBox="0 0 120 120" width="68" height="68" style="flex-shrink: 0;">
-        <!-- Letra L Bold -->
         <path d="M 22 24 L 22 94 L 84 94" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="square" stroke-linejoin="miter"/>
-        <!-- Letra P geométrica integrada -->
         <path d="M 48 76 L 48 38 L 66 38 A 12 12 0 0 1 66 62 L 48 62" fill="none" stroke="#E2E8F0" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-        <!-- Puntero direccional en Naranja Brillante -->
         <polygon points="100,20 76,31 87,35 91,46" fill="#FF5722"/>
     </svg>
     <div>
-        <h2>LOGO-Pilot</h2>
-        <p>Sistema de navegación y apoyo para la toma de decisiones en Logopedia Neurológica · DCA, Parkinson y Ataxias Hereditarias</p>
+        <h2>LOGO-Pilot · Soporte Clínico Basado en Evidencia</h2>
+        <p>Sistema de navegación y apoyo a la decisión en Logopedia Neurológica · DCA, Parkinson y Ataxias Hereditarias</p>
         <span class="badge-rag">Corpus Auditado: 184 Hechos Factuales · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
     </div>
 </div>
+""", unsafe_allow_html=True)
 
 if not os.getenv("OPENAI_API_KEY"):
     st.error("Falta configurar OPENAI_API_KEY en la terminal antes de iniciar.")
