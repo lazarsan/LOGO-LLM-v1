@@ -1,2 +1,2 @@
-# LOGO-LLM-v1
+# LOGO-Copilot
 Neurologic SLP LLM prototype
