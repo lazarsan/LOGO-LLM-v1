@@ -94,7 +94,7 @@ def inicializar_indice():
     return VectorStoreIndex.from_documents(docs)
 
 # 3. INTERFAZ VISUAL DE TRES PANELES
-st.set_page_config(page_title="LogoCopilot | CDSS Logopedia Neurológica", page_icon="🧭", layout="wide")
+st.set_page_config(page_title="LogoAssist | CDSS Logopedia Neurológica", page_icon="🧭", layout="wide")
 
 st.markdown("""
 <style>
@@ -130,7 +130,7 @@ st.markdown("""
     }
 </style>
 <div class="header-cdss">
-    <h2> LogoCopilot · CDSS Logopedia Neurológica</h2>
+    <h2> LogoAssist · CDSS Logopedia Neurológica</h2>
     <p>Copiloto para la toma de decisiones en Logopedia Neurológica · DCA, Parkinson y Ataxias Hereditarias</p>
     <span class="badge-rag">Corpus Auditado · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
 </div>
