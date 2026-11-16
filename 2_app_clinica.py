@@ -239,16 +239,28 @@ if analizar and notas:
             prompt += f"\nCORRECCIÓN (Intento {intento}): {e}"
 
     if reporte:
-        with col_centro:
+    with col_centro:
             st.subheader("2. Reporte Clínico")
-        c_cie, c_cie_i = st.columns([0.88, 0.12])
-        c_cie.info(f"**CIE-11:** {reporte.diagnostico.codigo_cie11} | **Patología:** {reporte.diagnostico.patologia_neuro_base.value}")
-        with c_cie_i.popover("ℹ️"):
-            st.markdown(f"**Referencia OMS ({reporte.diagnostico.codigo_cie11})**")
-            st.caption("8A00.0: Parkinson | 8A02.0: Ataxias | 8B11/8B20: Ictus.")
-            st.markdown("[Abrir navegador oficial CIE-11](https://who.int)")
+            c_cie, c_cie_i = st.columns([0.88, 0.12])
+            c_cie.info(f"**CIE-11:** {reporte.diagnostico.codigo_cie11} | **Patología:** {reporte.diagnostico.patologia_neuro_base.value}")
+            pop_cie = c_cie_i.popover("ℹ️")
+            pop_cie.markdown(f"**Guía de Codificación CIE-11 ({reporte.diagnostico.codigo_cie11})**")
+            pop_cie.caption("Valida la correspondencia entre el diagnóstico neurológico base y el trastorno funcional:")
+            pop_cie.markdown("- **8A00.0:** Enfermedad de Parkinson.\n- **8A02.0:** Ataxias hereditarias.\n- **8B11 / 8B20:** Ictus isquémico/hemorrágico.")
+            pop_cie.markdown("[Consultar navegador OMS CIE-11](https://who.int)")
 
-            
+            c_an, c_an_i = st.columns([0.88, 0.12])
+            c_an.markdown("#### Análisis Fisiopatológico y Diagnóstico Diferencial")
+            pop_an = c_an_i.popover("ℹ️")
+            pop_an.markdown("**Auditoría del Razonamiento Fisiopatológico**")
+            pop_an.caption(
+                "• **Subsistemas motores:** Verifica respiración, fonación, resonancia, articulación y prosodia.\n"
+                "• **Fases deglutorias:** Distingue alteración de eficacia (residuo) frente a seguridad (aspiración).\n"
+                "• **Diferencial:** Comprueba que no se confundan déficits motores (disartria/apraxia) con trastornos lingüísticos o cognitivos."
+            )
+
+            st.write(reporte.diagnostico.analisis_fisiopatologico)
+
             st.markdown("**Análisis Fisiopatológico:**")
             st.write(reporte.diagnostico.analisis_fisiopatologico)
             st.caption(f"**Diagnóstico Diferencial:** {reporte.diagnostico.diagnostico_diferencial}")
