@@ -238,9 +238,10 @@ if analizar and notas:
         except ValidationError as e:
             prompt += f"\nCORRECCIÓN (Intento {intento}): {e}"
 
-if reporte:
-    with col_centro:
+    if reporte:
+        with col_centro:
             st.subheader("2. Reporte Clínico")
+
             c_cie, c_cie_i = st.columns([0.88, 0.12])
             c_cie.info(f"**CIE-11:** {reporte.diagnostico.codigo_cie11} | **Patología:** {reporte.diagnostico.patologia_neuro_base.value}")
             pop_cie = c_cie_i.popover("ℹ️")
@@ -259,9 +260,6 @@ if reporte:
                 "• **Diferencial:** Comprueba que no se confundan déficits motores (disartria/apraxia) con trastornos lingüísticos o cognitivos."
             )
 
-            st.write(reporte.diagnostico.analisis_fisiopatologico)
-
-            st.markdown("**Análisis Fisiopatológico:**")
             st.write(reporte.diagnostico.analisis_fisiopatologico)
             st.caption(f"**Diagnóstico Diferencial:** {reporte.diagnostico.diagnostico_diferencial}")
 
@@ -287,7 +285,7 @@ if reporte:
             for obj in reporte.intervencion.objetivos_terapeuticos:
                 st.markdown(f"- {obj}")
 
-                        c_int, c_int_i = st.columns([0.88, 0.12])
+            c_int, c_int_i = st.columns([0.88, 0.12])
             c_int.markdown("**Intervención Propuesta:**")
             pop_int = c_int_i.popover("ℹ️")
             pop_int.markdown("**Criterios de Selección y Dosificación Terapéutica**")
@@ -296,6 +294,11 @@ if reporte:
                 "• **Control de fatiga:** En patología neurodegenerativa, prioriza sesiones cortas y valora el estado motor ON/OFF.\n"
                 "• **Human-in-the-Loop:** Marca únicamente las técnicas que valides bajo tu criterio profesional antes de exportar."
             )
+
+            for c in reporte.intervencion.estrategias_compensatorias:
+                st.checkbox(f"[Compensatoria] {c}", key=f"c_{c}")
+            for r in reporte.intervencion.reactivacion_neuromuscular:
+                st.checkbox(f"[Reactivación] {r}", key=f"r_{r}")
 
             hay_disfagia = (
                 trast_sel == TipoTrastorno.DISFAGIA.value
@@ -316,13 +319,18 @@ if reporte:
                 f"RESOLUCIÓN DEL DILEMA:\n{reporte.intervencion.respuesta_dilema_clinico}\n\n"
                 f"PAUTA IDDSI:\n{reporte.intervencion.adaptacion_dietetica_iddsi}"
             )
-            st.download_button("Validar y Descargar para Historia Clínica", data=resumen_txt, file_name="informe_LogoCopilot.txt", use_container_width=True)
+            st.download_button("Validar y Descargar para Historia Clínica", data=resumen_txt, file_name="informe_LOGO_Pilot.txt", use_container_width=True)
 
         with col_der:
-                    c_rag, c_rag_i = st.columns([0.85, 0.15])
-        c_rag.subheader("3. Inspector CitaRAG")
-        with c_rag_i.popover("ℹ️"):
-            st.caption("Contraste cada claim_id y página exacta con su publicación original (DOI o PDF local).")
+            c_rag, c_rag_i = st.columns([0.85, 0.15])
+            c_rag.subheader("3. Inspector CitaRAG")
+            pop_rag = c_rag_i.popover("ℹ️")
+            pop_rag.markdown("**¿Cómo funciona la trazabilidad CitaRAG?**")
+            pop_rag.caption(
+                "• **Recuperación determinista:** Extrae únicamente los hechos factuales más cercanos semánticamente de los 184 nodos auditados.\n"
+                "• **Cero alucinaciones:** Cada afirmación está anclada a su `claim_id` y página exacta.\n"
+                "• **Auditoría directa:** Usa el enlace **DOI** para verificar la fuente primaria original."
+            )
 
             mapa_fuentes = {}
             if os.path.exists("mapa_fuentes.json"):
