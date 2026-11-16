@@ -150,7 +150,10 @@ indice = inicializar_indice()
 col_izq, col_centro, col_der = st.columns([1, 1.4, 1])
 
 with col_izq:
-    st.subheader("1. Contexto Clínico")
+        c1, c1_i = st.columns([0.85, 0.15])
+    c1.subheader("1. Contexto Clínico")
+    with c1_i.popover("ℹ️"):
+        st.caption("1. Elija fuente de datos.\n2. Verifique anonimización (sin nombres ni NHC).\n3. Pulse Analizar.")
 
     # 1. Selector de las 3 vías de entrada
     modo_ingreso = st.radio(
@@ -238,7 +241,13 @@ if analizar and notas:
     if reporte:
         with col_centro:
             st.subheader("2. Reporte Clínico")
-            st.info(f"**CIE-11:** `{reporte.diagnostico.codigo_cie11}` | **{reporte.diagnostico.patologia_neuro_base.value}**")
+                   c_cie, c_cie_i = st.columns([0.88, 0.12])
+        c_cie.info(f"**CIE-11:** {reporte.diagnostico.codigo_cie11} | **Patología:** {reporte.diagnostico.patologia_neuro_base.value}")
+        with c_cie_i.popover("ℹ️"):
+            st.markdown(f"**Referencia OMS ({reporte.diagnostico.codigo_cie11})**")
+            st.caption("8A00.0: Parkinson | 8A02.0: Ataxias | 8B11/8B20: Ictus.")
+            st.markdown("[Abrir navegador oficial CIE-11](https://who.int)")
+
             
             st.markdown("**Análisis Fisiopatológico:**")
             st.write(reporte.diagnostico.analisis_fisiopatologico)
@@ -294,7 +303,11 @@ if analizar and notas:
             st.download_button("Validar y Descargar para Historia Clínica", data=resumen_txt, file_name="informe_LogoCopilot.txt", use_container_width=True)
 
         with col_der:
-            st.subheader("3. Inspector CitaRAG")
+                    c_rag, c_rag_i = st.columns([0.85, 0.15])
+        c_rag.subheader("3. Inspector CitaRAG")
+        with c_rag_i.popover("ℹ️"):
+            st.caption("Contraste cada claim_id y página exacta con su publicación original (DOI o PDF local).")
+
             mapa_fuentes = {}
             if os.path.exists("mapa_fuentes.json"):
                 with open("mapa_fuentes.json", "r", encoding="utf-8") as mf:
