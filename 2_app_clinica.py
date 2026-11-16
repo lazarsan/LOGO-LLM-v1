@@ -241,7 +241,7 @@ if analizar and notas:
     if reporte:
         with col_centro:
             st.subheader("2. Reporte Clínico")
-                   c_cie, c_cie_i = st.columns([0.88, 0.12])
+        c_cie, c_cie_i = st.columns([0.88, 0.12])
         c_cie.info(f"**CIE-11:** {reporte.diagnostico.codigo_cie11} | **Patología:** {reporte.diagnostico.patologia_neuro_base.value}")
         with c_cie_i.popover("ℹ️"):
             st.markdown(f"**Referencia OMS ({reporte.diagnostico.codigo_cie11})**")
