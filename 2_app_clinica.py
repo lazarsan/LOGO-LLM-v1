@@ -238,7 +238,7 @@ if analizar and notas:
         except ValidationError as e:
             prompt += f"\nCORRECCIÓN (Intento {intento}): {e}"
 
-    if reporte:
+if reporte:
     with col_centro:
             st.subheader("2. Reporte Clínico")
             c_cie, c_cie_i = st.columns([0.88, 0.12])
