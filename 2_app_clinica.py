@@ -268,7 +268,7 @@ if analizar and notas:
             st.error(f"**Resolución del Dilema Clínico:** {reporte.intervencion.respuesta_dilema_clinico}")
 
             if reporte.evaluacion.signos_alerta_seguridad:
-                st.warning("**Alertas de Seguridad:**\n" + "\n".join([f"- {a}" for a in reporte.evaluacion.signos_alerta_seguridad]))
+                st.error("**Alertas de Seguridad:**\n" + "\n".join([f"- {a}" for a in reporte.evaluacion.signos_alerta_seguridad]))
             
             if reporte.evaluacion.informacion_clinica_no_disponible:
                 st.info("**Información Clínica No Disponible (Datos Ausentes):**\n" + "\n".join([f"- {d}" for d in reporte.evaluacion.informacion_clinica_no_disponible]))
@@ -287,11 +287,15 @@ if analizar and notas:
             for obj in reporte.intervencion.objetivos_terapeuticos:
                 st.markdown(f"- {obj}")
 
-            st.markdown("**Intervención Propuesta:**")
-            for c in reporte.intervencion.estrategias_compensatorias:
-                st.checkbox(f"[Compensatoria] {c}", key=f"c_{c}")
-            for r in reporte.intervencion.reactivacion_neuromuscular:
-                st.checkbox(f"[Reactivación] {r}", key=f"r_{r}")
+                        c_int, c_int_i = st.columns([0.88, 0.12])
+            c_int.markdown("**Intervención Propuesta:**")
+            pop_int = c_int_i.popover("ℹ️")
+            pop_int.markdown("**Criterios de Selección y Dosificación Terapéutica**")
+            pop_int.caption(
+                "• **Enfoques:** Contrasta estrategias compensatorias (posturales/maniobras) frente a reactivación neuromuscular.\n"
+                "• **Control de fatiga:** En patología neurodegenerativa, prioriza sesiones cortas y valora el estado motor ON/OFF.\n"
+                "• **Human-in-the-Loop:** Marca únicamente las técnicas que valides bajo tu criterio profesional antes de exportar."
+            )
 
             hay_disfagia = (
                 trast_sel == TipoTrastorno.DISFAGIA.value
