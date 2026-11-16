@@ -150,7 +150,7 @@ indice = inicializar_indice()
 col_izq, col_centro, col_der = st.columns([1, 1.4, 1])
 
 with col_izq:
-        c1, c1_i = st.columns([0.85, 0.15])
+    c1, c1_i = st.columns([0.85, 0.15])
     c1.subheader("1. Contexto Clínico")
     with c1_i.popover("ℹ️"):
         st.caption("1. Elija fuente de datos.\n2. Verifique anonimización (sin nombres ni NHC).\n3. Pulse Analizar.")
