@@ -104,7 +104,64 @@ def inicializar_indice():
 import urllib.request
 import urllib.parse
 
-def buscar_ensayos_pubmed(patologia: str, trastorno: str) -> str:
+import urllib.request
+import urllib.parse
+
+def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
+    mapa_en = {
+        "Daño Cerebral Adquirido": "stroke OR traumatic brain injury",
+        "Enfermedad de Parkinson": "Parkinson disease",
+        "Ataxia Hereditaria": "hereditary ataxia OR Friedreich ataxia OR spinocerebellar ataxia",
+        "Disfagia Neurogénica": "dysphagia OR swallowing",
+        "Disartria": "dysarthria OR speech therapy",
+        "Afasia": "aphasia OR language therapy",
+        "Dispraxia / Apraxia del Habla / Orofacial": "apraxia of speech"
+    }
+    q_pat = mapa_en.get(patologia, patologia)
+    q_trast = mapa_en.get(trastorno, trastorno)
+    query_bool = f"({q_pat}) AND ({q_trast})"
+    query_enc = urllib.parse.quote(query_bool)
+
+    texto_recuperado = ""
+
+    # 1. Consulta API PubMed / MEDLINE + Revisiones Cochrane
+    query_pm = urllib.parse.quote(f"{query_bool} AND (Randomized Controlled Trial[pt] OR Systematic Review[pt] OR \"Cochrane Database Syst Rev\"[Journal])")
+    url_pm = f"https://nih.gov{query_pm}&retmode=json&retmax=4&sort=relevance"
+    try:
+        ids = json.loads(urllib.request.urlopen(url_pm, timeout=6).read().decode()).get("esearchresult", {}).get("idlist", [])
+        if ids:
+            url_fetch = f"https://nih.gov{','.join(ids)}&retmode=xml"
+            texto_recuperado += "=== PUBMED / MEDLINE / COCHRANE ===\n" + urllib.request.urlopen(url_fetch, timeout=6).read().decode("utf-8", errors="ignore")[:9000]
+    except Exception:
+        pass
+
+    # 2. Consulta API ClinicalTrials.gov (v2)
+    url_ct = f"https://clinicaltrials.gov{urllib.parse.quote(q_pat)}&query.intr={urllib.parse.quote(q_trast)}&pageSize=3"
+    try:
+        datos_ct = json.loads(urllib.request.urlopen(url_ct, timeout=6).read().decode())
+        estudios = datos_ct.get("studies", [])
+        if estudios:
+            texto_recuperado += "\n=== CLINICALTRIALS.GOV ===\n"
+            for est in estudios:
+                prot = est.get("protocolSection", {})
+                nct = prot.get("identificationModule", {}).get("nctId", "")
+                tit = prot.get("identificationModule", {}).get("briefTitle", "")
+                estado = prot.get("statusModule", {}).get("overallStatus", "")
+                texto_recuperado += f"ID: {nct} | Estado: {estado} | Título: {tit}\n"
+    except Exception:
+        pass
+
+    # 3. Enlaces directos pre-filtrados a repositorios especializados
+    enlaces = {
+        "PubMed Central (PMC · Texto Completo)": f"https://nih.gov{query_enc}",
+        "Cochrane Library": f"https://cochranelibrary.com{query_enc}",
+        "speechBITE (Logopedia)": f"https://speechbite.com{urllib.parse.quote(q_trast)}",
+        "ASHAWire (Revistas ASHA)": f"https://asha.org{query_enc}",
+        "ASHA Evidence Maps": "https://asha.org"
+    }
+
+    return {"datos_api": texto_recuperado, "enlaces": enlaces}
+
     ...
 
 # 3. INTERFAZ VISUAL DE TRES PANELES
@@ -288,24 +345,38 @@ if "reporte" in st.session_state:
 
             if reporte.evaluacion.evidencia_cientifica_insuficiente:
                 st.warning("**Declaración de Evidencia Científica Insuficiente:**\n" + "\n".join([f"- {ev}" for ev in reporte.evaluacion.evidencia_cientifica_insuficiente]))
-                if st.button("🔎 Consultar Ensayos Clínicos Robustos (PubMed ECA/RS)", key="btn_pubmed"):
-                    with st.spinner("Consultando ensayos aleatorizados y revisiones sistemáticas en PubMed..."):
-                        xml_pubmed = buscar_ensayos_pubmed(pat_sel, trast_sel)
-                        if xml_pubmed:
+                                if st.button("🔎 Consultar Bases Científicas y Ensayos (PubMed, Cochrane, ClinicalTrials, ASHA)", key="btn_pubmed"):
+                    with st.spinner("Consultando PubMed/MEDLINE, Cochrane y ClinicalTrials.gov..."):
+                        res_ext = buscar_evidencia_externa(pat_sel, trast_sel)
+                        st.session_state["enlaces_externos"] = res_ext["enlaces"]
+                        if res_ext["datos_api"]:
                             prompt_ev = (
-                                f"Extrae los ensayos clínicos más relevantes de estos registros XML de PubMed sobre {pat_sel} y {trast_sel}, "
+                                f"Extrae los estudios y ensayos clínicos más relevantes de estos registros sobre {pat_sel} y {trast_sel}, "
                                 f"enfocándote en las dudas del caso ({'; '.join(reporte.evaluacion.evidencia_cientifica_insuficiente)}). "
-                                f"No inventes datos fuera del XML:\n\n{xml_pubmed}"
+                                f"Indica la base de origen (PubMed, Cochrane o ClinicalTrials NCT). No inventes datos:\n\n{res_ext['datos_api']}"
                             )
                             llm_ev = LlamaOpenAI(model="gpt-4o", temperature=0.0)
                             res_ev = llm_ev.as_structured_llm(SintesisEnsayosExternos).complete(prompt_ev).raw
                             st.session_state["ensayos_externos"] = res_ev.ensayos
                         else:
-                            st.info("No se hallaron ensayos clínicos aleatorizados recientes en PubMed para esta combinación específica.")
+                            st.session_state["ensayos_externos"] = []
 
-                if "ensayos_externos" in st.session_state and st.session_state["ensayos_externos"]:
-                    st.markdown("**Contraste Externo (PubMed · Ensayos y Revisiones Sistemáticas):**")
-                    filas_tabla = [
+                if "ensayos_externos" in st.session_state:
+                    if st.session_state["ensayos_externos"]:
+                        st.markdown("**Síntesis de Ensayos y Revisiones (PubMed · Cochrane · ClinicalTrials.gov):**")
+                        filas_tabla = [
+                            {
+                                "Estudio / Base": e.referencia_estudio,
+                                "Intervenciones Comparadas": e.intervenciones_comparadas,
+                                "Hallazgos Principales (Resultados)": e.hallazgos_principales
+                            }
+                            for e in st.session_state["ensayos_externos"]
+                        ]
+                        st.table(filas_tabla)
+
+                    if "enlaces_externos" in st.session_state:
+                        links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
+                        st.info(f"**Búsqueda directa pre-filtrada en repositorios especializados:**\n\n{links_md}")
                         {
                             "Estudio / Diseño": e.referencia_estudio,
                             "Intervenciones Comparadas": e.intervenciones_comparadas,
