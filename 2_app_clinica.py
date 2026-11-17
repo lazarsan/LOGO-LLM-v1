@@ -274,7 +274,16 @@ if analizar and notas:
             if reporte.evaluacion.evidencia_cientifica_insuficiente:
                 st.warning("**Declaración de Evidencia Científica Insuficiente:**\n" + "\n".join([f"- {ev}" for ev in reporte.evaluacion.evidencia_cientifica_insuficiente]))
 
-            st.markdown("**Evaluación Sugerida:**")
+            c_ev, c_ev_i = st.columns([0.88, 0.12])
+            c_ev.markdown("**Evaluación Sugerida:**")
+            pop_ev = c_ev_i.popover("ℹ️")
+            pop_ev.markdown("**Criterio de Selección de Pruebas y Escalas**")
+            pop_ev.caption(
+                "• **Pertinencia clínica:** Las escalas se seleccionan según los subsistemas afectados y la etiología base.\n"
+                "• **Cribado vs. Instrumental:** Diferencia herramientas clínicas (MECV-V, EAT-10, FDA-2, CAPE-V) de pruebas instrumentales confirmatorias (FEES / VFSS).\n"
+                "• **Supervisión:** Marca únicamente las pruebas que consideres indicadas para el caso."
+            )
+
             for esc in reporte.evaluacion.escalas_sugeridas:
                 st.checkbox(esc, value=True, key=f"e_{esc}")
 
