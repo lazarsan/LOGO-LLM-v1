@@ -224,17 +224,18 @@ if analizar and notas:
         "5. Declara explícitamente en 'informacion_clinica_no_disponible' todo dato ausente en el caso y en 'evidencia_cientifica_insuficiente' cualquier limitación metodológica o grado de certeza bajo de las fuentes."
     )
 
-    reporte = None
     for intento in range(1, 4):
         try:
             llm_activo = LlamaOpenAI(model="gpt-4o", temperature=0.1 if intento == 1 else 0.0)
-            reporte = llm_activo.as_structured_llm(ReporteClinicoLogopedico).complete(prompt).raw
+            st.session_state["reporte"] = llm_activo.as_structured_llm(ReporteClinicoLogopedico).complete(prompt).raw
             break
         except ValidationError as e:
             prompt += f"\nCORRECCIÓN (Intento {intento}): {e}"
 
-    if reporte:
-        with col_centro:
+if "reporte" in st.session_state:
+    reporte = st.session_state["reporte"]
+    with col_centro:
+
             st.subheader("2. Reporte Clínico")
 
             c_cie, c_cie_i = st.columns([0.88, 0.12])
