@@ -377,15 +377,7 @@ if "reporte" in st.session_state:
                     if "enlaces_externos" in st.session_state:
                         links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
                         st.info(f"**Búsqueda directa pre-filtrada en repositorios especializados:**\n\n{links_md}")
-                        {
-                            "Estudio / Diseño": e.referencia_estudio,
-                            "Intervenciones Comparadas": e.intervenciones_comparadas,
-                            "Hallazgos Principales (Resultados)": e.hallazgos_principales
-                        }
-                        for e in st.session_state["ensayos_externos"]
-                    ]
-                    st.table(filas_tabla)
-
+                        
             c_ev, c_ev_i = st.columns([0.88, 0.12])
             c_ev.markdown("**Evaluación Sugerida:**")
             pop_ev = c_ev_i.popover("ℹ️")
