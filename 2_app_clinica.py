@@ -345,7 +345,7 @@ if "reporte" in st.session_state:
 
             if reporte.evaluacion.evidencia_cientifica_insuficiente:
                 st.warning("**Declaración de Evidencia Científica Insuficiente:**\n" + "\n".join([f"- {ev}" for ev in reporte.evaluacion.evidencia_cientifica_insuficiente]))
-                                if st.button("🔎 Consultar Bases Científicas y Ensayos (PubMed, Cochrane, ClinicalTrials, ASHA)", key="btn_pubmed"):
+                if st.button("🔎 Consultar Bases Científicas y Ensayos (PubMed, Cochrane, ClinicalTrials, ASHA)", key="btn_pubmed"):
                     with st.spinner("Consultando PubMed/MEDLINE, Cochrane y ClinicalTrials.gov..."):
                         res_ext = buscar_evidencia_externa(pat_sel, trast_sel)
                         st.session_state["enlaces_externos"] = res_ext["enlaces"]
@@ -360,7 +360,7 @@ if "reporte" in st.session_state:
                             st.session_state["ensayos_externos"] = res_ev.ensayos
                         else:
                             st.session_state["ensayos_externos"] = []
-
+                
                 if "ensayos_externos" in st.session_state:
                     if st.session_state["ensayos_externos"]:
                         st.markdown("**Síntesis de Ensayos y Revisiones (PubMed · Cochrane · ClinicalTrials.gov):**")
@@ -373,7 +373,7 @@ if "reporte" in st.session_state:
                             for e in st.session_state["ensayos_externos"]
                         ]
                         st.table(filas_tabla)
-
+                
                     if "enlaces_externos" in st.session_state:
                         links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
                         st.info(f"**Búsqueda directa pre-filtrada en repositorios especializados:**\n\n{links_md}")
