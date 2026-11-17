@@ -256,7 +256,12 @@ if analizar and notas:
             )
 
             st.write(reporte.diagnostico.analisis_fisiopatologico)
-            st.caption(f"**Diagnóstico Diferencial:** {reporte.diagnostico.diagnostico_diferencial}")
+            st.markdown(
+                f"""<div style="background-color: #F5F3FF; border-left: 4px solid #4C1D95; padding: 0.95rem 1.15rem; border-radius: 6px; margin: 0.8rem 0 1.2rem 0; color: #1E293B; font-size: 1.03rem; line-height: 1.55;">
+                <strong style="color: #1E1B4B;">Diagnóstico Diferencial:</strong> {reporte.diagnostico.diagnostico_diferencial}
+                </div>""",
+                unsafe_allow_html=True
+            )
 
             st.error(f"**Resolución del Dilema Clínico:** {reporte.intervencion.respuesta_dilema_clinico}")
 
