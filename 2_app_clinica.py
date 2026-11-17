@@ -288,6 +288,32 @@ if "reporte" in st.session_state:
 
             if reporte.evaluacion.evidencia_cientifica_insuficiente:
                 st.warning("**Declaración de Evidencia Científica Insuficiente:**\n" + "\n".join([f"- {ev}" for ev in reporte.evaluacion.evidencia_cientifica_insuficiente]))
+                if st.button("🔎 Consultar Ensayos Clínicos Robustos (PubMed ECA/RS)", key="btn_pubmed"):
+                    with st.spinner("Consultando ensayos aleatorizados y revisiones sistemáticas en PubMed..."):
+                        xml_pubmed = buscar_ensayos_pubmed(pat_sel, trast_sel)
+                        if xml_pubmed:
+                            prompt_ev = (
+                                f"Extrae los ensayos clínicos más relevantes de estos registros XML de PubMed sobre {pat_sel} y {trast_sel}, "
+                                f"enfocándote en las dudas del caso ({'; '.join(reporte.evaluacion.evidencia_cientifica_insuficiente)}). "
+                                f"No inventes datos fuera del XML:\n\n{xml_pubmed}"
+                            )
+                            llm_ev = LlamaOpenAI(model="gpt-4o", temperature=0.0)
+                            res_ev = llm_ev.as_structured_llm(SintesisEnsayosExternos).complete(prompt_ev).raw
+                            st.session_state["ensayos_externos"] = res_ev.ensayos
+                        else:
+                            st.info("No se hallaron ensayos clínicos aleatorizados recientes en PubMed para esta combinación específica.")
+
+                if "ensayos_externos" in st.session_state and st.session_state["ensayos_externos"]:
+                    st.markdown("**Contraste Externo (PubMed · Ensayos y Revisiones Sistemáticas):**")
+                    filas_tabla = [
+                        {
+                            "Estudio / Diseño": e.referencia_estudio,
+                            "Intervenciones Comparadas": e.intervenciones_comparadas,
+                            "Hallazgos Principales (Resultados)": e.hallazgos_principales
+                        }
+                        for e in st.session_state["ensayos_externos"]
+                    ]
+                    st.table(filas_tabla)
 
             c_ev, c_ev_i = st.columns([0.88, 0.12])
             c_ev.markdown("**Evaluación Sugerida:**")
