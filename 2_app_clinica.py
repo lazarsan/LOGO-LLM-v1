@@ -54,6 +54,14 @@ class CitaRAG(BaseModel):
     fuente_documental: str = Field(description="ID del documento y localizador físico PDF.")
     hecho_clinico_factual: str = Field(description="Dato clínico objetivo extraído sin narrativa autoral.")
 
+class EnsayoComparado(BaseModel):
+    referencia_estudio: str = Field(description="Autor, año o identificador NCT y tipo de diseño (ECA, Revisión Sistemática).")
+    intervenciones_comparadas: str = Field(description="Intervención experimental frente a grupo control o terapia estándar.")
+    hallazgos_principales: str = Field(description="Resultados cuantitativos/funcionales principales y nivel de significación o certeza.")
+
+class SintesisEnsayosExternos(BaseModel):
+    ensayos: List[EnsayoComparado]
+
 class ReporteClinicoLogopedico(BaseModel):
     diagnostico: DiagnosticoEstructurado
     evaluacion: EvaluacionClinica
@@ -92,6 +100,12 @@ def inicializar_indice():
         for r in registros
     ]
     return VectorStoreIndex.from_documents(docs)
+
+import urllib.request
+import urllib.parse
+
+def buscar_ensayos_pubmed(patologia: str, trastorno: str) -> str:
+    ...
 
 # 3. INTERFAZ VISUAL DE TRES PANELES
 st.set_page_config(page_title="LogoPilot | CDSS Logopedia Neurológica", page_icon="🧭", layout="wide")
