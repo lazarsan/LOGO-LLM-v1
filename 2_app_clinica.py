@@ -234,7 +234,7 @@ if analizar and notas:
 
 if "reporte" in st.session_state:
     reporte = st.session_state["reporte"]
-    with col_centro:
+        with col_centro:
 
             st.subheader("2. Reporte Clínico")
 
