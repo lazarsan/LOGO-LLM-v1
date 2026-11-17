@@ -234,7 +234,7 @@ if analizar and notas:
 
 if "reporte" in st.session_state:
     reporte = st.session_state["reporte"]
-        with col_centro:
+    with col_centro:
 
             st.subheader("2. Reporte Clínico")
 
@@ -331,7 +331,7 @@ if "reporte" in st.session_state:
             )
             st.download_button("Validar y Descargar para Historia Clínica", data=resumen_txt, file_name="informe_LOGO_Pilot.txt", use_container_width=True)
 
-        with col_der:
+    with col_der:
             c_rag, c_rag_i = st.columns([0.85, 0.15])
             c_rag.subheader("3. Inspector CitaRAG")
             pop_rag = c_rag_i.popover("ℹ️")
