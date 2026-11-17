@@ -98,7 +98,7 @@ st.set_page_config(page_title="LogoPilot | CDSS Logopedia Neurológica", page_ic
 
 import base64
 
-nombre_logo = "logo_pilot.png"
+nombre_logo = "logo_pilot_isotipo.png"
 img_b64 = base64.b64encode(open(nombre_logo, "rb").read()).decode() if os.path.exists(nombre_logo) else ""
 
 st.markdown(f"""
