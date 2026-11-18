@@ -83,27 +83,6 @@ class ReporteClinicoLogopedico(BaseModel):
         if self.diagnostico.patologia_neuro_base == PatologiaBase.DCA and "tdcs" in plan:
             if not any(n in plan for n in negaciones) and "ensayo" not in plan:
                 raise ValueError("VIOLACIÓN ESO 2025: La tDCS no debe prescribirse fuera de ensayos clínicos.")
-
-        return self
-
-# 2. CARGA DEL ÍNDICE VECTORIAL
-@st.cache_resource
-def inicializar_indice():
-    Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-large")
-    with open("corpus_factual_unificado_rag.json", "r", encoding="utf-8") as f:
-        registros = json.load(f)
-    docs = [
-        Document(
-            text=f"Patología: {r['patologia']} | Dominio: {r['dominio_clinico']}\nHecho: {r['dato_factual_objetivo']}\nAlerta: {r['alerta_seguridad']}",
-            metadata={"claim_id": r["claim_id"], "doc_id": r["doc_id"], "localizador": r["localizador_pdf"]}
-        )
-        for r in registros
-    ]
-    return VectorStoreIndex.from_documents(docs)
-
-import urllib.request
-import urllib.parse
-
 import urllib.request
 import urllib.parse
 
@@ -120,12 +99,12 @@ def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
     q_pat = mapa_en.get(patologia, "neurological disorder")
     q_trast = mapa_en.get(trastorno, "speech therapy")
     query_simple = f"{q_pat} {q_trast}"
-    query_enc = urllib.parse.quote(query_simple)
+    query_enc = urllib.parse.quote_plus(query_simple)
     headers = {"User-Agent": "Mozilla/5.0"}
 
     texto_recuperado = ""
 
-    # 1. Consulta PubMed (sin filtros restrictivos para asegurar resultados reales)
+    # 1. Consulta PubMed E-utilities oficial
     url_pm = f"https://nih.gov{query_enc}&retmode=json&retmax=5&sort=relevance"
     try:
         req_pm = urllib.request.Request(url_pm, headers=headers)
@@ -136,6 +115,32 @@ def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
             texto_recuperado += "=== PUBMED ===\n" + urllib.request.urlopen(req_fetch, timeout=8).read().decode("utf-8", errors="ignore")[:9000]
     except Exception as err_pm:
         texto_recuperado += f"\n[Aviso PubMed: {err_pm}]\n"
+
+    # 2. Consulta ClinicalTrials.gov API v2 oficial
+    url_ct = f"https://clinicaltrials.gov{query_enc}&pageSize=3"
+    try:
+        req_ct = urllib.request.Request(url_ct, headers=headers)
+        datos_ct = json.loads(urllib.request.urlopen(req_ct, timeout=8).read().decode())
+        for est in datos_ct.get("studies", []):
+            prot = est.get("protocolSection", {})
+            nct = prot.get("identificationModule", {}).get("nctId", "")
+            tit = prot.get("identificationModule", {}).get("briefTitle", "")
+            estado = prot.get("statusModule", {}).get("overallStatus", "")
+            texto_recuperado += f"\nCLINICALTRIALS | ID: {nct} | URL: https://clinicaltrials.gov{nct} | Estado: {estado} | Título: {tit}"
+    except Exception as err_ct:
+        texto_recuperado += f"\n[Aviso ClinicalTrials: {err_ct}]\n"
+
+    # 3. Enlaces verificados de búsqueda directa
+    enlaces = {
+        "PubMed": f"https://nih.gov{query_enc}",
+        "PubMed Central (PMC)": f"https://nih.gov{query_enc}",
+        "Cochrane Library": f"https://cochranelibrary.com{query_enc}",
+        "speechBITE": "https://speechbite.com",
+        "ASHAWire": f"https://asha.org{query_enc}",
+        "ASHA Evidence Maps": "https://asha.org"
+    }
+
+    return {"datos_api": texto_recuperado, "enlaces": enlaces}
 
     # 2. Consulta ClinicalTrials.gov v2
     url_ct = f"https://clinicaltrials.gov{query_enc}&pageSize=3"
@@ -357,9 +362,13 @@ if "reporte" in st.session_state:
                             prompt_ev = (
                                 f"Extrae los estudios y ensayos clínicos más relevantes de estos registros sobre {pat_sel} y {trast_sel}, "
                                 f"enfocándote en las dudas del caso ({'; '.join(reporte.evaluacion.evidencia_cientifica_insuficiente)}). "
-                                f"Indica la base de origen (PubMed, Cochrane o ClinicalTrials NCT). No inventes datos:\n\n{res_ext['datos_api']}"
-                                "Incluye en 'referencia_estudio' el autor, año y el enlace markdown clicable al PMID (https://nih.gov) o NCT (https://clinicaltrials.gov...)."
+                                f"Indica la base de origen (PubMed, Cochrane o ClinicalTrials NCT). No inventes datos ni códigos:\n\n{res_ext['datos_api']}\n\n"
+                                "REGLA ESTRICTA DE ENLACES en 'referencia_estudio': Incluye autor, año y el enlace Markdown usando EXCLUSIVAMENTE el PMID o código NCT literal que aparece en los registros anteriores:\n"
+                                "- Si tiene PMID: [PubMed PMID](https://nih.gov)\n"
+                                "- Si tiene NCT: [ClinicalTrials NCT](https://clinicaltrials.gov)\n"
+                                "Nunca uses https://nih.gov ni /ct2/show/. Si un registro no tiene código PMID ni NCT, pon solo autor y año sin enlace."
                             )
+
                             llm_ev = LlamaOpenAI(model="gpt-4o", temperature=0.0)
                             res_ev = llm_ev.as_structured_llm(SintesisEnsayosExternos).complete(prompt_ev).raw
                             st.session_state["ensayos_externos"] = res_ev.ensayos
