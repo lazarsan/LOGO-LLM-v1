@@ -375,11 +375,12 @@ if "reporte" in st.session_state:
                                 "Intervenciones Comparadas": e.intervenciones_comparadas,
                                 "Hallazgos Principales (Resultados)": e.hallazgos_principales
                             }
-                            for e in st.session_state["ensayos_externos"]
-                        ]
-                            for e in st.session_state["ensayos_externos"]:
-            st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
+                if st.session_state["ensayos_externos"]:
+                        st.markdown("**Síntesis de Ensayos y Revisiones (PubMed · Cochrane · ClinicalTrials.gov):**")
+                        for e in st.session_state["ensayos_externos"]:
+                            st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
 
+            st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
                 
                 if "enlaces_externos" in st.session_state:
                         links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
