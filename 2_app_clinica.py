@@ -377,11 +377,11 @@ if "reporte" in st.session_state:
                             }
                             for e in st.session_state["ensayos_externos"]
                         ]
-                        for e in st.session_state["ensayos_externos"]:
+                            for e in st.session_state["ensayos_externos"]:
             st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
 
                 
-                    if "enlaces_externos" in st.session_state:
+                if "enlaces_externos" in st.session_state:
                         links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
                         st.info(f"**Búsqueda directa pre-filtrada en repositorios especializados:**\n\n{links_md}")
                         
