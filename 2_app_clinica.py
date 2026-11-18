@@ -366,10 +366,11 @@ if "reporte" in st.session_state:
                         else:
                             st.session_state["ensayos_externos"] = []
                 
-                if "ensayos_externos" in st.session_state:
-                    if st.session_state["ensayos_externos"]:
+                if st.session_state["ensayos_externos"]:
                         st.markdown("**Síntesis de Ensayos y Revisiones (PubMed · Cochrane · ClinicalTrials.gov):**")
-                        filas_tabla = [
+                        for e in st.session_state["ensayos_externos"]:
+                            st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
+
                             {
                                 "Estudio / Base": e.referencia_estudio,
                                 "Intervenciones Comparadas": e.intervenciones_comparadas,
