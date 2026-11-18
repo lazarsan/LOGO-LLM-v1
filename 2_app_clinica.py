@@ -364,29 +364,18 @@ if "reporte" in st.session_state:
                             res_ev = llm_ev.as_structured_llm(SintesisEnsayosExternos).complete(prompt_ev).raw
                             st.session_state["ensayos_externos"] = res_ev.ensayos
                         else:
-                            st.session_state["ensayos_externos"] = []
-                
-                if st.session_state["ensayos_externos"]:
+                        st.session_state["ensayos_externos"] = []
+
+                if "ensayos_externos" in st.session_state:
+                    if st.session_state["ensayos_externos"]:
                         st.markdown("**Síntesis de Ensayos y Revisiones (PubMed · Cochrane · ClinicalTrials.gov):**")
                         for e in st.session_state["ensayos_externos"]:
                             st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
 
-                            {
-                                "Estudio / Base": e.referencia_estudio,
-                                "Intervenciones Comparadas": e.intervenciones_comparadas,
-                                "Hallazgos Principales (Resultados)": e.hallazgos_principales
-                            }
-                if st.session_state["ensayos_externos"]:
-                        st.markdown("**Síntesis de Ensayos y Revisiones (PubMed · Cochrane · ClinicalTrials.gov):**")
-                        for e in st.session_state["ensayos_externos"]:
-                            st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
-
-            st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
-                
-                if "enlaces_externos" in st.session_state:
+                    if "enlaces_externos" in st.session_state:
                         links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
                         st.info(f"**Búsqueda directa pre-filtrada en repositorios especializados:**\n\n{links_md}")
-                        
+                         
             c_ev, c_ev_i = st.columns([0.88, 0.12])
             c_ev.markdown("**Evaluación Sugerida:**")
             pop_ev = c_ev_i.popover("ℹ️")
