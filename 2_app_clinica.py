@@ -109,58 +109,55 @@ import urllib.parse
 
 def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
     mapa_en = {
-        "Daño Cerebral Adquirido": "stroke OR brain injury",
+        "Daño Cerebral Adquirido": "stroke",
         "Enfermedad de Parkinson": "Parkinson disease",
-        "Ataxia Hereditaria": "ataxia OR Friedreich",
-        "Disfagia Neurogénica": "dysphagia OR swallowing",
-        "Disartria": "dysarthria OR speech therapy",
-        "Afasia": "aphasia OR language therapy",
+        "Ataxia Hereditaria": "ataxia",
+        "Disfagia Neurogénica": "dysphagia",
+        "Disartria": "dysarthria",
+        "Afasia": "aphasia",
         "Dispraxia / Apraxia del Habla / Orofacial": "apraxia of speech"
     }
-    q_pat = mapa_en.get(patologia, patologia)
-    q_trast = mapa_en.get(trastorno, trastorno)
-    query_bool = f"({q_pat}) AND ({q_trast})"
-    query_enc = urllib.parse.quote(query_bool)
-    headers = {"User-Agent": "Mozilla/5.0 (LOGO-Pilot Clinical Research)"}
+    q_pat = mapa_en.get(patologia, "neurological disorder")
+    q_trast = mapa_en.get(trastorno, "speech therapy")
+    query_simple = f"{q_pat} {q_trast}"
+    query_enc = urllib.parse.quote(query_simple)
+    headers = {"User-Agent": "Mozilla/5.0"}
 
     texto_recuperado = ""
 
-    # 1. Consulta PubMed / MEDLINE / Cochrane (ampliada a ECA, Revisiones, Guías y Ensayos)
-    filtro_tipo = "(Randomized Controlled Trial[pt] OR Systematic Review[pt] OR Clinical Trial[pt] OR Guideline[pt] OR \"Cochrane Database Syst Rev\"[Journal])"
-    query_pm = urllib.parse.quote(f"{query_bool} AND {filtro_tipo}")
-    url_pm = f"https://nih.gov{query_pm}&retmode=json&retmax=5&sort=relevance"
+    # 1. Consulta PubMed (sin filtros restrictivos para asegurar resultados reales)
+    url_pm = f"https://nih.gov{query_enc}&retmode=json&retmax=5&sort=relevance"
     try:
         req_pm = urllib.request.Request(url_pm, headers=headers)
         ids = json.loads(urllib.request.urlopen(req_pm, timeout=8).read().decode()).get("esearchresult", {}).get("idlist", [])
         if ids:
             url_fetch = f"https://nih.gov{','.join(ids)}&retmode=xml"
             req_fetch = urllib.request.Request(url_fetch, headers=headers)
-            texto_recuperado += "=== PUBMED / MEDLINE / COCHRANE ===\n" + urllib.request.urlopen(req_fetch, timeout=8).read().decode("utf-8", errors="ignore")[:10000]
-    except Exception:
-        pass
+            texto_recuperado += "=== PUBMED ===\n" + urllib.request.urlopen(req_fetch, timeout=8).read().decode("utf-8", errors="ignore")[:9000]
+    except Exception as err_pm:
+        texto_recuperado += f"\n[Aviso PubMed: {err_pm}]\n"
 
-    # 2. Consulta API ClinicalTrials.gov v2 con User-Agent
-    url_ct = f"https://clinicaltrials.gov{urllib.parse.quote(q_pat)}&query.term={urllib.parse.quote(q_trast)}&pageSize=3"
+    # 2. Consulta ClinicalTrials.gov v2
+    url_ct = f"https://clinicaltrials.gov{query_enc}&pageSize=3"
     try:
         req_ct = urllib.request.Request(url_ct, headers=headers)
         datos_ct = json.loads(urllib.request.urlopen(req_ct, timeout=8).read().decode())
-        estudios = datos_ct.get("studies", [])
-        if estudios:
-            texto_recuperado += "\n=== CLINICALTRIALS.GOV ===\n"
-            for est in estudios:
-                prot = est.get("protocolSection", {})
-                nct = prot.get("identificationModule", {}).get("nctId", "")
-                tit = prot.get("identificationModule", {}).get("briefTitle", "")
-                estado = prot.get("statusModule", {}).get("overallStatus", "")
-                texto_recuperado += f"ID: {nct} | URL: https://clinicaltrials.gov{nct} | Estado: {estado} | Título: {tit}\n"
-    except Exception:
-        pass
+        for est in datos_ct.get("studies", []):
+            prot = est.get("protocolSection", {})
+            nct = prot.get("identificationModule", {}).get("nctId", "")
+            tit = prot.get("identificationModule", {}).get("briefTitle", "")
+            estado = prot.get("statusModule", {}).get("overallStatus", "")
+            texto_recuperado += f"\nCLINICALTRIALS | ID: {nct} | URL: https://clinicaltrials.gov{nct} | Estado: {estado} | Título: {tit}"
+    except Exception as err_ct:
+        texto_recuperado += f"\n[Aviso ClinicalTrials: {err_ct}]\n"
 
+    # 3. Enlaces verificados
     enlaces = {
-        "PubMed Central (PMC · Texto Completo)": f"https://nih.gov{query_enc}",
+        "PubMed": f"https://nih.gov{query_enc}",
+        "PubMed Central (PMC)": f"https://nih.gov{query_enc}",
         "Cochrane Library": f"https://cochranelibrary.com{query_enc}",
-        "speechBITE (Logopedia)": f"https://speechbite.com{urllib.parse.quote(q_trast)}",
-        "ASHAWire (Revistas ASHA)": f"https://asha.org{query_enc}",
+        "speechBITE": "https://speechbite.com",
+        "ASHAWire": f"https://asha.org{query_enc}",
         "ASHA Evidence Maps": "https://asha.org"
     }
 
