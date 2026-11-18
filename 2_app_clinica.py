@@ -364,7 +364,7 @@ if "reporte" in st.session_state:
                             res_ev = llm_ev.as_structured_llm(SintesisEnsayosExternos).complete(prompt_ev).raw
                             st.session_state["ensayos_externos"] = res_ev.ensayos
                         else:
-                        st.session_state["ensayos_externos"] = []
+                            st.session_state["ensayos_externos"] = []
 
                 if "ensayos_externos" in st.session_state:
                     if st.session_state["ensayos_externos"]:
