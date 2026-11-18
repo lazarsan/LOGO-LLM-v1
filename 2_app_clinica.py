@@ -109,9 +109,9 @@ import urllib.parse
 
 def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
     mapa_en = {
-        "Daño Cerebral Adquirido": "stroke OR traumatic brain injury",
+        "Daño Cerebral Adquirido": "stroke OR brain injury",
         "Enfermedad de Parkinson": "Parkinson disease",
-        "Ataxia Hereditaria": "hereditary ataxia OR Friedreich ataxia OR spinocerebellar ataxia",
+        "Ataxia Hereditaria": "ataxia OR Friedreich",
         "Disfagia Neurogénica": "dysphagia OR swallowing",
         "Disartria": "dysarthria OR speech therapy",
         "Afasia": "aphasia OR language therapy",
@@ -121,24 +121,29 @@ def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
     q_trast = mapa_en.get(trastorno, trastorno)
     query_bool = f"({q_pat}) AND ({q_trast})"
     query_enc = urllib.parse.quote(query_bool)
+    headers = {"User-Agent": "Mozilla/5.0 (LOGO-Pilot Clinical Research)"}
 
     texto_recuperado = ""
 
-    # 1. Consulta API PubMed / MEDLINE + Revisiones Cochrane
-    query_pm = urllib.parse.quote(f"{query_bool} AND (Randomized Controlled Trial[pt] OR Systematic Review[pt] OR \"Cochrane Database Syst Rev\"[Journal])")
-    url_pm = f"https://nih.gov{query_pm}&retmode=json&retmax=4&sort=relevance"
+    # 1. Consulta PubMed / MEDLINE / Cochrane (ampliada a ECA, Revisiones, Guías y Ensayos)
+    filtro_tipo = "(Randomized Controlled Trial[pt] OR Systematic Review[pt] OR Clinical Trial[pt] OR Guideline[pt] OR \"Cochrane Database Syst Rev\"[Journal])"
+    query_pm = urllib.parse.quote(f"{query_bool} AND {filtro_tipo}")
+    url_pm = f"https://nih.gov{query_pm}&retmode=json&retmax=5&sort=relevance"
     try:
-        ids = json.loads(urllib.request.urlopen(url_pm, timeout=6).read().decode()).get("esearchresult", {}).get("idlist", [])
+        req_pm = urllib.request.Request(url_pm, headers=headers)
+        ids = json.loads(urllib.request.urlopen(req_pm, timeout=8).read().decode()).get("esearchresult", {}).get("idlist", [])
         if ids:
             url_fetch = f"https://nih.gov{','.join(ids)}&retmode=xml"
-            texto_recuperado += "=== PUBMED / MEDLINE / COCHRANE ===\n" + urllib.request.urlopen(url_fetch, timeout=6).read().decode("utf-8", errors="ignore")[:9000]
+            req_fetch = urllib.request.Request(url_fetch, headers=headers)
+            texto_recuperado += "=== PUBMED / MEDLINE / COCHRANE ===\n" + urllib.request.urlopen(req_fetch, timeout=8).read().decode("utf-8", errors="ignore")[:10000]
     except Exception:
         pass
 
-    # 2. Consulta API ClinicalTrials.gov (v2)
-    url_ct = f"https://clinicaltrials.gov{urllib.parse.quote(q_pat)}&query.intr={urllib.parse.quote(q_trast)}&pageSize=3"
+    # 2. Consulta API ClinicalTrials.gov v2 con User-Agent
+    url_ct = f"https://clinicaltrials.gov{urllib.parse.quote(q_pat)}&query.term={urllib.parse.quote(q_trast)}&pageSize=3"
     try:
-        datos_ct = json.loads(urllib.request.urlopen(url_ct, timeout=6).read().decode())
+        req_ct = urllib.request.Request(url_ct, headers=headers)
+        datos_ct = json.loads(urllib.request.urlopen(req_ct, timeout=8).read().decode())
         estudios = datos_ct.get("studies", [])
         if estudios:
             texto_recuperado += "\n=== CLINICALTRIALS.GOV ===\n"
@@ -147,11 +152,10 @@ def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
                 nct = prot.get("identificationModule", {}).get("nctId", "")
                 tit = prot.get("identificationModule", {}).get("briefTitle", "")
                 estado = prot.get("statusModule", {}).get("overallStatus", "")
-                texto_recuperado += f"ID: {nct} | Estado: {estado} | Título: {tit}\n"
+                texto_recuperado += f"ID: {nct} | URL: https://clinicaltrials.gov{nct} | Estado: {estado} | Título: {tit}\n"
     except Exception:
         pass
 
-    # 3. Enlaces directos pre-filtrados a repositorios especializados
     enlaces = {
         "PubMed Central (PMC · Texto Completo)": f"https://nih.gov{query_enc}",
         "Cochrane Library": f"https://cochranelibrary.com{query_enc}",
@@ -354,6 +358,7 @@ if "reporte" in st.session_state:
                                 f"Extrae los estudios y ensayos clínicos más relevantes de estos registros sobre {pat_sel} y {trast_sel}, "
                                 f"enfocándote en las dudas del caso ({'; '.join(reporte.evaluacion.evidencia_cientifica_insuficiente)}). "
                                 f"Indica la base de origen (PubMed, Cochrane o ClinicalTrials NCT). No inventes datos:\n\n{res_ext['datos_api']}"
+                                "Incluye en 'referencia_estudio' el autor, año y el enlace markdown clicable al PMID (https://nih.gov) o NCT (https://clinicaltrials.gov...)."
                             )
                             llm_ev = LlamaOpenAI(model="gpt-4o", temperature=0.0)
                             res_ev = llm_ev.as_structured_llm(SintesisEnsayosExternos).complete(prompt_ev).raw
@@ -372,7 +377,9 @@ if "reporte" in st.session_state:
                             }
                             for e in st.session_state["ensayos_externos"]
                         ]
-                        st.table(filas_tabla)
+                        for e in st.session_state["ensayos_externos"]:
+            st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
+
                 
                     if "enlaces_externos" in st.session_state:
                         links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
