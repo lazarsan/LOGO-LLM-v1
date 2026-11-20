@@ -53,9 +53,23 @@ class EvaluacionClinica(BaseModel):
 class DiagnosticoEstructurado(BaseModel):
     patologia_neuro_base: PatologiaBase
     trastorno_logopedico: TipoTrastorno
-    codigo_cie11: str = Field(description="Código CIE-11 principal y secundarios si hay comorbilidad.")
+    codigo_cie11: str = Field(
+        description=(
+            "Código CIE-11 exacto: '8A03.10' para Ataxia Hereditaria (Ataxia de Friedreich / ataxias cerebelosas hereditarias), "
+            "'8A00.0' para Enfermedad de Parkinson, '8B11 / 8B20' para Daño Cerebral Adquirido (ictus), "
+            "añadiendo el código secundario del trastorno funcional si procede."
+        )
+    )
     analisis_fisiopatologico: str = Field(description="Explicación detallada de los subsistemas afectados (respiración, fonación, articulación, resonancia, prosodia, deglución o lenguaje).")
     diagnostico_diferencial: str = Field(description="Diferenciación clínica frente a cuadros similares y límites de certeza diagnóstica.")
+
+    @model_validator(mode="after")
+    def asegurar_cie11_exacto(self) -> "DiagnosticoEstructurado":
+        if self.patologia_neuro_base == PatologiaBase.ATAXIA:
+            # Sustituye cualquier código erróneo (como 8B90.0 o 8A02.0) por 8A03.10
+            if "8A03.10" not in self.codigo_cie11:
+                self.codigo_cie11 = "8A03.10 (Ataxia hereditaria / Ataxia de Friedreich)"
+        return self
 
 
 class IntervencionLogopedica(BaseModel):
@@ -125,7 +139,7 @@ def inicializar_indice():
 
 def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
     mapa_en = {
-        "Daño Cerebral Adquirido": "stroke",
+        "Daño Cerebral Adquirido": "stroke / Acquired Brain Injury",
         "Enfermedad de Parkinson": "Parkinson disease",
         "Ataxia Hereditaria": "ataxia",
         "Disfagia Neurogénica": "dysphagia",
@@ -333,7 +347,7 @@ if "reporte" in st.session_state:
         pop_cie = c_cie_i.popover("ℹ️")
         pop_cie.markdown(f"**Guía de Codificación CIE-11 ({reporte.diagnostico.codigo_cie11})**")
         pop_cie.caption("Valida la correspondencia entre el diagnóstico neurológico base y el trastorno funcional:")
-        pop_cie.markdown("- **8A00.0:** Enfermedad de Parkinson.\n- **8A02.0:** Ataxias hereditarias.\n- **8B11 / 8B20:** Ictus isquémico/hemorrágico.")
+        pop_cie.markdown("- **8A00.0:** Enfermedad de Parkinson.\n- **8A03.1:** Ataxias hereditarias (Ataxia de Friedreich).\n- **8B11 / 8B20:** Ictus isquémico/hemorrágico.")
         pop_cie.markdown("[Consultar navegador OMS CIE-11](https://icd.who.int/browse/2024-01/mms/es)")
 
         c_an, c_an_i = st.columns([0.88, 0.12])
