@@ -55,8 +55,11 @@ class DiagnosticoEstructurado(BaseModel):
     trastorno_logopedico: TipoTrastorno
     codigo_cie11: str = Field(
         description=(
-            "Código CIE-11 exacto: '8A03.10' para Ataxia Hereditaria (Ataxia de Friedreich / ataxias cerebelosas hereditarias), "
-            "'8A00.0' para Enfermedad de Parkinson, '8B11 / 8B20' para Daño Cerebral Adquirido (ictus), "
+            "Código CIE-11 exacto según etiología: "
+            "'8A03.10' para Ataxia Hereditaria (Ataxia de Friedreich / ataxias cerebelosas hereditarias), "
+            "'8A00.0' para Enfermedad de Parkinson, "
+            "'8B11 / 8B20' para Daño Cerebral Adquirido de origen vascular (ictus isquémico/hemorrágico), "
+            "'NA07' para Daño Cerebral Adquirido de origen traumático (traumatismo craneoencefálico / TCE), "
             "añadiendo el código secundario del trastorno funcional si procede."
         )
     )
@@ -66,9 +69,14 @@ class DiagnosticoEstructurado(BaseModel):
     @model_validator(mode="after")
     def asegurar_cie11_exacto(self) -> "DiagnosticoEstructurado":
         if self.patologia_neuro_base == PatologiaBase.ATAXIA:
-            # Sustituye cualquier código erróneo (como 8B90.0 o 8A02.0) por 8A03.10
             if "8A03.10" not in self.codigo_cie11:
                 self.codigo_cie11 = "8A03.10 (Ataxia hereditaria / Ataxia de Friedreich)"
+        elif self.patologia_neuro_base == PatologiaBase.PARKINSON:
+            if "8A00" not in self.codigo_cie11:
+                self.codigo_cie11 = "8A00.0 (Enfermedad de Parkinson)"
+        elif self.patologia_neuro_base == PatologiaBase.DCA:
+            if not any(cod in self.codigo_cie11.upper() for cod in ["8B11", "8B20", "8B00", "NA07"]):
+                self.codigo_cie11 = "8B11 / 8B20 (DCA vascular) · NA07 (DCA traumático)"
         return self
 
 
@@ -347,7 +355,13 @@ if "reporte" in st.session_state:
         pop_cie = c_cie_i.popover("ℹ️")
         pop_cie.markdown(f"**Guía de Codificación CIE-11 ({reporte.diagnostico.codigo_cie11})**")
         pop_cie.caption("Valida la correspondencia entre el diagnóstico neurológico base y el trastorno funcional:")
-        pop_cie.markdown("- **8A00.0:** Enfermedad de Parkinson.\n- **8A03.1:** Ataxias hereditarias (Ataxia de Friedreich).\n- **8B11 / 8B20:** Ictus isquémico/hemorrágico.")
+        pop_cie.markdown(
+            "- **8A00.0:** Enfermedad de Parkinson.\n"
+            "- **8A03.10:** Ataxias hereditarias (Ataxia de Friedreich).\n"
+            "- **8B11 / 8B20:** DCA vascular (Ictus isquémico / hemorrágico).\n"
+            "- **NA07:** DCA traumático (Traumatismo intracraneal / TCE)."
+        )
+
         pop_cie.markdown("[Consultar navegador OMS CIE-11](https://icd.who.int/browse/2024-01/mms/es)")
 
         c_an, c_an_i = st.columns([0.88, 0.12])
