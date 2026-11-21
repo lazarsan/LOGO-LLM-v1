@@ -1,0 +1,827 @@
+1. Intern Med. 2023 Apr 1;62(7):1059-1062. doi: 10.2169/internalmedicine.0009-22. 
+Epub 2022 Aug 30.
+
+Aphasia with No Apparent Paralysis in Progressive Stroke of the Anterior 
+Choroidal Artery.
+
+Kanazawa S(1), Funasaka H(1), Fukaya H(1), Okawa S(1).
+
+Author information:
+(1)Department of Neurology, Akita City Hospital, Japan.
+
+Some anterior choroidal artery (AChA) infarctions in the posterior limbs of the 
+internal capsule (plIC) have been reported to cause aphasia, typically with 
+apparent paralysis. We herein report an 84-year-old woman with AChA infarction. 
+Although her dysarthria remained mild with no apparent paralysis, we overlooked 
+progression to branch atheromatous disease-related infarct with exacerbation of 
+her anomia, which delayed the initiation of more intense therapy. Even in AChA 
+infarction, especially when the lesion is located mainly in the anterior part of 
+the plIC, as in our case, it is possible to encounter progressive stroke 
+predominantly with aphasia.
+
+DOI: 10.2169/internalmedicine.0009-22
+PMCID: PMC10125816
+PMID: 36047127 [Indexed for MEDLINE]
+
+Conflict of interest statement: The authors state that they have no Conflict of 
+Interest (COI).
+
+
+2. Folia Phoniatr Logop. 2024;76(6):577-587. doi: 10.1159/000538717. Epub 2024 Apr 
+4.
+
+Tongue Pressure Resistance Training for Post-Stroke Dysphagia: A Case Study.
+
+Smaoui S(1)(2)(3), Peladeau-Pigeon M(2), Mancopes R(2), Sutton D(2), Richardson 
+D(4), Steele C(2)(3).
+
+Author information:
+(1)Department of Speech, Language, and Hearing Sciences, The George Washington 
+University, Washington, District of Columbia, USA.
+(2)Swallowing Rehabilitation Research Laboratory, KITE Research Institute, 
+Toronto Rehabilitation Institute, University Health Network, Toronto, Ontario, 
+Canada.
+(3)Rehabilitation Sciences Institute, Temerty Faculty of Medicine, University of 
+Toronto, Toronto, Ontario, Canada.
+(4)Department of Physical Medicine and Rehabilitation, Queen's University and 
+Providence Care Hospital, Kingston, Ontario, Canada.
+
+INTRODUCTION: Swallowing outcomes regarding lingual resistance training have 
+been mixed due to variability in methods, leading to ambiguity concerning the 
+utility of this intervention. The purpose of this study was to explore the 
+effect of a lingual resistance training protocol on the swallowing function of 
+an individual presenting with dysphagia and reduced tongue pressure following a 
+supratentorial ischemic stroke.
+METHODS: A study involving a lingual resistance training protocol with 
+videofluoroscopy to measure outcomes comparing different parameters to ASPEKT 
+normative reference values at three timepoints: baseline (videofluoroscopic 
+swallowing study [VFSS] A), following a 4-week lead-in period to control for 
+spontaneous recovery (VFSS B), and at the 8-week endpoint of treatment (VFSS C). 
+The study was interrupted due to the COVID-19 pandemic after 1 participant 
+enrollment and is presented as a single case study.
+RESULTS: Isometric tongue pressures: Following the 4-week lead-in, a decline in 
+maximum isometric anterior tongue pressure (MAIP) and regular effort saliva 
+swallow pressures (RESS) was noted; however, there was no change in maximum 
+posterior isometric tongue pressures (MPIP). Isometric tongue pressures improved 
+post-treatment, with increases in MAIP, MPIP, and to a lesser degree RESS. 
+Swallowing function: Impairments in swallowing safety continued between the 
+baseline VFSS A (Penetration-Aspiration Scale score [PAS] = 8) and lead-in VFSS 
+B (PAS = 5). Swallowing safety improved following the intervention, with PAS 
+scores = 1 at the endpoint VFSS C. Pixel-based measures of swallowing efficiency 
+revealed a reduced frequency of post-swallow total pharyngeal residue following 
+the treatment. Improvements were found in two other swallowing parameters, 
+laryngeal vestibule closure integrity and pharyngeal area at maximum pharyngeal 
+constriction, at the endpoint VFSS.
+CONCLUSION: These pilot data suggest improvements in some swallowing parameters 
+as an outcome of intervention.
+
+© 2024 S. Karger AG, Basel.
+
+DOI: 10.1159/000538717
+PMID: 38574489 [Indexed for MEDLINE]
+
+
+3. Rinsho Shinkeigaku. 2023 Jan 28;63(1):7-14. doi: 
+10.5692/clinicalneurol.cn-001628. Epub 2022 Dec 24.
+
+[A case of non-fluent/agrammatic variant of primary progressive aphasia with 
+logoclonia].
+
+[Article in Japanese]
+
+Shimazaki R(1), Sunami Y(1), Bando M(1), Harada A(2), Takahashi K(1).
+
+Author information:
+(1)Department of Neurology, Tokyo Metropolitan Neurological Hospital.
+(2)Department of rehabilitation, Tokyo Metropolitan Neurological Hospital.
+
+We report a case of non-fluent/agrammatic variant of primary progressive aphasia 
+in a 79-year-old right-handed man who was admitted with a 5-year history of 
+non-fluent speech and apraxia of speech. He also presented with agrammatism and 
+logoclonia (the meaningless repetition of the middle or final syllable of a 
+word). Furthermore, brain MRI revealed atrophy of the bilateral frontal and 
+temporal lobes, while N-isopropyl-p-123I-iodoamphetamine single-photon emission 
+computed tomography (SPECT) revealed relative hypoperfusion in the right basal 
+ganglia. In addition, dopamine transporter SPECT revealed a decrease in specific 
+binding ratio values, indicating neural dopamine dysfunction, which led to his 
+diagnosis of progressive non-fluent aphasia with logoclonia. Logoclonia is a 
+severe linguistic dysfunction usually observed in the advanced stages of 
+Alzheimer's disease. However, based on the clinical course and cerebrospinal 
+fluid evaluation results, our patient did not show any features of Alzheimer's 
+disease. Thus, logoclonia might be associated with lesions involving the basal 
+ganglia, right hemisphere, and left frontotemporal lobe.
+
+DOI: 10.5692/clinicalneurol.cn-001628
+PMID: 36567100 [Indexed for MEDLINE]
+
+
+4. J Med Life. 2019 Jul-Sep;12(3):236-238. doi: 10.25122/jml-2019-1008.
+
+The Avant Rehabilitation Program and Cerebrolysin for Treatment of Post-Stroke 
+Dysphagia: A Case Report.
+
+Hien NM(1), Duc DP(1).
+
+Author information:
+(1)Stroke Department,Military Hospital 103, Hanoi, Vietnam.
+
+Dysphagia is recorded in approximately a third of ischemic stroke patients and 
+is associated with malnutrition, aspiration, and pneumonia. We report a case 
+study that assessed dysphagia (GUSS, Gugging Swallowing Screen), paralysis (MRC, 
+Medical Research Council), and disability (mRS, modified Rankin Scale) in the 
+AVANT program (Austrian Vietnamese Advancement Neurorehabilitation Treatment) - 
+a collaboration program between Vietnam and Austria to standardize and systemize 
+neurorehabilitation after stroke practice in Vietnam.
+
+©Carol Davila University Press.
+
+DOI: 10.25122/jml-2019-1008
+PMCID: PMC6814879
+PMID: 31666824 [Indexed for MEDLINE]
+
+
+5. Int J Environ Res Public Health. 2022 Dec 6;19(23):16329. doi: 
+10.3390/ijerph192316329.
+
+Swallowing Apraxia Post Ischemic Stroke.
+
+Alfaris AM(1), Alghamdi AS(1), Almowalad ES(2), Al Harbi AA(2), Alghamdi KA(1), 
+Saeedi J(2), Al Awaji NN(3).
+
+Author information:
+(1)Rehabilitation Department, King Abdullah Bin Abdulaziz University Hospital, 
+P.O. Box 47330, Riyadh 11552, Saudi Arabia.
+(2)Department of Internal Medicine and Critical Care Neuroscience Division, King 
+Abdullah Bin Abdulaziz University Hospital, P.O. Box 47330, Riyadh 11552, Saudi 
+Arabia.
+(3)Department of Health Communication Sciences, College of Health and 
+Rehabilitation Sciences, Princess Nourah Bint Abdulrahman University, P.O. Box 
+84428, Riyadh 11671, Saudi Arabia.
+
+A 55-year-old male patient with a known medical history of diabetes mellitus 
+type 2 and treated lymphoma was first admitted with a sudden left-sided facial 
+asymmetry and mouth deviation to the left side with no other neurological 
+symptoms. A Computerized Tomography (CT) scan of the brain showed acute infarct 
+and small left basal ganglia old lacunar infarction. He was discharged on a dual 
+antiplatelet. One week later, the patient's condition had worsened and, 
+therefore, was admitted with an impression of ischemic stroke. A bedside 
+swallowing assessment, VFSS, and FEES study were conducted to diagnose this 
+case. The bedside assessment did not reveal any sensory or motor deficits in his 
+oral cavity and the FEES examination was also unable to rule out pharyngeal 
+dysphagia. However, a videofluoroscopic swallowing study (VFSS) revealed a 
+significant dysfunction of oral preparation and oral phases and presented 
+difficulty initiating the pharyngeal phase. Given these features, we believe 
+that this swallowing difficulty is caused by swallowing apraxia. This case 
+provides additional information and understanding on management from the 
+swallowing side.
+
+DOI: 10.3390/ijerph192316329
+PMCID: PMC9737384
+PMID: 36498400 [Indexed for MEDLINE]
+
+Conflict of interest statement: The authors declare no conflict of interest.
+
+
+6. Cortex. 2019 Aug;117:396-406. doi: 10.1016/j.cortex.2019.01.021. Epub 2019 Feb 
+21.
+
+Prominent auditory deficits in primary progressive aphasia: A case study.
+
+Utianski RL(1), Duffy JR(2), Clark HM(3), Machulda MM(4), Dickson DW(5), 
+Whitwell JL(6), Josephs KA(7).
+
+Author information:
+(1)Department of Neurology, Mayo Clinic, Rochester, MN, USA. Electronic address: 
+Utianski.Rene@mayo.edu.
+(2)Department of Neurology, Mayo Clinic, Rochester, MN, USA. Electronic address: 
+jduffy@mayo.edu.
+(3)Department of Neurology, Mayo Clinic, Rochester, MN, USA. Electronic address: 
+clark.heather1@mayo.edu.
+(4)Department of Psychiatry and Psychology, Mayo Clinic, Rochester, MN, USA. 
+Electronic address: machulda.mary@mayo.edu.
+(5)Department of Pathology and Neurology, Mayo Clinic, Jacksonville, FL, USA. 
+Electronic address: dickson.dennis@mayo.edu.
+(6)Department of Radiology, Mayo Clinic, Rochester, MN, USA. Electronic address: 
+whitwell.jennifer@mayo.edu.
+(7)Department of Neurology, Mayo Clinic, Rochester, MN, USA. Electronic address: 
+josephs.keith@mayo.edu.
+
+Comment in
+    Cortex. 2019 Oct;119:580-582. doi: 10.1016/j.cortex.2019.03.023.
+
+Aphasia typically is associated with comparable difficulties in written and 
+spoken modalities of language expression and comprehension. In contrast, 
+auditory verbal agnosia is the disproportionate difficulty comprehending spoken 
+compared to written language, also typically greater than difficulties with 
+spoken and written language expression, in the absence of a primary sensory 
+deficit. The terms pure word deafness and auditory verbal agnosia are often used 
+synonymously. However, the broader term of auditory agnosia more accurately 
+reflects difficulty processing both speech and non-speech sounds whereas 
+individuals with auditory verbal agnosia (pure word deafness) have preserved 
+processing of environmental sounds. Auditory agnosia is reported in the stroke 
+literature, but rarely reported in progressive neurologic disorders. Here, we 
+report a case of a woman who presented with what is best described as a 
+prominent auditory deficit in the context of an initially unclassifiable, or 
+mixed, primary progressive aphasia (PPA) with accompanying apraxia of speech. 
+Her clinical presentation shared features with auditory agnosia, although 
+sensory functioning was not formally assessed. We report clinical and 
+neuroimaging data spanning 6 years and subsequent autopsy results. She presented 
+at 65 years of age, 5 years post onset of symptoms that included insidious and 
+progressive difficulties thinking of words, constructing sentences, pronouncing 
+words, and understanding instructions. She had disproportionate difficulty with 
+comprehension of spoken compared to written language. She eventually developed 
+features of the nonfluent/agrammatic variant of PPA, as well as an apraxia of 
+speech. Imaging with [18F]-fluorodeoxyglucose (FDG)-PET revealed progression of 
+bilateral (left greater than right) hypometabolism involving the frontal, 
+temporal (predominantly the lateral superior gyrus), and parietal lobes, that 
+eventually included the supplementary motor area, anterior cingulate, and 
+caudate. Autopsy revealed pathological lesions consistent with corticobasal 
+degeneration.
+
+Copyright © 2019 Elsevier Ltd. All rights reserved.
+
+DOI: 10.1016/j.cortex.2019.01.021
+PMCID: PMC6650352
+PMID: 30878181 [Indexed for MEDLINE]
+
+Conflict of interest statement: Declaration of Interest The authors report no 
+conflicts of interest.
+
+
+7. J Med Life. 2026 Jul;19(7):594-597. doi: 10.25122/jml-2026-0072.
+
+Improvement of aphasia deficits following traumatic intracranial hemorrhage: a 
+case report.
+
+Choi J(1).
+
+Author information:
+(1)Department of Rehabilitation Medicine, St. Carollo Hospital, Suncheon, 
+Republic of Korea.
+
+Aphasia is a common and disabling consequence of dominant-hemisphere brain 
+injury, and the pharmacological options after traumatic intracranial hemorrhage 
+are limited. A 69-year-old man developed severe aphasia after traumatic 
+intracranial hemorrhage. On day 7 after traumatic brain injury (TBI), he was 
+transferred for inpatient rehabilitation, where the Korean version of the 
+Western Aphasia Battery (K-WAB) showed marked language impairment, with an 
+Aphasia Quotient (AQ) of 66.2 (scale 0-100; higher scores indicate better 
+language function). He received intravenous Cerebrolysin, 30 mL/day infused over 
+60 minutes, for 21 consecutive days, together with daily speech-language 
+therapy. By day 28, the AQ had risen to 97.1, with gains in both expressive and 
+receptive language, and no adverse events were recorded. Spontaneous subacute 
+recovery and the concurrent speech-language therapy may account for the change, 
+and a single patient cannot establish an effect; the time course and the size of 
+the change nonetheless raise the possibility of an adjunctive neurorestorative 
+contribution from Cerebrolysin in post-traumatic hemorrhagic aphasia. Controlled 
+studies in TBI populations are needed.
+
+© 2026 The Author(s).
+
+DOI: 10.25122/jml-2026-0072
+PMCID: PMC13580522
+PMID: 42751610 [Indexed for MEDLINE]
+
+Conflict of interest statement: The author declares no conflicts of interest.
+
+
+8. Am J Case Rep. 2021 May 18;22:e930502. doi: 10.12659/AJCR.930502.
+
+Dysphagia as the Predominant Symptom in Posterior Circulation Stroke: A Case 
+Report.
+
+Herout KT(1), Durant EJ(2)(3), Fong J(3).
+
+Author information:
+(1)Department of Clinical Science, Lake Erie College of Osteopathic Medicine, 
+Bradenton, FL, USA.
+(2)Department of Clinical Science, Kaiser Permanente Bernard J. Tyson School of 
+Medicine, Pasadena, CA, USA.
+(3)Department of Emergency Medicine, Kaiser Permanente Modesto Medical Center, 
+Modesto, CA, USA.
+
+BACKGROUND Cerebrovascular disease is a common reason for presentation to the 
+emergency department (ED). Posterior circulation strokes can be diagnostically 
+challenging because the presenting symptoms are often subtle or non-focal and 
+can be missed by commonly used stroke scales. This case report describes a 
+patient who presented to the ED with symptoms of progressive dizziness over a 
+12-h period, which was followed by the rapid onset of an inability to swallow 
+and, at the time of his presentation, no other neurologic deficits. CASE REPORT 
+The patient was a 55-year-old man with a history of diabetes, chronic 
+obstructive pulmonary disease, tobacco and electronic cigarette use, and aortic 
+atherosclerosis who presented to the ED for evaluation of his inability to 
+swallow. His National Institutes of Health Stroke Scale score was zero. 
+Non-contrast brain magnetic resonance imaging showed multiple foci of acute 
+infarction in the left dorsolateral medulla and left cerebellar hemisphere in 
+the posterior inferior cerebellar artery distribution. In the hospital, the 
+patient developed an inability to stand, without loss of balance. Persistent 
+dysphagia and inability to swallow necessitated the placement of a percutaneous 
+endoscopic gastrostomy tube. CONCLUSIONS This case describes a relatively rare 
+type of posterior circulation stroke. In addition to traditional risk factors, 
+this patient had risk factors, such as electronic cigarette use, for which there 
+is limited emerging evidence of association with stroke.
+
+DOI: 10.12659/AJCR.930502
+PMCID: PMC8141337
+PMID: 34003816 [Indexed for MEDLINE]
+
+Conflict of interest statement: Conflict of interest: None declared Conflicts of 
+Interest None.
+
+
+9. Photobiomodul Photomed Laser Surg. 2023 May;41(5):234-240. doi: 
+10.1089/photob.2022.0024. Epub 2023 Mar 30.
+
+Increased Improvement in Speech-Language Skills After Transcranial 
+Photobiomodulation Plus Speech-Language Therapy, Compared to Speech-Language 
+Therapy Alone: Case Report with Aphasia.
+
+Estrada-Rojas K(1), Cedeño Ortiz NP(2).
+
+Author information:
+(1)The American Speech-Language Hearing Association (ASHA), Speech-Language 
+Pathology and Audiology, Rockville, Maryland, USA; member of Sociedad 
+Internacional del Uso de Equipos en Fonoaudiología (SIEFO), Speech-Therapy, 
+Pereira, Risaralda, Colombia.
+(2)Dysphagia Specialist, Orofacial motor Specialist, President of SIEFO, 
+Pereira, Risaralda, Colombia.
+
+Objective: This is a case report showing that transcranial photobiomodulation 
+(tPBM) combined with traditional, speech-language therapy improved and 
+accelerated the results from speech-language therapy, in a stroke person with 
+aphasia (PWA). Background: tPBM is a safe, noninvasive technique using red and 
+near-infrared light to improve the metabolism of cells. tPBM helps by promoting 
+neuromodulation, while decreasing neuroinflammation and promoting vasodilation. 
+Several studies have shown that tPBM can help individuals with stroke or 
+traumatic brain injury achieve significant cognitive improvements. Methods: A 
+38-year-old female, who sustained an ischemic stroke on the left side of the 
+brain, received two, 5-month series of treatments. The first series of 
+treatments included traditional speech-language therapy, for the first 5 months 
+poststroke. The second series of treatments included tPBM in combination with 
+speech-language therapy, for the next 5 months. The tPBM treatments included 
+application of red (630 and 660 nm) and near-infrared (850 nm) wavelengths of 
+photons applied to left hemisphere scalp areas. The major cortical language 
+areas were subjacent to the scalp placements along the line of the Sylvian 
+fissure. At each session, first a light-emitting diode (LED) cluster head with 
+red (630 and 660 nm) and near-infrared (850 nm) wavelengths, with an irradiance 
+(power density) of 200 mW/cm2, a beam size of 4.9 cm2, and a fluence (energy 
+density) of 12 J/cm2 per minute, was applied to the left side of the 
+scalp/brain, along the Sylvian fissure for 60 sec at each at the following 
+eight, language network target areas: frontal pole, prefrontal cortex, and 
+inferior frontal gyrus (Broca's area); supramarginal gyrus and angular gyrus in 
+the parietal lobe; inferior motor/sensory cortex (mouth area); and posterior 
+superior temporal gyrus (Wernicke's area) and superior temporal sulcus in the 
+temporal lobe, for a total of 8 min. Second, for the next 20 min (1200 sec), 
+simultaneous with speech-language therapy, an LED PBM helmet was applied to the 
+scalp/head. This helmet contained 256 separate LED lights, near-infrared 
+(810 nm) wavelength, 60 mW power per LED light, total power, 15 W; energy, 72 
+Joules; fluence, 28.8 J/cm2; and irradiance, 24 mW/cm2. Results and conclusions: 
+During the initial, 5-month treatment series with traditional speech-language 
+therapy only, there was little to no improvement in dysarthria and expressive 
+language. During the second, 5-month treatment series, however, with tPBM 
+applied first, to the left hemisphere only, and second, to both hemispheres 
+during each session plus simultaneous speech-language therapy, there was marked 
+improvement in the dysarthria and expressive language. After the first 5-month 
+series, this PWA had utilized a slow rate of speech with a production of ∼25 to 
+30 words-per-minute during conversations and spontaneous speech. Utterance 
+length was only 4-6 words with simple, grammatical structure. After the second, 
+5-month series of treatment combining tPBM plus speech-language therapy, the 
+rate of speech increased to 80+ words-per-minute and utterance length was 
+increased to 9-10 words, with more complex grammatical structure.
+
+DOI: 10.1089/photob.2022.0024
+PMCID: PMC10171962
+PMID: 36999917 [Indexed for MEDLINE]
+
+Conflict of interest statement: The authors declare no conflict of interests.
+
+
+10. Clin Med (Lond). 2017 Dec;17(6):584-585. doi: 10.7861/clinmedicine.17-6-584.
+
+Image of the month: Dysphagia due to injury of the corticobulbar tract following 
+traumatic brain injury.
+
+Jang SH(1), Kim SH(2), Seo JP(3).
+
+Author information:
+(1)Department of Physical Medicine and Rehabilitation, College of Medicine, 
+Yeungnam University.
+(2)Department of Neurosurgery, College of Medicine Yeungnam University.
+(3)Department of Physical Medicine and Rehabilitation, College of Medicine, 
+Yeungnam University raphael0905@hanmail.net.
+
+Erratum in
+    Clin Med (Lond). 2018 Feb;18(1):112. doi: 10.7861/clinmedicine.18-1-112.
+
+DOI: 10.7861/clinmedicine.17-6-584
+PMCID: PMC6297680
+PMID: 29196365 [Indexed for MEDLINE]
+
+
+11. Codas. 2023 Oct 30;35(5):e20210220. doi: 10.1590/2317-1782/20232021220pt. 
+eCollection 2023.
+
+Swallowing capacity and gravity of the laryngotracheal aspiration risk in 
+atypical cerebellar stroke: case report.
+
+Santos SVP(1), Araújo BCL(2), Sordi C(3), Cesar CPHAR(2), Andrade DDCM(4), 
+Batista TSC(5), Schneiberg S(1)(5).
+
+Author information:
+(1)Programa de Pós-graduação de Ciências Aplicadas a Saúde - PPGCAS, 
+Universidade Federal de Sergipe - UFS - Lagarto (SE), Brasil.
+(2)Departamento de Fonoaudiologia, Universidade Federal de Sergipe - UFS - São 
+Cristóvão (SE), Brasil.
+(3)Departamento de Fonoaudiologia, Universidade Federal de Sergipe - UFS - 
+Lagarto (SE), Brasil.
+(4)Programa de Pós-graduação da Ciência da Saúde - PPGCS, Universidade Federal 
+de Sergipe - UFS - São Cristóvão (SE), Brasil.
+(5)Departamento de Fisioterapia, Universidade Federal de Sergipe - UFS - Lagarto 
+(SE), Brasil.
+
+This case report aimed to evaluate the swallowing capacity and the severity of 
+the risk of laryngotracheal aspiration of a 52-year-old female patient with 
+atypical and rare stroke, with major injury in the cerebellar pathway. In order 
+to measure swallowing capacity and risk of aspiration a routine clinical 
+assessment used in the speech therapy clinic was performed and two valid 
+clinical tests were used: Massey Bedside Swallowing Screen (MBSS) and Gugging 
+Swallowing Screen (GUSS). After evaluation with the clinical tests, it was 
+observed that the patient had reduced swallowing capacity, performance 
+characterized as pathological, 100% dysfunction in the water swallowing test 
+(MBSS), presence of choking, coughing, change in vocal quality and anterior 
+escape. In the assessment of risk of aspiration with the GUSS, the patient 
+presented moderate dysphagia and risk of laryngotracheal aspiration.This case 
+report demonstrated that moderate dysphagia is found in a stroke patient with 
+lesions that affect the cerebellum. Standardized and validated clinical tests 
+such as GUSS and MBSS should also be used to assess the risk of dysphagia after 
+stroke at ambulatory care.
+
+Publisher: Esse relato de caso teve o objetivo de avaliar a capacidade de 
+deglutição e a gravidade do risco de aspiração laringotraqueal de uma paciente, 
+52 anos, com Acidente Vascular Encefálico (AVE) atípico, com comprometimento na 
+via cerebelar. Para mensurar a capacidade de deglutição e do risco de aspiração 
+foram utilizados a avaliação de rotina na clínica de fonoaudiologia e dois 
+testes clínicos validados: o Massey Bedside Swallowing Screen (MBSS) e o Gugging 
+Swallowing Screen (GUSS). Após a avaliação com os testes clínicos, foi observado 
+que a paciente apresentou capacidade de deglutição diminuída, desempenho 
+caracterizado como patológico e de risco, com 100% de alteração no teste de 
+deglutição de água pelo MBSS, presença de engasgo, tosse, alteração na qualidade 
+vocal e escape anterior de alimento. Já na avaliação do risco de aspiração com o 
+GUSS, a paciente apresentou disfagia moderada e com risco de aspiração 
+laringotraqueal. A disfagia pode estar presente em casos de AVE com lesão 
+anatômica comprometendo o cerebelo e suas vias, o que sugere a importância de 
+avaliação específica da deglutição nesses casos. Os testes GUSS e o MBSS podem 
+ser utilizados para avaliação de casos atípicos de AVE em fase ambulatorial, com 
+objetivos de avaliar o risco de aspiração e a capacidade de deglutição.
+
+Esse relato de caso teve o objetivo de avaliar a capacidade de deglutição e a 
+gravidade do risco de aspiração laringotraqueal de uma paciente, 52 anos, com 
+Acidente Vascular Encefálico (AVE) atípico, com comprometimento na via 
+cerebelar. Para mensurar a capacidade de deglutição e do risco de aspiração 
+foram utilizados a avaliação de rotina na clínica de fonoaudiologia e dois 
+testes clínicos validados: o Massey Bedside Swallowing Screen (MBSS) e o Gugging 
+Swallowing Screen (GUSS). Após a avaliação com os testes clínicos, foi observado 
+que a paciente apresentou capacidade de deglutição diminuída, desempenho 
+caracterizado como patológico e de risco, com 100% de alteração no teste de 
+deglutição de água pelo MBSS, presença de engasgo, tosse, alteração na qualidade 
+vocal e escape anterior de alimento. Já na avaliação do risco de aspiração com o 
+GUSS, a paciente apresentou disfagia moderada e com risco de aspiração 
+laringotraqueal. A disfagia pode estar presente em casos de AVE com lesão 
+anatômica comprometendo o cerebelo e suas vias, o que sugere a importância de 
+avaliação específica da deglutição nesses casos. Os testes GUSS e o MBSS podem 
+ser utilizados para avaliação de casos atípicos de AVE em fase ambulatorial, com 
+objetivos de avaliar o risco de aspiração e a capacidade de deglutição.
+
+DOI: 10.1590/2317-1782/20232021220pt
+PMCID: PMC10688292
+PMID: 37909490 [Indexed for MEDLINE]
+
+Conflict of interest statement: Conflict of interests: nothing to declare.
+
+
+12. Neurocase. 2019 Feb-Apr;25(1-2):39-47. doi: 10.1080/13554794.2019.1609522. Epub 
+2019 Apr 29.
+
+Atypical clinical features associated with mixed pathology in a case of 
+non-fluent variant primary progressive aphasia.
+
+De Leon J(1), Mandelli ML(1), Nolan A(1), Miller ZA(1), Mead C(2), Watson C(1), 
+Welch AE(1), Henry ML(3), Bourakova V(1), La Joie R(1), Bajorek LP(1), Grinberg 
+L(1), Rabinovici G(1), Miller BL(1), Gorno-Tempini ML(1).
+
+Author information:
+(1)a Memory and Aging Center, Department of Neurology , University of California 
+, San Francisco , CA , USA.
+(2)b PGSP-Stanford Psy.D. Consortium , Palo Alto University , Palo Alto , CA , 
+USA.
+(3)c Department of Communication Sciences and Disorders , University of Texas at 
+Austin , Austin, TX , USA.
+
+A 66-year-old woman presented with agrammatism and apraxia of speech, meeting 
+criteria for non-fluent/agrammatic variant primary progressive aphasia (nfvPPA). 
+However, three years later, she developed frontal/executive, short-term 
+phonological memory, visuospatial, and visual memory deficits suggesting 
+involvement of multiple brain networks. Multimodal neuroimaging showed damage of 
+both fronto-striatal and posterior brain regions. She was found to have multiple 
+pathological processes: corticobasal degeneration (CBD), Alzheimer's disease 
+(AD), and TAR DNA-binding protein (TDP)-43 type A. We hypothesize that cognitive 
+and neuroimaging findings consistent with damage to multiple brain networks, 
+each associated with vulnerability to certain molecular disease subtypes, could 
+indicate mixed pathology.
+
+DOI: 10.1080/13554794.2019.1609522
+PMCID: PMC6759324
+PMID: 31033382 [Indexed for MEDLINE]
+
+Conflict of interest statement: Disclosure statement No potential conflict of 
+interest was reported by the authors.
+
+
+13. Alzheimer Dis Assoc Disord. 2022 Oct-Dec 01;36(4):365-367. doi: 
+10.1097/WAD.0000000000000498. Epub 2022 Mar 15.
+
+Pure Prosodic Type of Primary Progressive Apraxia of Speech Mimicking Nonfluent 
+Aphasia and Later Progressing to Corticobasal Syndrome.
+
+Kwon M(1), Shim WH(2), Jo Y(2), Park S(1), Lim JS(1), Lee JH(1)(2).
+
+Author information:
+(1)Departments of Neurology.
+(2)Radiology, Asan Medical Center, University of Ulsan College of Medicine, 
+Seoul, Korea.
+
+Primary progressive apraxia of speech (PPAOS), a rare neurodedegenerative 
+disorder, can be subdivided into predominant phonetic or prosodic type. Pure 
+prosodic type of PPAOS as an isolated disorder has been hardly found. We present 
+2 cases of patients with pure prosodic PPAOS who initially were misdiagnosed as 
+nonfluent variant of primary progressive aphasia and later turned out to be 
+corticobasal syndrome. A 65-year-old woman and a 72-year-old man were referred 
+to our speech-language clinic under the clinical impression of nonfluent variant 
+of primary progressive aphasia. The neurological examinations revealed no 
+definite abnormalities except for slow and effortful speech with the production 
+of simple sentences. However, their receptive and expressive language abilities 
+were normal. Their brain magnetic resonance imaging was unremarkable. We 
+initially entertained the diagnosis of pure prosodic type of PPAOS. During 
+several years of follow up, they gradually developed extrapyramidal symptoms 
+which are compatible with corticobasal syndrome. The characteristics of the 
+patients and the results of neuroimaging studies are discussed.
+
+Copyright © 2022 Wolters Kluwer Health, Inc. All rights reserved.
+
+DOI: 10.1097/WAD.0000000000000498
+PMID: 35288519 [Indexed for MEDLINE]
+
+Conflict of interest statement: The authors declare no conflicts of interest.
+
+
+14. J Med Life. 2026 Jun;19(6):492-495. doi: 10.25122/jml-2026-0057.
+
+Cerebrolysin as an adjunct to speech-language therapy in post-stroke Wernicke's 
+aphasia: a case report.
+
+Romano M(1).
+
+Author information:
+(1)Department of Neurology, CEMIC, Buenos Aires, Argentina.
+
+Post-stroke aphasia is a debilitating condition affecting approximately 
+one-third of stroke survivors, profoundly impairing communication, social 
+participation, and quality of life. While speech-language therapy (SLT) remains 
+the standard of care, pharmacological agents such as Cerebrolysin may enhance 
+recovery through neuroprotection and neuroplasticity. We report the case of a 
+38-year-old female lawyer who developed acute Wernicke's aphasia and right-sided 
+hemiparesis following an ischemic stroke. Despite timely thrombolysis and 
+mechanical thrombectomy, she experienced significant neurological deficits. 
+Early multidisciplinary rehabilitation, combined with a 10-day course of 
+Cerebrolysin, memantine, and sertraline, was associated with substantial 
+improvements in language, motor function, and independence over a three-month 
+period. This case highlights the potential synergistic effect of Cerebrolysin in 
+a young patient with early reperfusion and intensive rehabilitation, including 
+pharmacotherapy and SLT, especially in settings where optimal post-stroke 
+rehabilitation resources may be limited.
+
+© 2025 The Author(s).
+
+DOI: 10.25122/jml-2026-0057
+PMCID: PMC13474394
+PMID: 42602663 [Indexed for MEDLINE]
+
+Conflict of interest statement: The author declares no conflict of interest.
+
+
+15. Psicothema. 2019 May;31(2):179-183. doi: 10.7334/psicothema2018.310.
+
+Transcranial direct current stimulation treatment in chronic after-stroke 
+dysphagia: A clinical case.
+
+Sánchez-Kuhn A(1), Medina Y, García-Pérez M, De Haro P, Flores P, Sánchez-Santed 
+F.
+
+Author information:
+(1)Universidad de Almería, Instituto de Neurorehabilitación InPaula.
+
+BACKGROUND: Transcranial direct current stimulation (tDCS) is a non-invasive 
+neuromodulation technique that has shown positive effects in a variety of motor 
+diseases including dysphagia. However, its clinical application and underlying 
+microstructural effects are still being researched. We tested whether tDCS 
+applied together with swallowing training could benefit a treatment-resistent 
+patient with dysphagia after a stroke.
+METHOD: The clinical case was a 64 year old male who suffered from a left medial 
+cerebellum stroke lesion leading to severe dysphagia. The treatment consisted of 
+a traditional swallowing rehabilitation treatment, which served as a baseline 
+measure, followed by an intervention adding tDCS (anodal/left M1/16 sessions/20 
+min/1mA). The variables measured were (1) clinical symptoms of dysphagia, (2) 
+quality of life and (3) microstructural changes with magnetic resonance imaging 
+(MRI) and diffusion tensor imaging (DTI).
+RESULTS: Results showed (1) a slight reduction of the clinical symptoms, (2) an 
+improvement in the quality of life domains of communication, fatigue and sleep 
+and (3) an enhancement of the connectivity and increase of the number of fibers 
+of the injured left medium cerebellum peduncle.
+CONCLUSIONS: These results support the use of tDCS as a coadjuvant 
+neurorehabilitation tool in cases which are resistant to traditional motor 
+rehabilitation.
+
+DOI: 10.7334/psicothema2018.310
+PMID: 31013243 [Indexed for MEDLINE]
+
+
+16. Enferm Clin (Engl Ed). 2020 May-Jun;30(3):160-167. doi: 
+10.1016/j.enfcli.2019.10.026. Epub 2020 Apr 14.
+
+Implementation of the Best practice guideline: Stroke assessment across the 
+continuum of care in hospitalised patients.
+
+[Article in English, Spanish]
+
+Piñero Sáez S(1), Sanz Aznarez AC(2), Ruiz García MV(1), González García MJ(3), 
+Mena Sucunza L(4), Córcoles Jiménez MP(5); en nombre del Grupo de Trabajo del 
+Programa de implantación de buenas prácticas en centros comprometidos con la 
+excelencia en cuidados®.
+
+Author information:
+(1)Servicio de Urgencias, Complejo Hospitalario Universitario de Albacete, 
+Albacete, España.
+(2)Área de Cuidados en Procesos Médicos, Complejo Hospitalario de Navarra, 
+Pamplona, España. Electronic address: ac.sanz.aznarez@navarra.es.
+(3)Calidad y Sistemas de la Información en Cuidados, Complejo Hospitalario de 
+Navarra, Pamplona, España.
+(4)Unidad de Planta de Neurología, Complejo Hospitalario de Navarra, Pamplona, 
+España.
+(5)Área de Formación Continuada e Investigación, Gerencia de Atención Integrada 
+de Albacete, Albacete, España.
+
+INTRODUCTION: Stroke is an important cause of morbidity and mortality in adults 
+and implies high social and healthcare costs due to the consequences it causes. 
+To minimize these, it is important to apply best practice guidelines that ensure 
+evidence-based care and reduce clinical variability. The objective of the study 
+is to evaluate the results of implantation of the Ictus Best Practice Guideline 
+for attending in-hospital stroke patients.
+METHOD: Quasi-experimental pre-post intervention study. Over 18 years of age 
+admitted to the University Hospital Complex of Albacete and Hospital Complex of 
+Navarra with a diagnosis of stroke. Process variables: Neurological assessment 
+(Canadian Scale and the National Institute of Health Stroke Scale), dysphagia 
+assessment (Water Test and the Volume-Viscosity Clinical Exploration Method), 
+risk falls (Downton Scale), pain detection (Numerical Scale), pressure injury 
+risk (Braden Scale), health education.
+OUTCOME VARIABLES: Aspiration pneumonia, falls, independence of daily life 
+activities (modified Barthel and Rankin index), pressure injuries and pain 
+intensity.
+RESULTS: 1270 patients were evaluated in CHUA and 627 in CHN, most were men and 
+the average age was over 69 years, with a higher incidence of ischaemic strokes. 
+In CHUA 16 pressure sores, 17 falls and 20 cases of aspiration pneumonia were 
+recorded and 15 cases of pressure sores were identified in CHN. An increase of 
+cases could be attributed to the greater number of patients evaluated and the 
+increased nursing awareness about recording adverse events.
+CONCLUSIONS: Application of guideline recommendations improved statistically 
+significantly throughout the implementation time. Some possibilities for 
+improvement are detected, so it is necessary to continue working on both the 
+quality of care provided and the health outcomes of patients.
+
+Copyright © 2019 Elsevier España, S.L.U. All rights reserved.
+
+DOI: 10.1016/j.enfcli.2019.10.026
+PMID: 32303467 [Indexed for MEDLINE]
+
+
+17. Cogn Behav Neurol. 2024 Sep 1;37(3):165-179. doi: 10.1097/WNN.0000000000000371.
+
+Articulatory-based Phonemic Paraphasia in Conduction Aphasia: A Dysfunction in 
+Phoneme-to-Articulation Conversion Uncovered Through Crossed Aphasia.
+
+Kawashima H(1), Funayama M(2), Inaba Y(1), Baba M(1).
+
+Author information:
+(1)Department of Rehabilitation, Ashikaga Red Cross Hospital, Ashikaga-City, 
+Tochigi, Japan.
+(2)Department of Neuropsychiatry, Ashikaga Red Cross Hospital, Ashikaga-City, 
+Tochigi, Japan.
+
+Phonemic paraphasia, a common characteristic of conduction aphasia, has 
+traditionally been attributed to phonological representation dysfunction. An 
+alternative hypothesis posits that phonemic paraphasia arises from difficulty 
+converting phonemes into their corresponding articulatory maneuvers. However, 
+detailed case studies supporting this theory have been lacking. In this report, 
+we present the case of a 61-year-old right-handed man with right 
+temporo-parietal infarction who exhibited crossed aphasia characterized by 
+typical conduction aphasia symptoms (eg, relatively fluent speech with intact 
+comprehension, frequent phonemic paraphasia, and pronounced difficulties in oral 
+repetition) in the absence of distorted articulation, syllable segmentation, and 
+prosody impairment. Despite the frequent occurrence of phonemic paraphasia and 
+articulatory challenges, our patient's phonological representations remained 
+relatively intact. His phonemic paraphasia was often self-corrected to produce 
+correct responses, a feature known as conduit d'approche. During the oral 
+repetition of individual mora (ie, the smallest unit of speech in Japanese), we 
+observed that the patient consistently traced the corresponding Hiragana 
+phonetic symbol accurately, despite his difficulties in articulation. We 
+substantiated this phenomenon through objective assessment and posit that it 
+resulted from an unusual separation of language functions in crossed 
+aphasia-specifically, a disconnection between phonological representations in 
+the right temporo-parietal cortex and speech articulation engrams in the left 
+hemisphere. In this case of conduction aphasia, articulatory-based phonemic 
+paraphasia may be viewed as an inability to convert phonemes into the 
+appropriate articulatory maneuvers rather than as phonological representation 
+dysfunction or apraxia of speech.
+
+Copyright © 2024 Wolters Kluwer Health, Inc. All rights reserved.
+
+DOI: 10.1097/WNN.0000000000000371
+PMID: 39091095 [Indexed for MEDLINE]
+
+Conflict of interest statement: The authors declare no conflicts of interest.
+
+
+18. Am J Speech Lang Pathol. 2020 Nov 12;29(4):1965-1975. doi: 
+10.1044/2020_AJSLP-20-00095. Epub 2020 Aug 5.
+
+Respiratory-Swallow Coordination Training Improves Swallowing Safety and 
+Efficiency in a Person With Anoxic Brain Injury.
+
+Curtis JA(1), Seikaly ZN(1), Troche MS(1).
+
+Author information:
+(1)Laboratory for the Study of Upper Airway Dysfunction, Department of 
+Biobehavioral Sciences, Teachers College, Columbia University, New York, NY.
+
+Purpose The aim of this study was to assess the effects of respiratory-swallow 
+coordination training (RSCT) on respiratory-swallow coordination (RSC), 
+swallowing safety (penetration/aspiration), and swallowing efficiency 
+(pharyngeal residue) in a person with anoxic brain injury. Method A 68-year-old 
+man with anoxic brain injury, tachypnea, and severe dysphagia was recruited to 
+participate in a prospective AABAA single-subject experimental design. RSC, 
+swallowing safety, and swallowing efficiency were measured at each assessment 
+using respiratory inductive plethysmography and flexible endoscopic evaluations 
+of swallowing. Data were analyzed descriptively using Cohen's d effect size. 
+Outcome measures were compared pre-RSCT to post-RSCT, and pre-RSCT to a 1-month 
+retention assessment. Results Improvements in RSC were observed immediately 
+post-RSCT (d = 0.60). These improvements were maintained upon retention 
+assessment 1 month later (d = 0.60). Additionally, improvements in swallowing 
+safety (d = 1.73), efficiency (d = 1.73), and overall dysphagia severity (d = 
+1.73) were observed immediately post-RSCT and were maintained upon retention 
+assessment 1 month later (d = 1.73). Conclusions Clinically meaningful 
+improvements in RSC were observed following four sessions of RSCT, which were 
+subsequently associated with large improvements in swallowing safety and 
+efficiency. RSCT may be an efficacious, clinically feasible skill-based exercise 
+for people with anoxic brain injury, suboptimal RSC, and dysphagia. Future work 
+is needed to expand these findings in a larger cohort of people with dysphagia.
+
+DOI: 10.1044/2020_AJSLP-20-00095
+PMID: 32755487 [Indexed for MEDLINE]
+
+
+19. Semin Speech Lang. 2019 Jun;40(3):188-202. doi: 10.1055/s-0039-1688815. Epub 
+2019 Jun 3.
+
+Clinical Decision Making in Patients with Stroke-Related Dysphagia.
+
+Felix CC(1), Joseph ME(1)(2), Daniels SK(2).
+
+Author information:
+(1)Department of Speech Pathology, Memorial Hermann Health System, Houston, 
+Texas.
+(2)Department of Communication Sciences and Disorders, University of Houston, 
+Houston, Texas.
+
+This article aims to highlight stroke considerations in the evaluation and 
+management of dysphagia. Although dysphagia was previously thought to occur only 
+following brainstem or bilateral cortical strokes, the development of brain 
+imaging and dynamic swallowing studies has revealed small, unilateral 
+supratentorial strokes can produce dysphagia. In this article, screening, 
+evaluation, and management of dysphagia are outlined, as well as the clinical 
+decision making that occurs when taking into account cognitive and communication 
+deficits that may be present. For the clinical swallow examination, chart 
+review, interview, informal evaluation of cognition and communication, 
+observation of posture, oral cavity inspection, cranial nerve examination, and 
+the direct swallowing assessment are reviewed along with tailoring of each 
+according to the deficits observed. Specific compensation and rehabilitation 
+strategies are discussed along with how cognitive and communication deficits can 
+guide the clinician's decision-making process to select an appropriate plan of 
+care. A case study is provided to synthesize the process into a real-world 
+scenario.
+
+Thieme Medical Publishers 333 Seventh Avenue, New York, NY 10001, USA.
+
+DOI: 10.1055/s-0039-1688815
+PMID: 31158903 [Indexed for MEDLINE]
+
+Conflict of interest statement: Disclosure The authors report no conflicts of 
+interest in this work.
