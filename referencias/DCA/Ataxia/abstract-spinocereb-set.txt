@@ -1,0 +1,200 @@
+1. Medicine (Baltimore). 2025 Aug 8;104(32):e43812. doi: 
+10.1097/MD.0000000000043812.
+
+Familial spinocerebellar ataxia type 3: A case report of multi-generational 
+presentation.
+
+Wang J(1), Liu Z, Shi C, Pan C, Chen J, Zhao Z, Yang D, Huang H.
+
+Author information:
+(1)Department of Neurology, Affiliated Hospital of Zunyi Medical University, 
+Zunyi, China.
+
+RATIONALE: Spinocerebellar ataxia type 3 (SCA3), also known as Machado-Joseph 
+disease, a rare autosomal dominant neurodegenerative disorder caused by 
+cytosine-adenine-guanine repeat expansions in ATXN3, lacks effective therapies. 
+This case report highlights the clinical and genetic features of a family with 5 
+affected members to emphasize the challenges in diagnosis, management, and the 
+need for targeted therapies.
+PATIENT CONCERNS: A 33-year-old male proband presented with progressive gait 
+instability, limb incoordination, and dysarthria for more than 2 years. The 
+symptoms worsened in cold weather and were accompanied by head swelling and 
+muscle weakness. The patient reported a strong family history of similar 
+neurological symptoms across the 3 generations.
+DIAGNOSIS: Clinical evaluation revealed cerebellar ataxia, a wide-based gait, 
+and impaired coordination. Brain MRI revealed bilateral cerebellar atrophy. 
+Genetic testing confirmed the presence of a pathogenic ATXN3 allele with 78 
+cytosine-adenine-guanine repeats (normal range: ≤49), which is consistent with 
+SCA3. Familial genetic analysis identified identical mutations in 4 additional 
+relatives.
+INTERVENTIONS: Supportive treatment included improvement in circulation, 
+neuroprotective agents, and symptomatic management. No disease-modifying 
+therapies were administered, owing to their limited availability.
+OUTCOMES: The patient's condition did not improve during hospitalization, 
+reflecting the progressive nature of the SCA3. Similar outcomes were observed in 
+affected family members.
+LESSONS: Early genetic testing is critical for a definitive diagnosis, 
+especially in familial cases. The lack of effective therapies underscores the 
+urgency of clinical trials that target polyglutamine toxicity. Multidisciplinary 
+care and patient education are essential for the management of this debilitating 
+disease.
+
+Copyright © 2025 the Author(s). Published by Wolters Kluwer Health, Inc.
+
+DOI: 10.1097/MD.0000000000043812
+PMCID: PMC12338283
+PMID: 40797466 [Indexed for MEDLINE]
+
+Conflict of interest statement: The authors have no conflicts of interest to 
+disclose.
+
+
+2. Tremor Other Hyperkinet Mov (N Y). 2018 Jan 30;8:534. doi: 10.7916/D80S0ZJQ. 
+eCollection 2018.
+
+Spinocerebellar Ataxia 27: A Review and Characterization of an Evolving 
+Phenotype.
+
+Groth CL(1), Berman BD(1)(2).
+
+Author information:
+(1)Department of Neurology, University of Colorado Anschutz Medical Campus, 
+Aurora, CO, USA.
+(2)Neurology Section, Denver VA Medical Center, Denver, CO, USA.
+
+BACKGROUND: Spinocerebellar ataxia (SCA) is an uncommon form of progressive 
+cerebellar ataxia with multiple genetic causes and marked variability in 
+phenotypic expression even across patients with identical genetic abnormalities. 
+SCA27 is a recently identified SCA caused by mutations in the Fibroblast Growth 
+Factor 14 gene, with a phenotypic expression that is only beginning to be fully 
+appreciated. We report here a case of a 70-year-old male who presented with 
+slowly worsening tremor and gait instability that began in his early adulthood 
+along with additional features of parkinsonism on examination. Work-up revealed 
+a novel pathogenic mutation in the Fibroblast Growth Factor 14 gene, and 
+symptoms improved with amantadine and levodopa. We also provide a review of the 
+literature in order to better characterize the phenotypic expression of this 
+uncommon condition.
+METHODS: Case report and review of the literature.
+RESULTS: Review of the literature revealed a total of 32 previously reported 
+clinical cases of SCA27. Including our case, we found that early-onset tremor 
+(12.1 ± 10.5 years) was present in 95.8%, while gait ataxia tended to present 
+later in life (23.7 ± 16.7 years) and was accompanied by limb ataxia, 
+dysarthria, and nystagmus. Other features of SCA27 that may distinguish it from 
+other SCAs include the potential for episodic ataxia, accompanying psychiatric 
+symptoms, and cognitive impairment.
+DISCUSSION: Testing for SCA27 should be considered in individuals with ataxia 
+who report tremor as an initial or early symptom, as well as those with 
+additional findings of episodic ataxia, neuropsychiatric symptoms, or 
+parkinsonism.
+
+DOI: 10.7916/D80S0ZJQ
+PMCID: PMC5801325
+PMID: 29416937 [Indexed for MEDLINE]
+
+Conflict of interest statement: Funding: None. Conflicts of Interest: The 
+authors report no conflict of interest. Ethics Statement: Not applicable for 
+this category of article.
+
+
+3. Pract Neurol. 2020 Feb;20(1):55-58. doi: 10.1136/practneurol-2019-002368. Epub 
+2019 Aug 29.
+
+Very-late-onset Friedreich's ataxia: diagnosis in a kindred with late-onset 
+cerebellar ataxia.
+
+Fearon C(1), Lonergan R(2), Ferguson D(3), Byrne S(4), Bradley D(3), Langan 
+Y(3), Redmond J(3).
+
+Author information:
+(1)Neurology, St James's Hospital, Dublin, Ireland cfearon@tcd.ie.
+(2)Dublin Neurological Institute, Mater Misericordiae University Hospital, 
+Dublin, Ireland.
+(3)Neurology, St James's Hospital, Dublin, Ireland.
+(4)Neurology, Our Lady's Children's Hospital, Dublin, Ireland.
+
+Friedreich's ataxia is classically considered a disease with onset in the first 
+or second decade. However, late-onset (age of onset 25-39 years) and 
+very-late-onset (age of onset >40 years) forms do occur rarely. Misdiagnosis is 
+common, particularly because the later onset forms of Friedreich's ataxia 
+commonly do not show characteristic features of the disorder (areflexia, 
+dysarthria, sensory neuropathy, extensor plantars, amyotrophy, cardiac 
+involvement, diabetes mellitus, scoliosis). Also, there may be atypical features 
+such as spasticity, brisk reflexes and laryngeal dystonia. We present the 
+clinical, imaging and genetic findings of a kindred with very-late-onset 
+Friedreich's ataxia and discuss the pitfalls and risk of misdiagnosis.
+
+© Author(s) (or their employer(s)) 2020. No commercial re-use. See rights and 
+permissions. Published by BMJ.
+
+DOI: 10.1136/practneurol-2019-002368
+PMID: 31467149 [Indexed for MEDLINE]
+
+Conflict of interest statement: Competing interests: None declared.
+
+
+4. BMJ Case Rep. 2025 Aug 22;18(8):e266791. doi: 10.1136/bcr-2025-266791.
+
+A diagnostic challenge: spinocerebellar ataxia type 6 presenting with dystonia 
+and parkinsonism.
+
+Koren TJ(1), Ahmad KE(2), Kumar KR(3)(4), Lubomski M(2).
+
+Author information:
+(1)Department of Neurology, Royal North Shore Hospital, St Leonards, New South 
+Wales, Australia taljkoren@gmail.com.
+(2)Department of Neurology, Royal North Shore Hospital, St Leonards, New South 
+Wales, Australia.
+(3)The University of Sydney Sydney Medical School, Sydney, New South Wales, 
+Australia.
+(4)Concord Repatriation General Hospital Neurosciences Department, Concord, New 
+South Wales, Australia.
+
+Spinocerebellar ataxias (SCA) are a group of hereditary cerebellar ataxias that 
+are autosomal dominant. They often manifest as an adult-onset progressive 
+neurodegenerative disease with predominantly cerebellar features of gait ataxia, 
+nystagmus and dysarthria. SCA6 is a subtype of SCA which has been historically 
+classified as 'pure cerebellar'. However, many patients may still present with 
+non-cerebellar features. We present a woman in her 70s who was referred to a 
+movement disorder clinic with rigidity, dystonia, upper limb contractures, 
+dysarthria, ocular disturbance and muscle atrophy, with a strong family history 
+of affected individuals. Whole exome sequencing identified 22 CAG repeats in the 
+CACNA1A gene, in keeping with SCA6. A review of the literature identified a 
+broader SCA6 phenotype, which can present with non-cerebellar features, and 
+present a diagnostic challenge.
+
+© BMJ Publishing Group Limited 2025. No commercial re-use. See rights and 
+permissions. Published by BMJ Group.
+
+DOI: 10.1136/bcr-2025-266791
+PMID: 40846501 [Indexed for MEDLINE]
+
+Conflict of interest statement: Competing interests: None declared.
+
+
+5. J Int Med Res. 2019 Dec;47(12):6390-6396. doi: 10.1177/0300060519889457. Epub 
+2019 Nov 27.
+
+Spinocerebellar ataxia type 2 presenting with involuntary movement: a diagnostic 
+dilemma.
+
+Li ST(1), Zhou Y(2).
+
+Author information:
+(1)Department of General Medicine, Second Affiliated Hospital, Zhejiang 
+University School of Medicine, Hangzhou, China.
+(2)Department of Neurology, Jinhua Hospital, Jinhua, China.
+
+Spinocerebellar ataxia type 2 (SCA2) is a rare disease characterized by slowly 
+progressive ataxia, dysarthria, ophthalmoplegia, and slow saccade. SCA2 can 
+present with a complex combination of hyperkinetic and hypokinetic movement 
+disorders. Here, we describe a patient with SCA2 that partly mimicked the 
+clinical manifestations of Huntington’s disease; similar symptoms had previously 
+occurred in the patient’s family members. The findings in this report indicate 
+that, when a patient exhibits choreiform movement (i.e., accompanying cerebellar 
+ataxia), an SCA2-related mutation could be responsible for the onset of disease. 
+In addition, this knowledge of the potential for extrapyramidal involvement in 
+such patients is critical for clinicians.
+
+DOI: 10.1177/0300060519889457
+PMCID: PMC7045683
+PMID: 31774014 [Indexed for MEDLINE]
