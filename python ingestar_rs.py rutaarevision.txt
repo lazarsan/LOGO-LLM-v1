@@ -1,0 +1,1 @@
+python ingestar_rs.py "ruta/a/revision_cochrane_ataxia.pdf" --id_rs "COCHRANE-2014-ATX" --anio 2014 --patologia "Ataxia Hereditaria"
