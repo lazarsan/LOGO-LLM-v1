@@ -549,7 +549,14 @@ if "reporte" in st.session_state:
             if arch_val:
                 lista_rs_pdfs.append((rs_id_val.upper(), arch_val))
 
-        # Indexar todos los PDFs físicos en referencias/DCA, referencias/Parkinson y referencias/Ataxia
+        # Indexar los PDFs de las Revisiones Sistemáticas por su rs_id limpio
+        mapa_rs_pdfs = {}
+        for r_item in cargar_capa_rs():
+            rs_id_val = str(r_item.get("rs_id", "")).strip().upper()
+            arch_val = str(r_item.get("archivo_origen", "")).strip()
+            if rs_id_val and arch_val:
+                mapa_rs_pdfs[rs_id_val] = arch_val
+
         carpeta_referencias = "referencias" if os.path.exists("referencias") else r"F:\VIU\IA SLP\Proyecto LOGO-LLM\Referencias"
         pdfs_disponibles = {}
         if os.path.exists(carpeta_referencias):
@@ -559,42 +566,36 @@ if "reporte" in st.session_state:
                         pdfs_disponibles[normalizar_nombre(arch)] = (arch, os.path.join(raiz, arch))
 
         for idx, cita in enumerate(reporte.evidencia_rag):
-            texto_busqueda = f"{cita.id_nodo} {cita.fuente_documental}".upper()
+            id_limpio = cita.id_nodo.upper().replace("RS_ID:", "").strip()
+            texto_busqueda = f"{id_limpio} {cita.fuente_documental}".upper()
             doc_id_limpio = next((k for k in mapa_fuentes.keys() if k.upper() in texto_busqueda), cita.fuente_documental)
             info_doc = mapa_fuentes.get(doc_id_limpio, {})
             titulo_doc = info_doc.get("titulo", cita.fuente_documental)
 
             icono_fuente = "📘 [Guía/Manual]" if cita.tipo_fuente == "Guía Clínica / Manual" else "📊 [Rev. Sistemática]"
-            with st.expander(f"{icono_fuente} {cita.id_nodo} · {doc_id_limpio}", expanded=True):
+            with st.expander(f"{icono_fuente} {id_limpio} · {doc_id_limpio}", expanded=True):
                 st.markdown(f"**{titulo_doc}**")
                 st.caption(f"Localizador: {cita.fuente_documental}")
                 st.write(cita.hecho_clinico_factual)
 
                 doi = str(info_doc.get("doi", "")).strip()
                 if doi.startswith("10."):
-                    st.markdown(f"[Abrir publicación oficial (DOI: {doi})](https://doi.org/{doi})")
+                    st.markdown(f"[Abrir publicación oficial (DOI: {doi})](https://doi.org{doi})")
 
-                # 1. Buscar nombre en mapa_fuentes (Guías) o por coincidencia parcial en capa_evidencia_rs (RS)
+                # 1. Búsqueda exacta por diccionario (Guías en mapa_fuentes o RS en capa_evidencia_rs)
                 nombre_pdf = info_doc.get("archivo_pdf", "")
                 if not nombre_pdf:
-                    for rs_id_key, arch_rs in lista_rs_pdfs:
-                        if rs_id_key and (rs_id_key in texto_busqueda or cita.id_nodo.upper() in rs_id_key):
-                            nombre_pdf = arch_rs
-                            break
+                    nombre_pdf = mapa_rs_pdfs.get(id_limpio, "")
+                    if not nombre_pdf:
+                        # Coincidencia por prefijo base del rs_id (ej. ABORDAJE-2024 en ABORDAJE-2024-RESUMEN)
+                        prefijo_rs = "-".join(id_limpio.split("-")[:2])
+                        for rs_k, arch_v in mapa_rs_pdfs.items():
+                            if rs_k == id_limpio or (prefijo_rs and rs_k.startswith(prefijo_rs)):
+                                nombre_pdf = arch_v
+                                break
 
-                # 2. Localizar el archivo físico normalizando el nombre (ignora tildes, guiones o mayúsculas)
+                # 2. Localizar el archivo físico normalizando solo el nombre exacto esperado
                 info_pdf = pdfs_disponibles.get(normalizar_nombre(nombre_pdf)) if nombre_pdf else None
-
-                # 3. Respaldo por tokens del ID o fuente para RS
-                if not info_pdf and cita.tipo_fuente != "Guía Clínica / Manual":
-                    tokens_id = [
-                        t for t in normalizar_nombre(f"{cita.id_nodo} {cita.fuente_documental}").split()
-                        if len(t) > 3 and t not in ["resumen", "tabla", "estudio", "discusion", "conclusiones", "primario"]
-                    ]
-                    for norm_arch, datos_arch in pdfs_disponibles.items():
-                        if tokens_id and any(tok in norm_arch for tok in tokens_id[:2]):
-                            info_pdf = datos_arch
-                            break
 
                 if info_pdf:
                     nombre_real, ruta_encontrada = info_pdf
@@ -604,5 +605,5 @@ if "reporte" in st.session_state:
                             data=pdf_file.read(),
                             file_name=nombre_real,
                             mime="application/pdf",
-                            key=f"pdf_{cita.id_nodo}_{idx}"
+                            key=f"pdf_{id_limpio}_{idx}"
                         )
