@@ -6,7 +6,7 @@ import unicodedata
 import urllib.request
 import urllib.parse
 from enum import Enum
-from typing import List
+from typing import List, Literal
 import streamlit as st
 from pydantic import BaseModel, Field, model_validator, ValidationError
 from llama_index.core import Document, VectorStoreIndex, Settings
@@ -89,8 +89,11 @@ class IntervencionLogopedica(BaseModel):
 
 
 class CitaRAG(BaseModel):
-    id_nodo: str = Field(description="ID exacto del claim (ej. DCA-C001, EP-CLM-002, ATX-CL-007).")
-    fuente_documental: str = Field(description="ID del documento y localizador físico PDF.")
+    id_nodo: str = Field(description="ID exacto del claim (ej. DCA-C001, EP-CLM-002, ATX-CL-007) o RS_ID (ej. COCHRANE-2014-ATX-RESUMEN).")
+    tipo_fuente: Literal["Guía Clínica / Manual", "Revisión Sistemática / Estudio Primario"] = Field(
+        description="Origen jerárquico de la evidencia."
+    )
+    fuente_documental: str = Field(description="ID del documento, año y localizador físico PDF o sección de la RS.")
     hecho_clinico_factual: str = Field(description="Dato clínico objetivo extraído sin narrativa autoral.")
 
 
@@ -129,7 +132,7 @@ class ReporteClinicoLogopedico(BaseModel):
         return self
 
 
-# 2. CARGA DEL ÍNDICE VECTORIAL
+# 2. CARGA DEL ÍNDICE VECTORIAL (CAPA 1: PROTOCOLOS Y GUÍAS) Y CAPA 2 (REVISIONES SISTEMÁTICAS)
 @st.cache_resource
 def inicializar_indice():
     Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-large")
@@ -145,9 +148,51 @@ def inicializar_indice():
     return VectorStoreIndex.from_documents(docs)
 
 
+@st.cache_data
+def cargar_capa_rs() -> list:
+    if os.path.exists("capa_evidencia_rs.json"):
+        with open("capa_evidencia_rs.json", "r", encoding="utf-8") as f:
+            return json.load(f)
+    return []
+
+
+def recuperar_evidencia_rs(patologia: str, trastorno: str) -> str:
+    registros_rs = cargar_capa_rs()
+    if not registros_rs:
+        return "No hay revisiones sistemáticas cargadas en la capa de evidencia."
+
+    filtrados = [r for r in registros_rs if r.get("patologia", "").lower() == patologia.lower()]
+
+    resumenes = [r for r in filtrados if r.get("seccion_rs") == "resumen_conclusiones"]
+    especificos = [
+        r for r in filtrados
+        if r.get("seccion_rs") != "resumen_conclusiones"
+        and (r.get("dominio_clinico", "").lower() in [trastorno.lower(), "evaluación", "general"])
+    ]
+
+    # Orden cronológico inverso para resolución de conflictos temporales
+    resumenes.sort(key=lambda x: x.get("anio_publicacion", 0), reverse=True)
+    especificos.sort(key=lambda x: x.get("anio_publicacion", 0), reverse=True)
+
+    seleccionados = resumenes[:2] + especificos[:6]
+    if not seleccionados:
+        return "Sin registros específicos en la capa de Revisiones Sistemáticas para esta combinación."
+
+    bloques = []
+    for r in seleccionados:
+        bloques.append(
+            f"[RS_ID: {r.get('rs_id', '')} | Año: {r.get('anio_publicacion', '')} | Sección: {r.get('seccion_rs', '')} | "
+            f"Subtipo: {r.get('subtipo_ataxia', '')} | Dominio: {r.get('dominio_clinico', '')}]\n"
+            f"- Intervención/Herramienta: {r.get('intervencion_evaluada', '')} ({r.get('herramientas_evaluacion', '')})\n"
+            f"- Nivel de evidencia: {r.get('nivel_evidencia', '')} | Limitaciones: {r.get('limitaciones', '')}\n"
+            f"- Síntesis: {r.get('contenido_chunk', '')}"
+        )
+    return "\n\n".join(bloques)
+
+
 def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
     mapa_en = {
-        "Daño Cerebral Adquirido": "stroke / Acquired Brain Injury",
+        "Daño Cerebral Adquirido": "stroke",
         "Enfermedad de Parkinson": "Parkinson disease",
         "Ataxia Hereditaria": "ataxia",
         "Disfagia Neurogénica": "dysphagia",
@@ -238,7 +283,7 @@ st.markdown(f"""
     <div>
         <h2>LOGO-Pilot · Soporte Clínico para Logopedia Neurológica</h2>
         <p>Sistema de navegación y apoyo a la toma de decisiones en DCA, Parkinson y Ataxias Hereditarias</p>
-        <span class="badge-rag">Corpus Auditado · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
+        <span class="badge-rag">Corpus Auditado · Jerarquía Dual (Protocolos + RS) · Supervisión Humana (Art. 14 EU AI Act)</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -256,7 +301,6 @@ with col_izq:
     with c1_i.popover("ℹ️"):
         st.caption("1. Elija fuente de datos.\n2. Verifique anonimización (sin nombres ni NHC).\n3. Pulse Analizar.")
 
-    # 1. Selector de las 3 vías de entrada
     modo_ingreso = st.radio(
         "Modo de entrada de datos:",
         ["Banco Maestro (25 Casos)", "Subir Informe (PDF/DOCX/TXT/XLSX)", "Ficha Caso Real (Manual)"],
@@ -267,7 +311,6 @@ with col_izq:
     idx_pat = 0
     texto_auto = ""
 
-    # VÍA 1: Desplegable del Banco Maestro
     if modo_ingreso == "Banco Maestro (25 Casos)":
         casos_dict = {"-- Selecciona un caso --": None}
         archivo_maestro = "LOGO_LLM_25_Casos_Clinicos_Sinteticos_Banco_Maestro_v1_0.json"
@@ -295,18 +338,15 @@ with col_izq:
             ]
             texto_auto = "\n".join(lineas_caso)
 
-    # VÍA 2: Subida de archivos locales
     elif modo_ingreso == "Subir Informe (PDF/DOCX/TXT/XLSX)":
         archivo_informe = st.file_uploader("Sube el informe clínico:", type=["pdf", "docx", "txt", "xlsx"])
         if archivo_informe:
             texto_auto = extraer_texto_archivo(archivo_informe)
             st.success("Informe cargado y anonimizado localmente.")
 
-    # VÍA 3: Ficha estructurada manual de 8 bloques
     else:
         texto_auto = renderizar_ficha_real()
 
-    # 2. Parámetros fijos y botón de ejecución
     pat_sel = st.selectbox("Patología Neurológica Base", opciones_pat, index=idx_pat)
     trast_sel = st.selectbox("Dominio Logopédico", [t.value for t in TipoTrastorno])
     instrumental = st.checkbox("Consta prueba instrumental previa (FEES / VFSS)")
@@ -320,19 +360,22 @@ if analizar and notas:
     consulta = f"Patología: {pat_sel}. Trastorno: {trast_sel}. Instrumental previo: {'Sí' if instrumental else 'No'}. Hallazgos: {notas}"
     nodos = indice.as_retriever(similarity_top_k=8).retrieve(consulta)
     contexto = "\n\n".join([f"[{n.metadata['claim_id']} | {n.metadata['doc_id']} | {n.metadata['localizador']}] {n.text}" for n in nodos])
+    contexto_rs = recuperar_evidencia_rs(pat_sel, trast_sel)
 
     prompt = (
         "Eres un Sistema de Soporte a la Decisión Clínica (CDSS) experto en Logopedia Neurológica. "
         "Redacta un informe técnico amplio, detallado y riguroso para un profesional logopeda, "
-        "basándote ESTRICTAMENTE en los hechos clínicos del siguiente contexto:\n\n"
+        "basándote ESTRICTAMENTE en dos capas jerárquicas de conocimiento:\n\n"
+        "=== CAPA 1: PROTOCOLOS Y GUÍAS CLÍNICAS (CÓMO HACER / PRÁCTICA SEGURA) ===\n"
         f"{contexto}\n\n"
+        "=== CAPA 2: REVISIONES SISTEMÁTICAS Y ESTUDIOS PRIMARIOS (NIVEL DE EVIDENCIA) ===\n"
+        f"{contexto_rs}\n\n"
         f"DATOS DEL CASO CLÍNICO:\n{consulta}\n\n"
-        "INSTRUCCIONES DE DETALLE Y SEGURIDAD:\n"
-        "1. Desarrolla de forma exhaustiva el análisis fisiopatológico por subsistemas y el diagnóstico diferencial.\n"
-        "2. Responde explícitamente en 'respuesta_dilema_clinico' por qué la propuesta planteada en la consulta es adecuada o contraindicada.\n"
-        "3. Detalla la dosificación, frecuencia y control de fatiga en cada procedimiento de intervención.\n"
-        "4. Si el caso involucra disfagia o sospecha de alteración deglutoria, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay sospecha de disfagia, deja 'adaptacion_dietetica_iddsi' como cadena vacía ''.\n"
-        "5. Declara explícitamente en 'informacion_clinica_no_disponible' todo dato ausente en el caso y en 'evidencia_cientifica_insuficiente' cualquier limitación metodológica o grado de certeza bajo de las fuentes."
+        "REGLAS DE RAZONAMIENTO CLÍNICO Y TRAZABILIDAD (OBLIGATORIAS):\n"
+        "1. SEPARAR EFICACIA ESTADÍSTICA DE PRÁCTICA CLÍNICA: Nunca descartes una intervención útil de la Capa 1 solo porque una Revisión Sistemática (ej. Cochrane) indique certeza baja o ausencia de ECA. Primero declara explícitamente el grado de respaldo científico según la Capa 2 (ej. 'Sin ensayos clínicos aleatorizados concluyentes según Cochrane'), y a continuación desarrolla el abordaje clínico recomendado y seguro según los manuales y protocolos de la Capa 1.\n"
+        "2. RESOLUCIÓN DE CONFLICTOS TEMPORALES: Si un estudio primario o ensayo reciente (ej. terapia intensiva LSVT o miofuncional en SCA3) muestra resultados prometedores que matizan o contradicen una RS más antigua, prioriza el hallazgo cronológicamente posterior aclarando expresamente que se trata de evidencia preliminar aún no incorporada a una revisión sistemática.\n"
+        "3. TRAZABILIDAD EXPLÍCITA: En el texto y en 'evidencia_rag', diferencia siempre qué recomendación proviene de 'Guía Clínica / Manual' y qué dato proviene de 'Revisión Sistemática / Estudio Primario', citando su ID exacto.\n"
+        "4. SEGURIDAD Y DATOS AUSENTES: Desarrolla exhaustivamente el análisis fisiopatológico por subsistemas, el diagnóstico diferencial y la dosificación/fatiga. Si el caso involucra disfagia o sospecha de alteración deglutoria, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay sospecha de disfagia, déjalo en ''. Declara en 'informacion_clinica_no_disponible' todo dato ausente y en 'evidencia_cientifica_insuficiente' las limitaciones metodológicas de la Capa 2."
     )
 
     for intento in range(1, 4):
@@ -361,7 +404,6 @@ if "reporte" in st.session_state:
             "- **8B11 / 8B20:** DCA vascular (Ictus isquémico / hemorrágico).\n"
             "- **NA07:** DCA traumático (Traumatismo intracraneal / TCE)."
         )
-
         pop_cie.markdown("[Consultar navegador OMS CIE-11](https://icd.who.int/browse/2024-01/mms/es)")
 
         c_an, c_an_i = st.columns([0.88, 0.12])
@@ -484,8 +526,8 @@ if "reporte" in st.session_state:
         pop_rag = c_rag_i.popover("ℹ️")
         pop_rag.markdown("**¿Cómo funciona la trazabilidad CitaRAG?**")
         pop_rag.caption(
-            "• **Recuperación determinista:** Extrae únicamente los hechos factuales más cercanos semánticamente de los 184 nodos auditados.\n"
-            "• **Cero alucinaciones:** Cada afirmación está anclada a su `claim_id` y página exacta.\n"
+            "• **Jerarquía dual:** Distingue entre protocolos clínicos (📘 Guía/Manual) y evidencia estadística (📊 Rev. Sistemática).\n"
+            "• **Cero alucinaciones:** Cada afirmación está anclada a su identificador y localizador exacto.\n"
             "• **Auditoría directa:** Usa el enlace **DOI** para verificar la fuente primaria original."
         )
 
@@ -502,7 +544,8 @@ if "reporte" in st.session_state:
             info_doc = mapa_fuentes.get(doc_id_limpio, {})
             titulo_doc = info_doc.get("titulo", cita.fuente_documental)
 
-            with st.expander(f"{cita.id_nodo} · {doc_id_limpio}", expanded=True):
+            icono_fuente = "📘 [Guía/Manual]" if cita.tipo_fuente == "Guía Clínica / Manual" else "📊 [Rev. Sistemática]"
+            with st.expander(f"{icono_fuente} {cita.id_nodo} · {doc_id_limpio}", expanded=True):
                 st.markdown(f"**{titulo_doc}**")
                 st.caption(f"Localizador: {cita.fuente_documental}")
                 st.write(cita.hecho_clinico_factual)
