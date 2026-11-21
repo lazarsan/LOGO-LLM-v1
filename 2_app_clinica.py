@@ -93,7 +93,7 @@ class CitaRAG(BaseModel):
     tipo_fuente: Literal["Guía Clínica / Manual", "Revisión Sistemática / Estudio Primario"] = Field(
         description="Origen jerárquico de la evidencia."
     )
-    fuente_documental: str = Field(description="ID del documento, año y localizador físico PDF o sección de RS.")
+    fuente_documental: str = Field(description="ID del documento, año y localizador físico o sección de RS.")
     hecho_clinico_factual: str = Field(description="Dato clínico objetivo extraído sin narrativa autoral.")
 
 
@@ -132,7 +132,7 @@ class ReporteClinicoLogopedico(BaseModel):
         return self
 
 
-# 2. CARGA DEL ÍNDICE VECTORIAL Y CAPA DE REVISIONES SISTEMÁTICAS
+# 2. CARGA DEL ÍNDICE VECTORIAL (CAPA 1: GUÍAS Y PROTOCOLOS) Y CAPA 2 (REVISIONES SISTEMÁTICAS)
 @st.cache_resource
 def inicializar_indice():
     Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-large")
@@ -181,10 +181,10 @@ def recuperar_evidencia_rs(patologia: str, trastorno: str) -> str:
     for r in seleccionados:
         bloques.append(
             f"[RS_ID: {r['rs_id']} | Año: {r['anio_publicacion']} | Sección: {r['seccion_rs']} | "
-            f"Subtipo: {r.get('subtipo_ataxia', 'N/A')} | Dominio: {r['dominio_clinico']} | Archivo: {r.get('archivo_origen', '')}]\n"
-            f"- Intervención/Herramienta: {r.get('intervencion_evaluada', '')} ({r.get('herramientas_evaluacion', '')})\n"
-            f"- Nivel de evidencia: {r.get('nivel_evidencia', '')} | Limitaciones: {r.get('limitaciones', '')}\n"
-            f"- Síntesis: {r.get('contenido_chunk', '')}"
+            f"Subtipo: {r['subtipo_ataxia']} | Dominio: {r['dominio_clinico']}]\n"
+            f"- Intervención/Herramienta: {r['intervencion_evaluada']} ({r['herramientas_evaluacion']})\n"
+            f"- Nivel de evidencia: {r['nivel_evidencia']} | Limitaciones: {r['limitaciones']}\n"
+            f"- Síntesis: {r['contenido_chunk']}"
         )
     return "\n\n".join(bloques)
 
@@ -282,13 +282,13 @@ st.markdown(f"""
     <div>
         <h2>LOGO-Pilot · Soporte Clínico para Logopedia Neurológica</h2>
         <p>Sistema de navegación y apoyo a la toma de decisiones en DCA, Parkinson y Ataxias Hereditarias</p>
-        <span class="badge-rag">Corpus Auditado · Trazabilidad CitaRAG Dual · Supervisión Humana (Art. 14 EU AI Act)</span>
+        <span class="badge-rag">Corpus Auditado · Jerarquía Dual (Guías + RS) · Supervisión Humana (Art. 14 EU AI Act)</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
 if not os.getenv("OPENAI_API_KEY"):
-    st.error("Falta configurar OPENAI_API_KEY en la terminal o en Secrets antes de iniciar.")
+    st.error("Falta configurar OPENAI_API_KEY en la terminal antes de iniciar.")
     st.stop()
 
 indice = inicializar_indice()
@@ -375,15 +375,12 @@ if analizar and notas:
         "=== CAPA 2: REVISIONES SISTEMÁTICAS Y ESTUDIOS PRIMARIOS (NIVEL DE EVIDENCIA) ===\n"
         f"{contexto_rs}\n\n"
         f"DATOS DEL CASO CLÍNICO:\n{consulta}\n\n"
-        "INSTRUCCIONES DE DETALLE, SEGURIDAD Y JERARQUÍA DE EVIDENCIA:\n"
-        "1. SEPARAR EFICACIA ESTADÍSTICA DE PRÁCTICA CLÍNICA: Nunca descartes una intervención útil de la Capa 1 solo porque una Revisión Sistemática (ej. Cochrane) indique certeza baja o ausencia de ECA. Primero declara explícitamente el grado de respaldo científico según la Capa 2 (ej. 'Sin ensayos clínicos aleatorizados concluyentes según Cochrane'), y a continuación desarrolla el abordaje clínico recomendado y seguro según los manuales y protocolos de la Capa 1.\n"
+        "REGLAS DE RAZONAMIENTO CLÍNICO Y TRAZABILIDAD (OBLIGATORIAS):\n"
+        "1. SEPARAR EFICACIA ESTADÍSTICA DE PRÁCTICA CLÍNICA: Nunca descartes una intervención útil de la Capa 1 solo porque una Revisión Sistemática (ej. Cochrane) concluya que la evidencia es baja o insuficiente. Primero declara explícitamente el grado de respaldo científico según la Capa 2 (ej. 'Sin ensayos clínicos aleatorizados concluyentes según Cochrane 2014'), y a continuación desarrolla el abordaje clínico recomendado y seguro según los manuales y protocolos de la Capa 1.\n"
         "2. RESOLUCIÓN DE CONFLICTOS TEMPORALES: Si un estudio primario o ensayo reciente (ej. terapia intensiva LSVT o miofuncional en SCA3) muestra resultados prometedores que matizan o contradicen una RS más antigua, prioriza el hallazgo cronológicamente posterior aclarando expresamente que se trata de evidencia preliminar aún no incorporada a una revisión sistemática.\n"
-        "3. TRAZABILIDAD EXPLÍCITA: En el texto y en 'evidencia_rag', diferencia siempre qué recomendación proviene de 'Guía Clínica / Manual' y qué dato proviene de 'Revisión Sistemática / Estudio Primario', citando su ID exacto (claim_id o rs_id).\n"
-        "4. Desarrolla de forma exhaustiva el análisis fisiopatológico por subsistemas y el diagnóstico diferencial.\n"
-        "5. Responde explícitamente en 'respuesta_dilema_clinico' por qué la propuesta planteada en la consulta es adecuada o contraindicada.\n"
-        "6. Detalla la dosificación, frecuencia y control de fatiga en cada procedimiento de intervención.\n"
-        "7. Si el caso involucra disfagia o sospecha de alteración deglutoria, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay sospecha de disfagia, deja 'adaptacion_dietetica_iddsi' como cadena vacía ''.\n"
-        "8. Declara explícitamente en 'informacion_clinica_no_disponible' todo dato ausente en el caso y en 'evidencia_cientifica_insuficiente' cualquier limitación metodológica o grado de certeza bajo de las fuentes."
+        "3. TRAZABILIDAD EXPLÍCITA: Diferencia siempre qué recomendación proviene de 'Guía Clínica / Manual' (Capa 1) y qué dato proviene de 'Revisión Sistemática / Estudio Primario' (Capa 2), citando su ID exacto en 'evidencia_rag'.\n"
+        "4. DETALLE Y DOSIFICACIÓN: Desarrolla el análisis fisiopatológico por subsistemas, el diagnóstico diferencial, la resolución del dilema clínico en 'respuesta_dilema_clinico' y la dosificación/control de fatiga en cada procedimiento.\n"
+        "5. SEGURIDAD Y DATOS AUSENTES: Si hay sospecha de disfagia, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental (FEES/VFSS); si no hay disfagia, déjalo en ''. Declara en 'informacion_clinica_no_disponible' los datos ausentes y en 'evidencia_cientifica_insuficiente' las limitaciones metodológicas detectadas en la Capa 2."
     )
 
     for intento in range(1, 4):
@@ -532,11 +529,11 @@ if "reporte" in st.session_state:
         c_rag, c_rag_i = st.columns([0.85, 0.15])
         c_rag.subheader("3. Inspector CitaRAG")
         pop_rag = c_rag_i.popover("ℹ️")
-        pop_rag.markdown("**¿Cómo funciona la trazabilidad CitaRAG Dual?**")
+        pop_rag.markdown("**¿Cómo funciona la trazabilidad CitaRAG?**")
         pop_rag.caption(
-            "• **Recuperación determinista:** Separa protocolos clínicos (📘 Guía/Manual) del nivel de evidencia científica (📊 Rev. Sistemática).\n"
+            "• **Recuperación determinista:** Extrae únicamente los hechos factuales más cercanos semánticamente de los nodos auditados.\n"
             "• **Cero alucinaciones:** Cada afirmación está anclada a su `claim_id` o `rs_id` exacto.\n"
-            "• **Auditoría directa:** Usa el enlace **DOI** o descarga el **PDF original** desde cualquiera de las 3 carpetas de referencias."
+            "• **Auditoría directa:** Usa el enlace **DOI** o descarga el **PDF original** para verificar la fuente primaria."
         )
 
         mapa_fuentes = {}
@@ -544,7 +541,7 @@ if "reporte" in st.session_state:
             with open("mapa_fuentes.json", "r", encoding="utf-8") as mf:
                 mapa_fuentes = json.load(mf)
 
-              # Indexar también los PDFs de las Revisiones Sistemáticas de forma flexible
+        # Indexar los PDFs de las Revisiones Sistemáticas de forma flexible
         lista_rs_pdfs = []
         for r_item in cargar_capa_rs():
             rs_id_val = str(r_item.get("rs_id", "")).strip()
@@ -552,6 +549,7 @@ if "reporte" in st.session_state:
             if arch_val:
                 lista_rs_pdfs.append((rs_id_val.upper(), arch_val))
 
+        # Indexar todos los PDFs físicos en referencias/DCA, referencias/Parkinson y referencias/Ataxia
         carpeta_referencias = "referencias" if os.path.exists("referencias") else r"F:\VIU\IA SLP\Proyecto LOGO-LLM\Referencias"
         pdfs_disponibles = {}
         if os.path.exists(carpeta_referencias):
@@ -574,7 +572,7 @@ if "reporte" in st.session_state:
 
                 doi = str(info_doc.get("doi", "")).strip()
                 if doi.startswith("10."):
-                    st.markdown(f"[Abrir publicación oficial (DOI: {doi})](https://doi.org{doi})")
+                    st.markdown(f"[Abrir publicación oficial (DOI: {doi})](https://doi.org/{doi})")
 
                 # 1. Buscar nombre en mapa_fuentes (Guías) o por coincidencia parcial en capa_evidencia_rs (RS)
                 nombre_pdf = info_doc.get("archivo_pdf", "")
@@ -587,11 +585,14 @@ if "reporte" in st.session_state:
                 # 2. Localizar el archivo físico normalizando el nombre (ignora tildes, guiones o mayúsculas)
                 info_pdf = pdfs_disponibles.get(normalizar_nombre(nombre_pdf)) if nombre_pdf else None
 
-                # 3. Respaldo: si aún no coincide, buscar si el ID de la RS aparece en el nombre de algún PDF de referencias/
+                # 3. Respaldo por tokens del ID o fuente para RS
                 if not info_pdf and cita.tipo_fuente != "Guía Clínica / Manual":
-                    tokens_id = [t for t in normalizar_nombre(cita.id_nodo).split() if len(t) > 3 and t not in ["resumen", "tabla", "estudio", "discusion"]]
+                    tokens_id = [
+                        t for t in normalizar_nombre(f"{cita.id_nodo} {cita.fuente_documental}").split()
+                        if len(t) > 3 and t not in ["resumen", "tabla", "estudio", "discusion", "conclusiones", "primario"]
+                    ]
                     for norm_arch, datos_arch in pdfs_disponibles.items():
-                        if tokens_id and all(tok in norm_arch for tok in tokens_id[:2]):
+                        if tokens_id and any(tok in norm_arch for tok in tokens_id[:2]):
                             info_pdf = datos_arch
                             break
 
