@@ -557,13 +557,26 @@ if "reporte" in st.session_state:
             if rs_id_val and arch_val:
                 mapa_rs_pdfs[rs_id_val] = arch_val
 
+        # Mapear patología seleccionada con su subcarpeta exacta
+        subcarpeta_pat = {
+            "Daño Cerebral Adquirido": "dca",
+            "Enfermedad de Parkinson": "parkinson",
+            "Ataxia Hereditaria": "ataxia"
+        }.get(pat_sel, "")
+
         carpeta_referencias = "referencias" if os.path.exists("referencias") else r"F:\VIU\IA SLP\Proyecto LOGO-LLM\Referencias"
         pdfs_disponibles = {}
+        pdfs_patologia = []
+
         if os.path.exists(carpeta_referencias):
             for raiz, _, archivos in os.walk(carpeta_referencias):
+                es_carpeta_pat = subcarpeta_pat and (subcarpeta_pat in normalizar_nombre(raiz))
                 for arch in archivos:
                     if arch.lower().endswith(".pdf"):
-                        pdfs_disponibles[normalizar_nombre(arch)] = (arch, os.path.join(raiz, arch))
+                        ruta_completa = os.path.join(raiz, arch)
+                        pdfs_disponibles[normalizar_nombre(arch)] = (arch, ruta_completa)
+                        if es_carpeta_pat:
+                            pdfs_patologia.append((normalizar_nombre(arch), arch, ruta_completa))
 
         for idx, cita in enumerate(reporte.evidencia_rag):
             id_limpio = cita.id_nodo.upper().replace("RS_ID:", "").strip()
@@ -582,26 +595,35 @@ if "reporte" in st.session_state:
                 if doi.startswith("10."):
                     st.markdown(f"[Abrir publicación oficial (DOI: {doi})](https://doi.org{doi})")
 
-                # 1. Búsqueda exacta por diccionario (Guías en mapa_fuentes o RS en capa_evidencia_rs)
+                # 1. Buscar nombre exacto en Guías o en capa_evidencia_rs
                 nombre_pdf = info_doc.get("archivo_pdf", "")
                 if not nombre_pdf:
                     nombre_pdf = mapa_rs_pdfs.get(id_limpio, "")
                     if not nombre_pdf:
-                        # Coincidencia por prefijo base del rs_id (ej. ABORDAJE-2024 en ABORDAJE-2024-RESUMEN)
                         prefijo_rs = "-".join(id_limpio.split("-")[:2])
                         for rs_k, arch_v in mapa_rs_pdfs.items():
                             if rs_k == id_limpio or (prefijo_rs and rs_k.startswith(prefijo_rs)):
                                 nombre_pdf = arch_v
                                 break
 
-                # 2. Localizar el archivo físico normalizando solo el nombre exacto esperado
                 info_pdf = pdfs_disponibles.get(normalizar_nombre(nombre_pdf)) if nombre_pdf else None
+
+                # 2. Respaldo seguro para RS: buscar SOLO dentro de la carpeta de la patología activa
+                if not info_pdf and cita.tipo_fuente != "Guía Clínica / Manual" and pdfs_patologia:
+                    pistas = normalizar_nombre(f"{nombre_pdf} {id_limpio} {cita.hecho_clinico_factual}").split()
+                    pistas_utiles = [p for p in pistas if len(p) > 3 and p not in ["resumen", "conclusiones", "tabla", "estudio", "discusion", "ataxia", "revision", "sistematica"]]
+                    mejor_score = 0
+                    for norm_arch, arch_real, ruta_real in pdfs_patologia:
+                        score = sum(1 for p in set(pistas_utiles) if p in norm_arch)
+                        if score > mejor_score:
+                            mejor_score = score
+                            info_pdf = (arch_real, ruta_real)
 
                 if info_pdf:
                     nombre_real, ruta_encontrada = info_pdf
                     with open(ruta_encontrada, "rb") as pdf_file:
                         st.download_button(
-                            label="📄 Abrir / Descargar PDF original",
+                            label=f"📄 Abrir / Descargar PDF ({nombre_real})",
                             data=pdf_file.read(),
                             file_name=nombre_real,
                             mime="application/pdf",
