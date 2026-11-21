@@ -544,22 +544,21 @@ if "reporte" in st.session_state:
             with open("mapa_fuentes.json", "r", encoding="utf-8") as mf:
                 mapa_fuentes = json.load(mf)
 
-        # Indexar también los PDFs de las Revisiones Sistemáticas por rs_id
-        mapa_rs_pdfs = {}
+              # Indexar también los PDFs de las Revisiones Sistemáticas de forma flexible
+        lista_rs_pdfs = []
         for r_item in cargar_capa_rs():
-            if r_item.get("rs_id") and r_item.get("archivo_origen"):
-                mapa_rs_pdfs[r_item["rs_id"].upper()] = r_item["archivo_origen"]
+            rs_id_val = str(r_item.get("rs_id", "")).strip()
+            arch_val = str(r_item.get("archivo_origen", "")).strip()
+            if arch_val:
+                lista_rs_pdfs.append((rs_id_val.upper(), arch_val))
 
         carpeta_referencias = "referencias" if os.path.exists("referencias") else r"F:\VIU\IA SLP\Proyecto LOGO-LLM\Referencias"
-
-        # Pre-indexar todos los archivos PDF dentro de referencias/ (DCA, Parkinson, Ataxia)
-        indice_pdfs_locales = {}
+        pdfs_disponibles = {}
         if os.path.exists(carpeta_referencias):
             for raiz, _, archivos in os.walk(carpeta_referencias):
                 for arch in archivos:
                     if arch.lower().endswith(".pdf"):
-                        indice_pdfs_locales[arch] = os.path.join(raiz, arch)
-                        indice_pdfs_locales[normalizar_nombre(arch)] = os.path.join(raiz, arch)
+                        pdfs_disponibles[normalizar_nombre(arch)] = (arch, os.path.join(raiz, arch))
 
         for idx, cita in enumerate(reporte.evidencia_rag):
             texto_busqueda = f"{cita.id_nodo} {cita.fuente_documental}".upper()
@@ -575,22 +574,34 @@ if "reporte" in st.session_state:
 
                 doi = str(info_doc.get("doi", "")).strip()
                 if doi.startswith("10."):
-                    st.markdown(f"[Abrir publicación oficial (DOI: {doi})](https://doi.org/{doi})")
+                    st.markdown(f"[Abrir publicación oficial (DOI: {doi})](https://doi.org{doi})")
 
-                nombre_pdf = info_doc.get("archivo_pdf", "") or mapa_rs_pdfs.get(cita.id_nodo.upper(), "")
-                ruta_encontrada = None
-                if nombre_pdf:
-                    ruta_encontrada = (
-                        indice_pdfs_locales.get(nombre_pdf)
-                        or indice_pdfs_locales.get(normalizar_nombre(nombre_pdf))
-                    )
+                # 1. Buscar nombre en mapa_fuentes (Guías) o por coincidencia parcial en capa_evidencia_rs (RS)
+                nombre_pdf = info_doc.get("archivo_pdf", "")
+                if not nombre_pdf:
+                    for rs_id_key, arch_rs in lista_rs_pdfs:
+                        if rs_id_key and (rs_id_key in texto_busqueda or cita.id_nodo.upper() in rs_id_key):
+                            nombre_pdf = arch_rs
+                            break
 
-                if ruta_encontrada and os.path.exists(ruta_encontrada):
+                # 2. Localizar el archivo físico normalizando el nombre (ignora tildes, guiones o mayúsculas)
+                info_pdf = pdfs_disponibles.get(normalizar_nombre(nombre_pdf)) if nombre_pdf else None
+
+                # 3. Respaldo: si aún no coincide, buscar si el ID de la RS aparece en el nombre de algún PDF de referencias/
+                if not info_pdf and cita.tipo_fuente != "Guía Clínica / Manual":
+                    tokens_id = [t for t in normalizar_nombre(cita.id_nodo).split() if len(t) > 3 and t not in ["resumen", "tabla", "estudio", "discusion"]]
+                    for norm_arch, datos_arch in pdfs_disponibles.items():
+                        if tokens_id and all(tok in norm_arch for tok in tokens_id[:2]):
+                            info_pdf = datos_arch
+                            break
+
+                if info_pdf:
+                    nombre_real, ruta_encontrada = info_pdf
                     with open(ruta_encontrada, "rb") as pdf_file:
                         st.download_button(
                             label="📄 Abrir / Descargar PDF original",
                             data=pdf_file.read(),
-                            file_name=os.path.basename(ruta_encontrada),
+                            file_name=nombre_real,
                             mime="application/pdf",
                             key=f"pdf_{cita.id_nodo}_{idx}"
                         )
