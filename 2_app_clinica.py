@@ -89,11 +89,11 @@ class IntervencionLogopedica(BaseModel):
 
 
 class CitaRAG(BaseModel):
-    id_nodo: str = Field(description="ID exacto del claim (ej. DCA-C001, EP-CLM-002, ATX-CL-007) o RS_ID (ej. COCHRANE-2014-ATX-RESUMEN).")
+    id_nodo: str = Field(description="ID exacto del claim (ej. ATX-CL-007) o RS_ID (ej. COCHRANE-2014-ATX-RESUMEN).")
     tipo_fuente: Literal["Guía Clínica / Manual", "Revisión Sistemática / Estudio Primario"] = Field(
         description="Origen jerárquico de la evidencia."
     )
-    fuente_documental: str = Field(description="ID del documento, año y localizador físico PDF o sección de la RS.")
+    fuente_documental: str = Field(description="ID del documento, año y localizador físico PDF o sección de RS.")
     hecho_clinico_factual: str = Field(description="Dato clínico objetivo extraído sin narrativa autoral.")
 
 
@@ -132,7 +132,7 @@ class ReporteClinicoLogopedico(BaseModel):
         return self
 
 
-# 2. CARGA DEL ÍNDICE VECTORIAL (CAPA 1: PROTOCOLOS Y GUÍAS) Y CAPA 2 (REVISIONES SISTEMÁTICAS)
+# 2. CARGA DEL ÍNDICE VECTORIAL Y CAPA DE REVISIONES SISTEMÁTICAS
 @st.cache_resource
 def inicializar_indice():
     Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-large")
@@ -170,7 +170,6 @@ def recuperar_evidencia_rs(patologia: str, trastorno: str) -> str:
         and (r.get("dominio_clinico", "").lower() in [trastorno.lower(), "evaluación", "general"])
     ]
 
-    # Orden cronológico inverso para resolución de conflictos temporales
     resumenes.sort(key=lambda x: x.get("anio_publicacion", 0), reverse=True)
     especificos.sort(key=lambda x: x.get("anio_publicacion", 0), reverse=True)
 
@@ -181,8 +180,8 @@ def recuperar_evidencia_rs(patologia: str, trastorno: str) -> str:
     bloques = []
     for r in seleccionados:
         bloques.append(
-            f"[RS_ID: {r.get('rs_id', '')} | Año: {r.get('anio_publicacion', '')} | Sección: {r.get('seccion_rs', '')} | "
-            f"Subtipo: {r.get('subtipo_ataxia', '')} | Dominio: {r.get('dominio_clinico', '')}]\n"
+            f"[RS_ID: {r['rs_id']} | Año: {r['anio_publicacion']} | Sección: {r['seccion_rs']} | "
+            f"Subtipo: {r.get('subtipo_ataxia', 'N/A')} | Dominio: {r['dominio_clinico']} | Archivo: {r.get('archivo_origen', '')}]\n"
             f"- Intervención/Herramienta: {r.get('intervencion_evaluada', '')} ({r.get('herramientas_evaluacion', '')})\n"
             f"- Nivel de evidencia: {r.get('nivel_evidencia', '')} | Limitaciones: {r.get('limitaciones', '')}\n"
             f"- Síntesis: {r.get('contenido_chunk', '')}"
@@ -283,13 +282,13 @@ st.markdown(f"""
     <div>
         <h2>LOGO-Pilot · Soporte Clínico para Logopedia Neurológica</h2>
         <p>Sistema de navegación y apoyo a la toma de decisiones en DCA, Parkinson y Ataxias Hereditarias</p>
-        <span class="badge-rag">Corpus Auditado · Jerarquía Dual (Protocolos + RS) · Supervisión Humana (Art. 14 EU AI Act)</span>
+        <span class="badge-rag">Corpus Auditado · Trazabilidad CitaRAG Dual · Supervisión Humana (Art. 14 EU AI Act)</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
 if not os.getenv("OPENAI_API_KEY"):
-    st.error("Falta configurar OPENAI_API_KEY en la terminal antes de iniciar.")
+    st.error("Falta configurar OPENAI_API_KEY en la terminal o en Secrets antes de iniciar.")
     st.stop()
 
 indice = inicializar_indice()
@@ -301,6 +300,7 @@ with col_izq:
     with c1_i.popover("ℹ️"):
         st.caption("1. Elija fuente de datos.\n2. Verifique anonimización (sin nombres ni NHC).\n3. Pulse Analizar.")
 
+    # 1. Selector de las 3 vías de entrada
     modo_ingreso = st.radio(
         "Modo de entrada de datos:",
         ["Banco Maestro (25 Casos)", "Subir Informe (PDF/DOCX/TXT/XLSX)", "Ficha Caso Real (Manual)"],
@@ -311,6 +311,7 @@ with col_izq:
     idx_pat = 0
     texto_auto = ""
 
+    # VÍA 1: Desplegable del Banco Maestro
     if modo_ingreso == "Banco Maestro (25 Casos)":
         casos_dict = {"-- Selecciona un caso --": None}
         archivo_maestro = "LOGO_LLM_25_Casos_Clinicos_Sinteticos_Banco_Maestro_v1_0.json"
@@ -338,15 +339,18 @@ with col_izq:
             ]
             texto_auto = "\n".join(lineas_caso)
 
+    # VÍA 2: Subida de archivos locales
     elif modo_ingreso == "Subir Informe (PDF/DOCX/TXT/XLSX)":
         archivo_informe = st.file_uploader("Sube el informe clínico:", type=["pdf", "docx", "txt", "xlsx"])
         if archivo_informe:
             texto_auto = extraer_texto_archivo(archivo_informe)
             st.success("Informe cargado y anonimizado localmente.")
 
+    # VÍA 3: Ficha estructurada manual de 8 bloques
     else:
         texto_auto = renderizar_ficha_real()
 
+    # 2. Parámetros fijos y botón de ejecución
     pat_sel = st.selectbox("Patología Neurológica Base", opciones_pat, index=idx_pat)
     trast_sel = st.selectbox("Dominio Logopédico", [t.value for t in TipoTrastorno])
     instrumental = st.checkbox("Consta prueba instrumental previa (FEES / VFSS)")
@@ -371,11 +375,15 @@ if analizar and notas:
         "=== CAPA 2: REVISIONES SISTEMÁTICAS Y ESTUDIOS PRIMARIOS (NIVEL DE EVIDENCIA) ===\n"
         f"{contexto_rs}\n\n"
         f"DATOS DEL CASO CLÍNICO:\n{consulta}\n\n"
-        "REGLAS DE RAZONAMIENTO CLÍNICO Y TRAZABILIDAD (OBLIGATORIAS):\n"
+        "INSTRUCCIONES DE DETALLE, SEGURIDAD Y JERARQUÍA DE EVIDENCIA:\n"
         "1. SEPARAR EFICACIA ESTADÍSTICA DE PRÁCTICA CLÍNICA: Nunca descartes una intervención útil de la Capa 1 solo porque una Revisión Sistemática (ej. Cochrane) indique certeza baja o ausencia de ECA. Primero declara explícitamente el grado de respaldo científico según la Capa 2 (ej. 'Sin ensayos clínicos aleatorizados concluyentes según Cochrane'), y a continuación desarrolla el abordaje clínico recomendado y seguro según los manuales y protocolos de la Capa 1.\n"
         "2. RESOLUCIÓN DE CONFLICTOS TEMPORALES: Si un estudio primario o ensayo reciente (ej. terapia intensiva LSVT o miofuncional en SCA3) muestra resultados prometedores que matizan o contradicen una RS más antigua, prioriza el hallazgo cronológicamente posterior aclarando expresamente que se trata de evidencia preliminar aún no incorporada a una revisión sistemática.\n"
-        "3. TRAZABILIDAD EXPLÍCITA: En el texto y en 'evidencia_rag', diferencia siempre qué recomendación proviene de 'Guía Clínica / Manual' y qué dato proviene de 'Revisión Sistemática / Estudio Primario', citando su ID exacto.\n"
-        "4. SEGURIDAD Y DATOS AUSENTES: Desarrolla exhaustivamente el análisis fisiopatológico por subsistemas, el diagnóstico diferencial y la dosificación/fatiga. Si el caso involucra disfagia o sospecha de alteración deglutoria, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay sospecha de disfagia, déjalo en ''. Declara en 'informacion_clinica_no_disponible' todo dato ausente y en 'evidencia_cientifica_insuficiente' las limitaciones metodológicas de la Capa 2."
+        "3. TRAZABILIDAD EXPLÍCITA: En el texto y en 'evidencia_rag', diferencia siempre qué recomendación proviene de 'Guía Clínica / Manual' y qué dato proviene de 'Revisión Sistemática / Estudio Primario', citando su ID exacto (claim_id o rs_id).\n"
+        "4. Desarrolla de forma exhaustiva el análisis fisiopatológico por subsistemas y el diagnóstico diferencial.\n"
+        "5. Responde explícitamente en 'respuesta_dilema_clinico' por qué la propuesta planteada en la consulta es adecuada o contraindicada.\n"
+        "6. Detalla la dosificación, frecuencia y control de fatiga en cada procedimiento de intervención.\n"
+        "7. Si el caso involucra disfagia o sospecha de alteración deglutoria, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay sospecha de disfagia, deja 'adaptacion_dietetica_iddsi' como cadena vacía ''.\n"
+        "8. Declara explícitamente en 'informacion_clinica_no_disponible' todo dato ausente en el caso y en 'evidencia_cientifica_insuficiente' cualquier limitación metodológica o grado de certeza bajo de las fuentes."
     )
 
     for intento in range(1, 4):
@@ -524,11 +532,11 @@ if "reporte" in st.session_state:
         c_rag, c_rag_i = st.columns([0.85, 0.15])
         c_rag.subheader("3. Inspector CitaRAG")
         pop_rag = c_rag_i.popover("ℹ️")
-        pop_rag.markdown("**¿Cómo funciona la trazabilidad CitaRAG?**")
+        pop_rag.markdown("**¿Cómo funciona la trazabilidad CitaRAG Dual?**")
         pop_rag.caption(
-            "• **Jerarquía dual:** Distingue entre protocolos clínicos (📘 Guía/Manual) y evidencia estadística (📊 Rev. Sistemática).\n"
-            "• **Cero alucinaciones:** Cada afirmación está anclada a su identificador y localizador exacto.\n"
-            "• **Auditoría directa:** Usa el enlace **DOI** para verificar la fuente primaria original."
+            "• **Recuperación determinista:** Separa protocolos clínicos (📘 Guía/Manual) del nivel de evidencia científica (📊 Rev. Sistemática).\n"
+            "• **Cero alucinaciones:** Cada afirmación está anclada a su `claim_id` o `rs_id` exacto.\n"
+            "• **Auditoría directa:** Usa el enlace **DOI** o descarga el **PDF original** desde cualquiera de las 3 carpetas de referencias."
         )
 
         mapa_fuentes = {}
@@ -536,7 +544,22 @@ if "reporte" in st.session_state:
             with open("mapa_fuentes.json", "r", encoding="utf-8") as mf:
                 mapa_fuentes = json.load(mf)
 
-        carpeta_referencias = r"F:\VIU\IA SLP\Proyecto LOGO-LLM\Referencias"
+        # Indexar también los PDFs de las Revisiones Sistemáticas por rs_id
+        mapa_rs_pdfs = {}
+        for r_item in cargar_capa_rs():
+            if r_item.get("rs_id") and r_item.get("archivo_origen"):
+                mapa_rs_pdfs[r_item["rs_id"].upper()] = r_item["archivo_origen"]
+
+        carpeta_referencias = "referencias" if os.path.exists("referencias") else r"F:\VIU\IA SLP\Proyecto LOGO-LLM\Referencias"
+
+        # Pre-indexar todos los archivos PDF dentro de referencias/ (DCA, Parkinson, Ataxia)
+        indice_pdfs_locales = {}
+        if os.path.exists(carpeta_referencias):
+            for raiz, _, archivos in os.walk(carpeta_referencias):
+                for arch in archivos:
+                    if arch.lower().endswith(".pdf"):
+                        indice_pdfs_locales[arch] = os.path.join(raiz, arch)
+                        indice_pdfs_locales[normalizar_nombre(arch)] = os.path.join(raiz, arch)
 
         for idx, cita in enumerate(reporte.evidencia_rag):
             texto_busqueda = f"{cita.id_nodo} {cita.fuente_documental}".upper()
@@ -554,20 +577,20 @@ if "reporte" in st.session_state:
                 if doi.startswith("10."):
                     st.markdown(f"[Abrir publicación oficial (DOI: {doi})](https://doi.org/{doi})")
 
-                nombre_pdf = info_doc.get("archivo_pdf", "")
+                nombre_pdf = info_doc.get("archivo_pdf", "") or mapa_rs_pdfs.get(cita.id_nodo.upper(), "")
                 ruta_encontrada = None
-                if nombre_pdf and os.path.exists(carpeta_referencias):
-                    for raiz, _, archivos in os.walk(carpeta_referencias):
-                        if nombre_pdf in archivos:
-                            ruta_encontrada = os.path.join(raiz, nombre_pdf)
-                            break
+                if nombre_pdf:
+                    ruta_encontrada = (
+                        indice_pdfs_locales.get(nombre_pdf)
+                        or indice_pdfs_locales.get(normalizar_nombre(nombre_pdf))
+                    )
 
-                if ruta_encontrada:
+                if ruta_encontrada and os.path.exists(ruta_encontrada):
                     with open(ruta_encontrada, "rb") as pdf_file:
                         st.download_button(
-                            label="Abrir / Descargar PDF original",
+                            label="📄 Abrir / Descargar PDF original",
                             data=pdf_file.read(),
-                            file_name=nombre_pdf,
+                            file_name=os.path.basename(ruta_encontrada),
                             mime="application/pdf",
                             key=f"pdf_{cita.id_nodo}_{idx}"
                         )
