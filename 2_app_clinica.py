@@ -280,7 +280,9 @@ st.markdown(f"""
 <style>
     .block-container {{ padding-top: 3.2rem; padding-bottom: 2.5rem; }}
     .header-cdss {{
-        background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 21%, #2563EB 32%, #1E3A8A 65%, #0F172A 100%);
+        box-sizing: border-box;
+        width: 100%;
+        background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 13%, #2563EB 23%, #1E3A8A 62%, #0F172A 100%);
         padding: 1.4rem 2.2rem;
         border-radius: 12px;
         margin-bottom: 1.5rem;
@@ -295,11 +297,11 @@ st.markdown(f"""
         width: 84px;
         flex-shrink: 0;
         mix-blend-mode: multiply;
+        filter: contrast(1.06) brightness(1.03);
     }}
     .header-contenido {{
         flex: 1;
-        display: flex;
-        flex-direction: column;
+        min-width: 0;
     }}
     .header-cdss h2 {{
         margin: 0;
@@ -315,27 +317,23 @@ st.markdown(f"""
         text-shadow: 0 1px 3px rgba(15, 23, 42, 0.45);
     }}
     .header-inferior {{
-        align-self: flex-end;
         text-align: right;
-        margin-top: 0.45rem;
+        margin-top: 0.55rem;
     }}
     .header-cdss p {{
         margin: 0;
-        font-size: 0.92rem;
+        font-size: 0.93rem;
         color: #F8FAFC;
         font-weight: 500;
         text-shadow: 0 1px 3px rgba(15, 23, 42, 0.55);
     }}
-    .badge-rag {{
-        display: inline-block;
-        background-color: rgba(15, 23, 42, 0.45);
-        color: #F8FAFC;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        padding: 4px 12px;
-        border-radius: 12px;
+    .subtexto-rag {{
+        display: block;
+        color: #CBD5E1;
         font-size: 0.78rem;
-        margin-top: 0.45rem;
+        margin-top: 0.3rem;
         font-weight: 600;
+        letter-spacing: 0.2px;
     }}
     div[data-testid="stExpander"] {{ border: 1px solid #CBD5E1; border-radius: 6px; background-color: #F8FAFC; }}
 </style>
@@ -345,7 +343,7 @@ st.markdown(f"""
         <h2><span class="titulo-logo">LOGO</span><span class="titulo-pilot">-Pilot · Soporte Clínico para Logopedia Neurológica</span></h2>
         <div class="header-inferior">
             <p>Sistema de navegación y apoyo a la toma de decisiones en DCA, Parkinson y Ataxias Hereditarias</p>
-            <span class="badge-rag">Corpus Auditado · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
+            <span class="subtexto-rag">Corpus Auditado · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
         </div>
     </div>
 </div>
