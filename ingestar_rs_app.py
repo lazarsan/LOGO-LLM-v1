@@ -1,164 +1,240 @@
 import json
 import os
-from typing import List, Literal
+from typing import List, Literal, Optional
 import streamlit as st
 from pydantic import BaseModel, Field
 from openai import OpenAI
 from pypdf import PdfReader
 
-# 1. ESQUEMA DE EXTRACCIÓN ESTRUCTURADA DE REVISIONES SISTEMÁTICAS
-class ChunkRS(BaseModel):
-    rs_id: str = Field(
-        description="Identificador único del chunk (ej. COCHRANE-2014-RESUMEN, RS-2021-FILA-01, RS-2021-DISC-DISARTRIA)."
+st.set_page_config(
+    page_title="Extractor de Evidencia Científica | LOGO-Pilot",
+    page_icon="📊",
+    layout="wide"
+)
+
+# 1. ESQUEMA PYDANTIC DE EXTRACCIÓN CLÍNICA Y ESTADÍSTICA
+class DesenlaceMedido(BaseModel):
+    tipo_desenlace: Literal["Primario", "Secundario"] = Field(
+        description="Indica si es desenlace primario o secundario."
     )
-    tipo_fuente: Literal["revision_sistematica"] = "revision_sistematica"
-    seccion_rs: Literal["resumen_conclusiones", "tabla_estudio_primario", "discusion_practica_clinica"] = Field(
-        description="Sección de origen según la estrategia de fragmentación."
+    nombre_desenlace: str = Field(
+        description="Variable clínica o funcional medida (ej. inteligibilidad del habla, seguridad deglutoria, presión espiratoria máxima)."
+    )
+    instrumento_escala: str = Field(
+        description="Escala, prueba acústica o instrumental empleada (ej. SARA, FDA-2, VHI, VFSS, FEES, SPL)."
+    )
+    momentos_medicion: str = Field(
+        description="Tiempos de evaluación (ej. basal, post-tratamiento inmediato, seguimiento a 3 meses)."
+    )
+
+class VariablesContinuas(BaseModel):
+    tamano_muestral_grupos: str = Field(
+        description="Tamaño muestral total y por grupo (ej. n=24; Experimental n=12, Control n=12)."
+    )
+    media_y_de: str = Field(
+        description="Media y desviación estándar (DE) por grupo y momento si aplica; o 'No reportado'."
+    )
+    mediana_y_ric: str = Field(
+        description="Mediana y rango intercuartílico (RIC / IQR) si aplica; o 'No reportado'."
+    )
+    error_estandar: str = Field(
+        description="Error estándar (EE / SE) si aplica; o 'No reportado'."
+    )
+
+class VariablesCategoricasEfecto(BaseModel):
+    eventos_y_proporciones: str = Field(
+        description="Número de eventos y proporciones (%) por grupo si aplica; o 'No reportado'."
+    )
+    medidas_asociacion_ic_p: str = Field(
+        description="Odds Ratio (OR), Riesgo Relativo (RR), tamaño del efecto (d de Cohen), intervalos de confianza (IC 95%) y valores p; o 'No reportado'."
+    )
+
+class ChunkEvidenciaCientifica(BaseModel):
+    rs_id: str = Field(
+        description="Identificador único compuesto del bloque (ej. COCHRANE-2014-ATX-RESUMEN, ECA-2023-SCA3-TABLA-01)."
+    )
+    tipo_documento: Literal[
+        "Revisión Sistemática / Metaanálisis",
+        "Ensayo Clínico (ECA / Clinical Trial)",
+        "Artículo Científico Primario / Observacional"
+    ] = Field(description="Tipo de publicación científica analizada.")
+    seccion_rs: Literal[
+        "resumen_conclusiones",
+        "tabla_estudio_primario",
+        "discusion_practica_clinica"
+    ] = Field(
+        description="Sección estratégica: 'resumen_conclusiones' para síntesis global, 'tabla_estudio_primario' para cada estudio/brazo analizado, 'discusion_practica_clinica' para implicaciones por subdominio."
     )
     prioridad_recuperacion: Literal["alta", "media"] = Field(
-        description="'alta' exclusivamente para resumen_conclusiones; 'media' para el resto."
+        description="'alta' para resumen_conclusiones; 'media' para estudios individuales y discusión."
     )
-    anio_publicacion: int = Field(description="Año de publicación de la Revisión Sistemática.")
-    patologia: str = Field(description="Patología neurológica base (ej. Ataxia Hereditaria).")
+    anio_publicacion: int = Field(description="Año de publicación del documento.")
+    patologia: Literal["Ataxia Hereditaria", "Enfermedad de Parkinson", "Daño Cerebral Adquirido"]
     subtipo_ataxia: str = Field(
-        description="Subtipo específico evaluado (ej. Ataxia de Friedreich, SCA1, SCA2, SCA3, SCA6, Mixta/No especificada)."
+        description="Subtipo específico (ej. SCA1, SCA3, Ataxia de Friedreich, Ataxias mixtas) o fenotipo clínico."
     )
-    dominio_clinico: Literal["Evaluación", "Disartria", "Disfagia Neurogénica", "General"] = Field(
-        description="Dominio clínico principal del chunk."
-    )
+    dominio_clinico: Literal["Evaluación", "Disartria", "Disfagia Neurogénica", "Afasia", "Dispraxia", "General"]
     intervencion_evaluada: str = Field(
-        description="Terapia, técnica o programa evaluado (ej. LSVT LOUD, terapia miofuncional, manejo postural)."
+        description="Descripción detallada de la intervención o exposición (técnica, dosis, frecuencia, duración)."
+    )
+    comparadores: str = Field(
+        description="Grupo control, placebo, terapia estándar o ausencia de comparador (ej. serie de casos)."
+    )
+    desenlaces_e_instrumentos: List[DesenlaceMedido] = Field(
+        description="Lista estructurada de desenlaces primarios/secundarios, escalas y momentos de medición."
     )
     herramientas_evaluacion: str = Field(
-        description="Escalas, parámetros acústicos o pruebas instrumentales empleadas (ej. SARA, VFSS, FEES, inteligibilidad)."
+        description="Resumen consolidado de todas las herramientas y escalas empleadas."
+    )
+    variables_continuas: VariablesContinuas
+    variables_categoricas_efecto: VariablesCategoricasEfecto
+    hallazgos_cualitativos_citas: str = Field(
+        description="Categorías temáticas, citas textuales relevantes o hallazgos cualitativos/narrativos clave."
+    )
+    riesgo_sesgo_calidad: str = Field(
+        description="Valoración del riesgo de sesgo o calidad metodológica según herramienta empleada (ej. Cochrane RoB 2, ROBINS-I, JBI, escala PEDro, GRADE) y dominios afectados."
     )
     nivel_evidencia: str = Field(
-        description="Grado de certeza o diseño del estudio (ej. GRADE Muy Bajo, Ausencia de ECA, Serie de casos Nivel IV)."
+        description="Grado de certeza global (ej. GRADE Muy bajo, ECA piloto, Serie de casos Nivel IV)."
     )
     limitaciones: str = Field(
-        description="Limitaciones metodológicas (ej. muestras pequeñas, sin grupo control, riesgo de sesgo)."
+        description="Limitaciones metodológicas (ej. muestra pequeña, sin cegamiento, heterogeneidad, seguimiento corto)."
     )
     contenido_chunk: str = Field(
-        description="Síntesis factual completa del fragmento. Si es tabla_estudio_primario, incluir el título de la RS como contexto."
+        description="Síntesis clínica densa y autocontenida del bloque lista para ser recuperada por el CDSS, incluyendo título de la fuente como contexto."
     )
 
-
-class ExtraccionRS(BaseModel):
-    titulo_rs: str = Field(description="Título completo de la Revisión Sistemática.")
-    chunks: List[ChunkRS]
+class ExtraccionDocumentoCientifico(BaseModel):
+    chunks: List[ChunkEvidenciaCientifica]
 
 
+# 2. FUNCIONES AUXILIARES
 def extraer_texto_pdf(archivo_subido) -> str:
     lector = PdfReader(archivo_subido)
-    paginas = [p.extract_text() or "" for p in lector.pages]
-    return "\n\n".join(paginas)
+    paginas = []
+    for i, page in enumerate(lector.pages):
+        txt = page.extract_text() or ""
+        if txt.strip():
+            paginas.append(f"--- PÁGINA {i + 1} ---
+{txt}")
+    return "
+
+".join(paginas)
 
 
-def procesar_rs_con_llm(texto_pdf: str, id_base: str, anio: int, patologia: str, api_key: str) -> ExtraccionRS:
-    cliente = OpenAI(api_key=api_key)
-    prompt = (
-        f"Analiza la siguiente Revisión Sistemática (ID base: {id_base}, Año: {anio}, Patología: {patologia}) "
-        "y extrae una capa estructurada de metadatos y chunks siguiendo ESTRICTAMENTE estas 3 reglas de fragmentación:\n\n"
-        "1. RESUMEN / CONCLUSIONES DE LOS AUTORES ('resumen_conclusiones', prioridad 'alta'): "
-        "Genera UN ÚNICO chunk completo que sintetice las conclusiones globales y el grado de certeza estadística (ej. ausencia de ECA en Cochrane).\n"
-        "2. TABLAS DE CARACTERÍSTICAS DE ESTUDIOS INCLUIDOS ('tabla_estudio_primario', prioridad 'media'): "
-        "Convierte CADA FILA o estudio primario relevante analizado dentro de la revisión en un chunk independiente. "
-        "Incluye siempre el título de la RS como contexto inicial y especifica autor, año, subtipo de ataxia, intervención, herramientas y resultados.\n"
-        "3. DISCUSIÓN / IMPLICACIONES PARA LA PRÁCTICA CLÍNICA ('discusion_practica_clinica', prioridad 'media'): "
-        "Fragmenta semánticamente por subdominio ('Evaluación', 'Disartria', 'Disfagia Neurogénica' o 'General'), "
-        "conectando las limitaciones estadísticas con la práctica clínica y la seguridad del paciente.\n\n"
-        f"TEXTO DE LA REVISIÓN SISTEMÁTICA:\n{texto_pdf[:95000]}"
-    )
+def construir_prompt_extraccion(
+    texto_pdf: str,
+    id_base: str,
+    anio: int,
+    patologia: str,
+    tipo_doc: str
+) -> str:
+    return f"""Eres un metodólogo clínico experto en Medicina Basada en la Evidencia y Logopedia Neurológica.
+Analiza el siguiente texto científico ({tipo_doc}, año {anio}, patología: {patologia}, ID base: {id_base}) y extrae bloques estructurados siguiendo estrictamente estas reglas:
 
-    respuesta = cliente.beta.chat.completions.parse(
-        model="gpt-4o",
-        temperature=0.0,
-        messages=[
-            {
-                "role": "system",
-                "content": "Eres un metodólogo experto en Medicina Basada en la Evidencia y Logopedia Neurológica."
-            },
-            {"role": "user", "content": prompt},
-        ],
-        response_format=ExtraccionRS,
-    )
-    return respuesta.choices[0].message.parsed
+REGLAS DE FRAGMENTACIÓN ESTRATÉGICA:
+1. RESUMEN Y CONCLUSIONES ('resumen_conclusiones', prioridad 'alta'): Genera un único chunk completo que sintetice las conclusiones de los autores, el objetivo PICO y el nivel global de evidencia.
+2. ESTUDIOS PRIMARIOS / BRAZOS DE INTERVENCIÓN ('tabla_estudio_primario', prioridad 'media'):
+   - Si es una Revisión Sistemática: convierte CADA estudio incluido en las tablas de características o resultados en un chunk independiente, manteniendo el título de la RS como contexto.
+   - Si es un Clinical Trial (ECA) o Artículo Primario: genera un chunk detallado por cada comparación principal o subgrupo analizado.
+3. DISCUSIÓN E IMPLICACIONES CLÍNICAS ('discusion_practica_clinica', prioridad 'media'): Fragmenta semánticamente por subdominio clínico (Evaluación, Disartria, Disfagia Neurogénica, etc.) conectando los hallazgos con la seguridad y práctica clínica.
+
+REGLAS DE EXTRACCIÓN METODOLÓGICA Y ESTADÍSTICA (OBLIGATORIAS):
+- Intervenciones y comparadores: Especifica dosis, intensidad, frecuencia, duración y características del grupo comparador.
+- Desenlaces: Distingue desenlaces Primarios y Secundarios, su instrumento/escala exacta y todos los momentos de medición.
+- Variables continuas: Extrae tamaño muestral (n) por grupos, media y desviación estándar (DE), mediana y rango intercuartílico (RIC) y error estándar (EE) cuando consten en el texto o tablas.
+- Variables categóricas y efecto: Extrae número de eventos, proporciones (%), Odds Ratio (OR), Riesgo Relativo (RR), intervalos de confianza (IC 95%) y valores p.
+- Cualitativo / Narrativo: Extrae categorías, citas o hallazgos relevantes.
+- Riesgo de sesgo y calidad: Extrae la evaluación de sesgo según Cochrane (RoB 2 / ROBINS-I), JBI, PEDro o GRADE tal como aparezca en el documento.
+- Identificadores: Nombra cada 'rs_id' empezando por '{id_base}-' (ej. '{id_base}-RESUMEN', '{id_base}-ESTUDIO-01', '{id_base}-DISC-DISARTRIA'). No inventes cifras no presentes en el texto.
+
+TEXTO DEL DOCUMENTO:
+{texto_pdf[:95000]}
+"""
 
 
-# 2. INTERFAZ VISUAL EN STREAMLIT
-st.set_page_config(page_title="LogoPilot | Ingesta de Revisiones Sistemáticas", page_icon="📊", layout="wide")
+# 3. INTERFAZ VISUAL STREAMLIT
+st.title("📊 Extractor de Evidencia Científica (RS · Clinical Trials · Artículos)")
+st.markdown(
+    "Genera y actualiza la capa estructurada **`capa_evidencia_rs.json`** con extracción PICO, "
+    "estadística (variables continuas/categóricas) y riesgo de sesgo (Cochrane / JBI) sin alterar tu índice de guías clínicas."
+)
 
-st.markdown("""
-<div style="background: linear-gradient(90deg, #1E1B4B 0%, #4C1D95 100%); color: white; padding: 1.5rem 2rem; border-radius: 10px; margin-bottom: 1.5rem; border-left: 6px solid #A855F7;">
-    <h2 style="margin: 0; font-size: 1.4rem;">LOGO-Pilot · Procesador de Revisiones Sistemáticas (Capa 2 RAG)</h2>
-    <p style="margin: 0.3rem 0 0 0; font-size: 0.9rem; color: #E2E8F0;">Genera metadatos jerárquicos y chunks por sección sin alterar los protocolos clínicos principales</p>
-</div>
-""", unsafe_allow_html=True)
+if not os.getenv("OPENAI_API_KEY"):
+    st.error("Falta configurar OPENAI_API_KEY en Secrets o en las variables de entorno.")
+    st.stop()
 
-api_key_env = os.getenv("OPENAI_API_KEY", "")
-if not api_key_env:
-    api_key_input = st.sidebar.text_input("Clave API de OpenAI (OPENAI_API_KEY):", type="password")
-else:
-    api_key_input = api_key_env
-    st.sidebar.success("OPENAI_API_KEY detectada automáticamente.")
-
-# Inicializar almacén en memoria (cargando capa_evidencia_rs.json si ya existe en el repositorio)
-if "chunks_rs_acumulados" not in st.session_state:
+if "acumulado_rs" not in st.session_state:
     if os.path.exists("capa_evidencia_rs.json"):
         with open("capa_evidencia_rs.json", "r", encoding="utf-8") as f:
-            st.session_state["chunks_rs_acumulados"] = json.load(f)
+            st.session_state["acumulado_rs"] = json.load(f)
     else:
-        st.session_state["chunks_rs_acumulados"] = []
+        st.session_state["acumulado_rs"] = []
 
-col_form, col_preview = st.columns([1, 1.3])
+col1, col2 = st.columns([1, 1.3])
 
-with col_form:
-    st.subheader("1. Cargar Revisión Sistemática (PDF)")
-    archivo_pdf = st.file_uploader("Arrastra aquí el PDF de la Revisión Sistemática:", type=["pdf"])
-    id_base = st.text_input("Identificador corto de la RS:", placeholder="Ej. COCHRANE-2014-ATX o RS-2022-SCA3")
-    anio_rs = st.number_input("Año de publicación:", min_value=1990, max_value=2030, value=2022, step=1)
-    patologia_rs = st.selectbox(
-        "Patología Neurológica Base:",
+with col1:
+    st.subheader("1. Cargar Documento Científico")
+    archivo_pdf = st.file_uploader("Selecciona el PDF (RS, Clinical Trial o Artículo):", type=["pdf"])
+    tipo_doc = st.selectbox(
+        "Tipo de documento:",
+        [
+            "Revisión Sistemática / Metaanálisis",
+            "Ensayo Clínico (ECA / Clinical Trial)",
+            "Artículo Científico Primario / Observacional"
+        ]
+    )
+    patologia_sel = st.selectbox(
+        "Patología neurológica:",
         ["Ataxia Hereditaria", "Enfermedad de Parkinson", "Daño Cerebral Adquirido"]
     )
+    c_id, c_anio = st.columns([0.65, 0.35])
+    id_base = c_id.text_input("Identificador corto (sin espacios):", placeholder="ej. COCHRANE-2014-ATX").strip().upper()
+    anio_pub = c_anio.number_input("Año:", min_value=1990, max_value=2030, value=2024, step=1)
 
-    procesar = st.button("⚙️ Extraer Metadatos y Fragmentar RS", type="primary", use_container_width=True)
+    procesar = st.button("⚙️ Extraer Datos Metodológicos y Fragmentar", type="primary", use_container_width=True)
 
 if procesar:
-    if not api_key_input:
-        st.error("Introduce tu clave OPENAI_API_KEY en la barra lateral antes de procesar.")
-    elif not archivo_pdf or not id_base.strip():
-        st.warning("Sube un archivo PDF y escribe un identificador corto (ej. COCHRANE-2014-ATX).")
+    if not archivo_pdf or not id_base:
+        st.warning("Por favor, sube un archivo PDF e indica un identificador corto antes de procesar.")
     else:
-        with st.spinner("Extrayendo texto y estructurando Resumen, Tablas de Estudios y Discusión..."):
+        with st.spinner("Analizando texto, tablas estadísticas y riesgo de sesgo con GPT-4o..."):
             texto_extraido = extraer_texto_pdf(archivo_pdf)
-            resultado = procesar_rs_con_llm(
-                texto_pdf=texto_extraido,
-                id_base=id_base.strip().upper(),
-                anio=int(anio_rs),
-                patologia=patologia_rs,
-                api_key=api_key_input
+            prompt = construir_prompt_extraccion(texto_extraido, id_base, int(anio_pub), patologia_sel, tipo_doc)
+            cliente = OpenAI()
+            respuesta = cliente.beta.chat.completions.parse(
+                model="gpt-4o",
+                temperature=0.0,
+                messages=[
+                    {"role": "system", "content": "Eres un extractor experto de datos biomédicos y estadísticos para medicina basada en la evidencia."},
+                    {"role": "user", "content": prompt}
+                ],
+                response_format=ExtraccionDocumentoCientifico,
             )
-            nuevos_chunks = [c.model_dump() for c in resultado.chunks]
+            resultado = respuesta.choices[0].message.parsed
 
-            # Evitar duplicados si se reprocesa el mismo ID base
-            prefix = id_base.strip().upper()
-            existentes_filtrados = [
-                item for item in st.session_state["chunks_rs_acumulados"]
-                if not item.get("rs_id", "").startswith(prefix)
+            # Eliminar bloques previos del mismo id_base para evitar duplicados al re-procesar
+            st.session_state["acumulado_rs"] = [
+                item for item in st.session_state["acumulado_rs"]
+                if not str(item.get("rs_id", "")).upper().startswith(f"{id_base}-")
             ]
-            st.session_state["chunks_rs_acumulados"] = existentes_filtrados + nuevos_chunks
-            st.success(f"Procesada: '{resultado.titulo_rs}' ({len(nuevos_chunks)} chunks generados).")
 
-with col_preview:
-    st.subheader("2. Vista Previa y Descarga de `capa_evidencia_rs.json`")
-    total_chunks = len(st.session_state["chunks_rs_acumulados"])
-    st.info(f"Total de fragmentos acumulados en la capa de evidencia: **{total_chunks}**")
+            nuevos_registros = []
+            for chunk in resultado.chunks:
+                reg = chunk.model_dump()
+                reg["archivo_origen"] = archivo_pdf.name
+                nuevos_registros.append(reg)
 
-    if total_chunks > 0:
-        json_final = json.dumps(st.session_state["chunks_rs_acumulados"], ensure_ascii=False, indent=2)
+            st.session_state["acumulado_rs"].extend(nuevos_registros)
+            st.success(f"✅ Se extrajeron {len(nuevos_registros)} bloques estructurados de '{archivo_pdf.name}'.")
+
+with col2:
+    st.subheader(f"2. Capa de Evidencia Acumulada ({len(st.session_state['acumulado_rs'])} bloques)")
+
+    if st.session_state["acumulado_rs"]:
+        json_final = json.dumps(st.session_state["acumulado_rs"], ensure_ascii=False, indent=2)
         st.download_button(
-            label="📥 Descargar capa_evidencia_rs.json (Listo para subir a GitHub)",
+            label="📥 Descargar capa_evidencia_rs.json actualizado",
             data=json_final,
             file_name="capa_evidencia_rs.json",
             mime="application/json",
@@ -166,19 +242,18 @@ with col_preview:
             use_container_width=True
         )
 
-        st.markdown("#### Inspección de fragmentos generados:")
-        for item in reversed(st.session_state["chunks_rs_acumulados"]):
-            etiqueta = {
-                "resumen_conclusiones": "🔴 [ALTA] Resumen / Conclusiones",
-                "tabla_estudio_primario": "🔵 [MEDIA] Estudio Primario (Tabla)",
-                "discusion_practica_clinica": "🟢 [MEDIA] Discusión Práctica Clínica"
-            }.get(item.get("seccion_rs", ""), item.get("seccion_rs", ""))
-
-            with st.expander(f"{etiqueta} · {item.get('rs_id')} ({item.get('anio_publicacion')})"):
-                st.caption(
-                    f"**Subtipo:** {item.get('subtipo_ataxia')} | **Dominio:** {item.get('dominio_clinico')} | "
-                    f"**Nivel evidencia:** {item.get('nivel_evidencia')}"
-                )
-                st.markdown(f"**Intervención / Herramientas:** {item.get('intervencion_evaluada')} ({item.get('herramientas_evaluacion')})")
+        st.divider()
+        for idx, item in enumerate(reversed(st.session_state["acumulado_rs"][-10:])):
+            with st.expander(f"{item.get('rs_id')} · {item.get('dominio_clinico')} ({item.get('seccion_rs')})", expanded=(idx == 0)):
+                st.markdown(f"**Documento:** {item.get('tipo_documento')} | **Subtipo:** {item.get('subtipo_ataxia')} | **Archivo:** `{item.get('archivo_origen', '')}`")
+                st.markdown(f"**Intervención:** {item.get('intervencion_evaluada')} **vs.** {item.get('comparadores', 'No especificado')}")
+                st.markdown(f"**Riesgo de sesgo / Calidad:** {item.get('riesgo_sesgo_calidad', 'No especificado')} | **Certeza:** {item.get('nivel_evidencia')}")
+                vc = item.get("variables_continuas", {})
+                vcat = item.get("variables_categoricas_efecto", {})
+                if vc:
+                    st.caption(f"📈 Continuas: n={vc.get('tamano_muestral_grupos')} | Media/DE: {vc.get('media_y_de')} | Mediana/RIC: {vc.get('mediana_y_ric')} | EE: {vc.get('error_estandar')}")
+                if vcat:
+                    st.caption(f"📊 Categóricas/Efecto: Eventos: {vcat.get('eventos_y_proporciones')} | OR/RR/IC/p: {vcat.get('medidas_asociacion_ic_p')}")
                 st.write(item.get("contenido_chunk"))
-                st.caption(f"*Limitaciones:* {item.get('limitaciones')}")
+    else:
+        st.info("Aún no hay bloques cargados. Sube un PDF a la izquierda para comenzar.")
