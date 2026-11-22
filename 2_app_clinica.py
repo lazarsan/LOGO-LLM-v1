@@ -282,7 +282,7 @@ st.markdown(f"""
     .header-cdss {{
         box-sizing: border-box;
         width: 100%;
-        background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 13%, #2563EB 23%, #1E3A8A 62%, #0F172A 100%);
+        background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 10%, #2563EB 23%, #1E3A8A 62%, #0F172A 100%);
         padding: 1.4rem 2.2rem;
         border-radius: 12px;
         margin-bottom: 1.5rem;
