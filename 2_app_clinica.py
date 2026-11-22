@@ -280,43 +280,73 @@ st.markdown(f"""
 <style>
     .block-container {{ padding-top: 3.2rem; padding-bottom: 2.5rem; }}
     .header-cdss {{
-        background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 16%, #3B82F6 44%, #1E3A8A 72%, #0F172A 100%);
-        padding: 1.5rem 2.2rem;
+        background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 21%, #2563EB 32%, #1E3A8A 65%, #0F172A 100%);
+        padding: 1.4rem 2.2rem;
         border-radius: 12px;
         margin-bottom: 1.5rem;
         border: 1px solid #E2E8F0;
         border-left: 6px solid #1E3A8A;
         box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
     }}
-    .header-cdss h2 {{ margin: 0; font-size: 1.55rem; font-weight: 800; letter-spacing: 0.3px; }}
-    .titulo-logo {{ color: #0F172A; }}
-    .titulo-pilot {{ color: #FFFFFF; text-shadow: 0 1px 3px rgba(15, 23, 42, 0.45); }}
+    .logo-fundido {{
+        width: 84px;
+        flex-shrink: 0;
+        mix-blend-mode: multiply;
+    }}
+    .header-contenido {{
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }}
+    .header-cdss h2 {{
+        margin: 0;
+        font-size: 1.55rem;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+    }}
+    .titulo-logo {{
+        color: #0F172A;
+    }}
+    .titulo-pilot {{
+        color: #FFFFFF;
+        text-shadow: 0 1px 3px rgba(15, 23, 42, 0.45);
+    }}
+    .header-inferior {{
+        align-self: flex-end;
+        text-align: right;
+        margin-top: 0.45rem;
+    }}
     .header-cdss p {{
-        margin: 0.35rem 0 0 0;
+        margin: 0;
         font-size: 0.92rem;
         color: #F8FAFC;
         font-weight: 500;
-        text-shadow: 0 1px 3px rgba(15, 23, 42, 0.65);
+        text-shadow: 0 1px 3px rgba(15, 23, 42, 0.55);
     }}
     .badge-rag {{
         display: inline-block;
-        background-color: rgba(15, 23, 42, 0.55);
+        background-color: rgba(15, 23, 42, 0.45);
         color: #F8FAFC;
-        border: 1px solid rgba(255, 255, 255, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         padding: 4px 12px;
         border-radius: 12px;
         font-size: 0.78rem;
-        margin-top: 0.55rem;
+        margin-top: 0.45rem;
         font-weight: 600;
     }}
     div[data-testid="stExpander"] {{ border: 1px solid #CBD5E1; border-radius: 6px; background-color: #F8FAFC; }}
 </style>
-<div class="header-cdss" style="display: flex; align-items: center; gap: 1.6rem;">
-    <img src="data:image/png;base64,{img_b64}" width="82" style="flex-shrink: 0;">
-    <div>
+<div class="header-cdss">
+    <img src="data:image/png;base64,{img_b64}" class="logo-fundido">
+    <div class="header-contenido">
         <h2><span class="titulo-logo">LOGO</span><span class="titulo-pilot">-Pilot · Soporte Clínico para Logopedia Neurológica</span></h2>
-        <p>Sistema de navegación y apoyo a la toma de decisiones en DCA, Parkinson y Ataxias Hereditarias</p>
-        <span class="badge-rag">Corpus Auditado · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
+        <div class="header-inferior">
+            <p>Sistema de navegación y apoyo a la toma de decisiones en DCA, Parkinson y Ataxias Hereditarias</p>
+            <span class="badge-rag">Corpus Auditado · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
+        </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
