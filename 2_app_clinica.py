@@ -280,33 +280,43 @@ st.markdown(f"""
 <style>
     .block-container {{ padding-top: 3.2rem; padding-bottom: 2.5rem; }}
     .header-cdss {{
-        background: linear-gradient(90deg, #1E1B4B 0%, #4C1D95 100%);
-        color: white;
-        padding: 1.8rem 2.2rem;
-        border-radius: 10px;
+        background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 16%, #3B82F6 44%, #1E3A8A 72%, #0F172A 100%);
+        padding: 1.5rem 2.2rem;
+        border-radius: 12px;
         margin-bottom: 1.5rem;
-        border-left: 6px solid #A855F7;
-        box-shadow: 0 4px 12px rgba(30, 27, 75, 0.2);
+        border: 1px solid #E2E8F0;
+        border-left: 6px solid #1E3A8A;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
     }}
-    .header-cdss h2 {{ margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.3px; }}
-    .header-cdss p {{ margin: 0.3rem 0 0 0; font-size: 0.9rem; color: #E2E8F0; }}
+    .header-cdss h2 {{ margin: 0; font-size: 1.55rem; font-weight: 800; letter-spacing: 0.3px; }}
+    .titulo-logo {{ color: #0F172A; }}
+    .titulo-pilot {{ color: #FFFFFF; text-shadow: 0 1px 3px rgba(15, 23, 42, 0.45); }}
+    .header-cdss p {{
+        margin: 0.35rem 0 0 0;
+        font-size: 0.92rem;
+        color: #F8FAFC;
+        font-weight: 500;
+        text-shadow: 0 1px 3px rgba(15, 23, 42, 0.65);
+    }}
     .badge-rag {{
         display: inline-block;
-        background-color: rgba(255,255,255,0.15);
-        padding: 3px 10px;
+        background-color: rgba(15, 23, 42, 0.55);
+        color: #F8FAFC;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        padding: 4px 12px;
         border-radius: 12px;
         font-size: 0.78rem;
-        margin-top: 0.5rem;
+        margin-top: 0.55rem;
         font-weight: 600;
     }}
     div[data-testid="stExpander"] {{ border: 1px solid #CBD5E1; border-radius: 6px; background-color: #F8FAFC; }}
 </style>
-<div class="header-cdss" style="display: flex; align-items: center; gap: 1.5rem;">
-    <img src="data:image/png;base64,{img_b64}" width="76" style="background: white; padding: 6px; border-radius: 12px; flex-shrink: 0;">
+<div class="header-cdss" style="display: flex; align-items: center; gap: 1.6rem;">
+    <img src="data:image/png;base64,{img_b64}" width="82" style="flex-shrink: 0;">
     <div>
-        <h2>LOGO-Pilot · Soporte Clínico para Logopedia Neurológica</h2>
+        <h2><span class="titulo-logo">LOGO</span><span class="titulo-pilot">-Pilot · Soporte Clínico para Logopedia Neurológica</span></h2>
         <p>Sistema de navegación y apoyo a la toma de decisiones en DCA, Parkinson y Ataxias Hereditarias</p>
-        <span class="badge-rag">Corpus Auditado · Trazabilidad CitaRAG + Capa RS · Supervisión Humana (Art. 14 EU AI Act)</span>
+        <span class="badge-rag">Corpus Auditado · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
