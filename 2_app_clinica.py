@@ -27,6 +27,15 @@ def limpiar_estado_anterior():
     st.session_state.pop("enlaces_externos", None)
 
 
+def calcular_semaforo_evidencia(riesgo_sesgo: str, nivel_evidencia: str) -> tuple:
+    txt = f"{riesgo_sesgo} {nivel_evidencia}".lower()
+    if any(k in txt for k in ["alto riesgo", "high risk", "muy baja", "muy bajo", "insuficiente", "jbi bajo", "critico", "crítico"]):
+        return ("🔴", "Alerta metodológica / Certeza baja", "#FEE2E2", "#991B1B")
+    if any(k in txt for k in ["bajo riesgo", "low risk", "alta certeza", "moderada", "jbi alto"]):
+        return ("🟢", "Solidez metodológica / Buena certeza", "#DCFCE7", "#166534")
+    return ("🔵", "Precaución / Evidencia intermedia o piloto", "#DBEAFE", "#1E40AF")
+
+
 # 1. ESQUEMA DE DATOS Y CORTAFUEGOS CLÍNICO
 class PatologiaBase(str, Enum):
     DCA = "Daño Cerebral Adquirido"
@@ -94,7 +103,7 @@ class CitaRAG(BaseModel):
         description="Origen jerárquico de la evidencia."
     )
     fuente_documental: str = Field(description="ID del documento, año y localizador físico o sección de RS.")
-    hecho_clinico_factual: str = Field(description="Dato clínico objetivo extraído sin narrativa autoral.")
+    hecho_clinico_factual: str = Field(description="Dato clínico objetivo y estadístico extraído sin narrativa autoral.")
 
 
 class EnsayoComparado(BaseModel):
@@ -132,7 +141,7 @@ class ReporteClinicoLogopedico(BaseModel):
         return self
 
 
-# 2. CARGA DEL ÍNDICE VECTORIAL (CAPA 1: GUÍAS Y PROTOCOLOS) Y CAPA 2 (REVISIONES SISTEMÁTICAS)
+# 2. CARGA DEL ÍNDICE VECTORIAL Y CAPA DE REVISIONES SISTEMÁTICAS
 @st.cache_resource
 def inicializar_indice():
     Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-large")
@@ -179,12 +188,30 @@ def recuperar_evidencia_rs(patologia: str, trastorno: str) -> str:
 
     bloques = []
     for r in seleccionados:
+        extras = []
+        if r.get("comparadores"):
+            extras.append(f"Comparador: {r['comparadores']}")
+        if r.get("desenlaces_primarios") or r.get("desenlaces_secundarios"):
+            extras.append(f"Desenlaces: {r.get('desenlaces_primarios', '')} / {r.get('desenlaces_secundarios', '')}")
+        if r.get("momentos_medicion"):
+            extras.append(f"Momentos medición: {r['momentos_medicion']}")
+        if r.get("variables_continuas"):
+            extras.append(f"Var. continuas: {r['variables_continuas']}")
+        if r.get("variables_categoricas"):
+            extras.append(f"Var. categóricas: {r['variables_categoricas']}")
+        if r.get("riesgo_sesgo"):
+            extras.append(f"Riesgo de sesgo (Cochrane/JBI): {r['riesgo_sesgo']}")
+        if r.get("hallazgos_cualitativos"):
+            extras.append(f"Hallazgos/citas: {r['hallazgos_cualitativos']}")
+
+        detalle_extra = "\n- ".join(extras)
         bloques.append(
-            f"[RS_ID: {r['rs_id']} | Año: {r['anio_publicacion']} | Sección: {r['seccion_rs']} | "
+            f"[RS_ID: {r['rs_id']} | Año: {r['anio_publicacion']} | Tipo: {r.get('tipo_documento', 'RS')} | Sección: {r['seccion_rs']} | "
             f"Subtipo: {r['subtipo_ataxia']} | Dominio: {r['dominio_clinico']}]\n"
             f"- Intervención/Herramienta: {r['intervencion_evaluada']} ({r['herramientas_evaluacion']})\n"
             f"- Nivel de evidencia: {r['nivel_evidencia']} | Limitaciones: {r['limitaciones']}\n"
-            f"- Síntesis: {r['contenido_chunk']}"
+            + (f"- {detalle_extra}\n" if detalle_extra else "")
+            + f"- Síntesis: {r['contenido_chunk']}"
         )
     return "\n\n".join(bloques)
 
@@ -207,7 +234,6 @@ def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
 
     texto_recuperado = ""
 
-    # 1. Consulta PubMed E-utilities oficial
     url_pm = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={query_enc}&retmode=json&retmax=5&sort=relevance"
     try:
         req_pm = urllib.request.Request(url_pm, headers=headers)
@@ -219,7 +245,6 @@ def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
     except Exception as err_pm:
         texto_recuperado += f"\n[Aviso PubMed: {err_pm}]\n"
 
-    # 2. Consulta ClinicalTrials.gov API v2 oficial
     url_ct = f"https://clinicaltrials.gov/api/v2/studies?query.term={query_enc}&pageSize=3"
     try:
         req_ct = urllib.request.Request(url_ct, headers=headers)
@@ -233,7 +258,6 @@ def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
     except Exception as err_ct:
         texto_recuperado += f"\n[Aviso ClinicalTrials: {err_ct}]\n"
 
-    # 3. Enlaces verificados de búsqueda directa
     enlaces = {
         "PubMed": f"https://pubmed.ncbi.nlm.nih.gov/?term={query_enc}",
         "PubMed Central (PMC)": f"https://pmc.ncbi.nlm.nih.gov/?term={query_enc}",
@@ -282,7 +306,7 @@ st.markdown(f"""
     <div>
         <h2>LOGO-Pilot · Soporte Clínico para Logopedia Neurológica</h2>
         <p>Sistema de navegación y apoyo a la toma de decisiones en DCA, Parkinson y Ataxias Hereditarias</p>
-        <span class="badge-rag">Corpus Auditado · Jerarquía Dual (Guías + RS) · Supervisión Humana (Art. 14 EU AI Act)</span>
+        <span class="badge-rag">Corpus Auditado · Trazabilidad CitaRAG + Capa RS · Supervisión Humana (Art. 14 EU AI Act)</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -300,7 +324,6 @@ with col_izq:
     with c1_i.popover("ℹ️"):
         st.caption("1. Elija fuente de datos.\n2. Verifique anonimización (sin nombres ni NHC).\n3. Pulse Analizar.")
 
-    # 1. Selector de las 3 vías de entrada
     modo_ingreso = st.radio(
         "Modo de entrada de datos:",
         ["Banco Maestro (25 Casos)", "Subir Informe (PDF/DOCX/TXT/XLSX)", "Ficha Caso Real (Manual)"],
@@ -311,7 +334,6 @@ with col_izq:
     idx_pat = 0
     texto_auto = ""
 
-    # VÍA 1: Desplegable del Banco Maestro
     if modo_ingreso == "Banco Maestro (25 Casos)":
         casos_dict = {"-- Selecciona un caso --": None}
         archivo_maestro = "LOGO_LLM_25_Casos_Clinicos_Sinteticos_Banco_Maestro_v1_0.json"
@@ -339,18 +361,15 @@ with col_izq:
             ]
             texto_auto = "\n".join(lineas_caso)
 
-    # VÍA 2: Subida de archivos locales
     elif modo_ingreso == "Subir Informe (PDF/DOCX/TXT/XLSX)":
         archivo_informe = st.file_uploader("Sube el informe clínico:", type=["pdf", "docx", "txt", "xlsx"])
         if archivo_informe:
             texto_auto = extraer_texto_archivo(archivo_informe)
             st.success("Informe cargado y anonimizado localmente.")
 
-    # VÍA 3: Ficha estructurada manual de 8 bloques
     else:
         texto_auto = renderizar_ficha_real()
 
-    # 2. Parámetros fijos y botón de ejecución
     pat_sel = st.selectbox("Patología Neurológica Base", opciones_pat, index=idx_pat)
     trast_sel = st.selectbox("Dominio Logopédico", [t.value for t in TipoTrastorno])
     instrumental = st.checkbox("Consta prueba instrumental previa (FEES / VFSS)")
@@ -372,15 +391,14 @@ if analizar and notas:
         "basándote ESTRICTAMENTE en dos capas jerárquicas de conocimiento:\n\n"
         "=== CAPA 1: PROTOCOLOS Y GUÍAS CLÍNICAS (CÓMO HACER / PRÁCTICA SEGURA) ===\n"
         f"{contexto}\n\n"
-        "=== CAPA 2: REVISIONES SISTEMÁTICAS Y ESTUDIOS PRIMARIOS (NIVEL DE EVIDENCIA) ===\n"
+        "=== CAPA 2: REVISIONES SISTEMÁTICAS Y ESTUDIOS PRIMARIOS (NIVEL DE EVIDENCIA Y ESTADÍSTICA) ===\n"
         f"{contexto_rs}\n\n"
         f"DATOS DEL CASO CLÍNICO:\n{consulta}\n\n"
         "REGLAS DE RAZONAMIENTO CLÍNICO Y TRAZABILIDAD (OBLIGATORIAS):\n"
-        "1. SEPARAR EFICACIA ESTADÍSTICA DE PRÁCTICA CLÍNICA: Nunca descartes una intervención útil de la Capa 1 solo porque una Revisión Sistemática (ej. Cochrane) concluya que la evidencia es baja o insuficiente. Primero declara explícitamente el grado de respaldo científico según la Capa 2 (ej. 'Sin ensayos clínicos aleatorizados concluyentes según Cochrane 2014'), y a continuación desarrolla el abordaje clínico recomendado y seguro según los manuales y protocolos de la Capa 1.\n"
+        "1. SEPARAR EFICACIA ESTADÍSTICA DE PRÁCTICA CLÍNICA: Nunca descartes una intervención útil de la Capa 1 solo porque una Revisión Sistemática (ej. Cochrane) indique certeza baja o ausencia de ECA. Primero declara explícitamente el grado de respaldo científico, tamaño muestral/estadísticos y riesgo de sesgo según la Capa 2, y a continuación desarrolla el abordaje clínico recomendado y seguro según los manuales y protocolos de la Capa 1.\n"
         "2. RESOLUCIÓN DE CONFLICTOS TEMPORALES: Si un estudio primario o ensayo reciente (ej. terapia intensiva LSVT o miofuncional en SCA3) muestra resultados prometedores que matizan o contradicen una RS más antigua, prioriza el hallazgo cronológicamente posterior aclarando expresamente que se trata de evidencia preliminar aún no incorporada a una revisión sistemática.\n"
-        "3. TRAZABILIDAD EXPLÍCITA: Diferencia siempre qué recomendación proviene de 'Guía Clínica / Manual' (Capa 1) y qué dato proviene de 'Revisión Sistemática / Estudio Primario' (Capa 2), citando su ID exacto en 'evidencia_rag'.\n"
-        "4. DETALLE Y DOSIFICACIÓN: Desarrolla el análisis fisiopatológico por subsistemas, el diagnóstico diferencial, la resolución del dilema clínico en 'respuesta_dilema_clinico' y la dosificación/control de fatiga en cada procedimiento.\n"
-        "5. SEGURIDAD Y DATOS AUSENTES: Si hay sospecha de disfagia, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental (FEES/VFSS); si no hay disfagia, déjalo en ''. Declara en 'informacion_clinica_no_disponible' los datos ausentes y en 'evidencia_cientifica_insuficiente' las limitaciones metodológicas detectadas en la Capa 2."
+        "3. TRAZABILIDAD EXPLÍCITA: En el texto y en 'evidencia_rag', diferencia siempre qué recomendación proviene de [Guía Clínica / Manual] y qué dato proviene de [Revisión Sistemática / Estudio Primario], citando su ID exacto (sin prefijos como 'RS_ID:').\n"
+        "4. SEGURIDAD Y DATOS AUSENTES: Si hay sospecha de disfagia, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental (FEES/VFSS); si no hay disfagia, déjalo en ''. Declara en 'informacion_clinica_no_disponible' los datos ausentes y en 'evidencia_cientifica_insuficiente' las limitaciones metodológicas y riesgos de sesgo detectados en la Capa 2."
     )
 
     for intento in range(1, 4):
@@ -529,11 +547,11 @@ if "reporte" in st.session_state:
         c_rag, c_rag_i = st.columns([0.85, 0.15])
         c_rag.subheader("3. Inspector CitaRAG")
         pop_rag = c_rag_i.popover("ℹ️")
-        pop_rag.markdown("**¿Cómo funciona la trazabilidad CitaRAG?**")
+        pop_rag.markdown("**¿Cómo funciona la trazabilidad CitaRAG + Capa RS?**")
         pop_rag.caption(
-            "• **Recuperación determinista:** Extrae únicamente los hechos factuales más cercanos semánticamente de los nodos auditados.\n"
-            "• **Cero alucinaciones:** Cada afirmación está anclada a su `claim_id` o `rs_id` exacto.\n"
-            "• **Auditoría directa:** Usa el enlace **DOI** o descarga el **PDF original** para verificar la fuente primaria."
+            "• **📘 Guía/Manual:** Protocolos clínicos auditados (cómo hacer).\n"
+            "• **📊 Rev. Sistemática:** Grado de certeza, estadísticos y semáforo de riesgo de sesgo (🟢 Bajo / 🔵 Moderado / 🔴 Alto).\n"
+            "• **Auditoría directa:** Descarga el PDF original de la carpeta de la patología."
         )
 
         mapa_fuentes = {}
@@ -541,23 +559,16 @@ if "reporte" in st.session_state:
             with open("mapa_fuentes.json", "r", encoding="utf-8") as mf:
                 mapa_fuentes = json.load(mf)
 
-        # Indexar los PDFs de las Revisiones Sistemáticas de forma flexible
-        lista_rs_pdfs = []
-        for r_item in cargar_capa_rs():
-            rs_id_val = str(r_item.get("rs_id", "")).strip()
-            arch_val = str(r_item.get("archivo_origen", "")).strip()
-            if arch_val:
-                lista_rs_pdfs.append((rs_id_val.upper(), arch_val))
-
-        # Indexar los PDFs de las Revisiones Sistemáticas por su rs_id limpio
         mapa_rs_pdfs = {}
+        mapa_rs_meta = {}
         for r_item in cargar_capa_rs():
             rs_id_val = str(r_item.get("rs_id", "")).strip().upper()
             arch_val = str(r_item.get("archivo_origen", "")).strip()
-            if rs_id_val and arch_val:
-                mapa_rs_pdfs[rs_id_val] = arch_val
+            if rs_id_val:
+                mapa_rs_meta[rs_id_val] = r_item
+                if arch_val:
+                    mapa_rs_pdfs[rs_id_val] = arch_val
 
-        # Mapear patología seleccionada con su subcarpeta exacta
         subcarpeta_pat = {
             "Daño Cerebral Adquirido": "dca",
             "Enfermedad de Parkinson": "parkinson",
@@ -585,17 +596,44 @@ if "reporte" in st.session_state:
             info_doc = mapa_fuentes.get(doc_id_limpio, {})
             titulo_doc = info_doc.get("titulo", cita.fuente_documental)
 
-            icono_fuente = "📘 [Guía/Manual]" if cita.tipo_fuente == "Guía Clínica / Manual" else "📊 [Rev. Sistemática]"
+            # Buscar metadatos de RS si aplica
+            meta_rs = mapa_rs_meta.get(id_limpio)
+            if not meta_rs and cita.tipo_fuente != "Guía Clínica / Manual":
+                prefijo_rs = "-".join(id_limpio.split("-")[:2])
+                for rs_k, m_val in mapa_rs_meta.items():
+                    if rs_k == id_limpio or (prefijo_rs and rs_k.startswith(prefijo_rs)):
+                        meta_rs = m_val
+                        break
+
+            if cita.tipo_fuente == "Guía Clínica / Manual":
+                icono_fuente = "📘 [Guía/Manual]"
+                sem_emoji = ""
+            else:
+                icono_fuente = "📊 [Rev. Sistemática]"
+                r_sesgo = meta_rs.get("riesgo_sesgo", "") if meta_rs else ""
+                n_evid = meta_rs.get("nivel_evidencia", "") if meta_rs else ""
+                sem_emoji, sem_texto, sem_bg, sem_fg = calcular_semaforo_evidencia(r_sesgo, n_evid)
+                icono_fuente = f"{sem_emoji} 📊 [Rev. Sistemática]"
+
             with st.expander(f"{icono_fuente} {id_limpio} · {doc_id_limpio}", expanded=True):
                 st.markdown(f"**{titulo_doc}**")
+                if cita.tipo_fuente != "Guía Clínica / Manual" and meta_rs:
+                    r_sesgo = meta_rs.get("riesgo_sesgo", "No especificado")
+                    n_evid = meta_rs.get("nivel_evidencia", "No especificado")
+                    sem_emoji, sem_texto, sem_bg, sem_fg = calcular_semaforo_evidencia(r_sesgo, n_evid)
+                    st.markdown(
+                        f'<div style="background-color:{sem_bg}; color:{sem_fg}; padding:4px 10px; border-radius:6px; font-size:0.82rem; font-weight:600; margin-bottom:6px;">'
+                        f'{sem_emoji} {sem_texto} · Sesgo: {r_sesgo} | Certeza: {n_evid}'
+                        f'</div>',
+                        unsafe_allow_html=True
+                    )
                 st.caption(f"Localizador: {cita.fuente_documental}")
                 st.write(cita.hecho_clinico_factual)
 
                 doi = str(info_doc.get("doi", "")).strip()
                 if doi.startswith("10."):
-                    st.markdown(f"[Abrir publicación oficial (DOI: {doi})](https://doi.org{doi})")
+                    st.markdown(f"[Abrir publicación oficial (DOI: {doi})](https://doi.org/{doi})")
 
-                # 1. Buscar nombre exacto en Guías o en capa_evidencia_rs
                 nombre_pdf = info_doc.get("archivo_pdf", "")
                 if not nombre_pdf:
                     nombre_pdf = mapa_rs_pdfs.get(id_limpio, "")
@@ -608,7 +646,6 @@ if "reporte" in st.session_state:
 
                 info_pdf = pdfs_disponibles.get(normalizar_nombre(nombre_pdf)) if nombre_pdf else None
 
-                # 2. Respaldo seguro para RS: buscar SOLO dentro de la carpeta de la patología activa
                 if not info_pdf and cita.tipo_fuente != "Guía Clínica / Manual" and pdfs_patologia:
                     pistas = normalizar_nombre(f"{nombre_pdf} {id_limpio} {cita.hecho_clinico_factual}").split()
                     pistas_utiles = [p for p in pistas if len(p) > 3 and p not in ["resumen", "conclusiones", "tabla", "estudio", "discusion", "ataxia", "revision", "sistematica"]]
