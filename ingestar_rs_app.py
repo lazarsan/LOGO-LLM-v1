@@ -153,7 +153,7 @@ if procesar and archivo_pdf and id_base.strip():
         st.success(f"Se extrajeron {len(nuevos_registros)} bloques estructurados de '{archivo_pdf.name}'.")
 
 with col2:
-    st.subheader(f"2. Vista Previa y Semáforo de Evidencia ({len(st.session_state['acumulado_rs'])} bloques)")
+    st.subheader(f"2. Vista Previa Evidencia ({len(st.session_state['acumulado_rs'])} bloques)")
 
     if st.session_state["acumulado_rs"]:
         json_str = json.dumps(st.session_state["acumulado_rs"], ensure_ascii=False, indent=2)
