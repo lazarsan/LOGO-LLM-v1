@@ -737,7 +737,7 @@ with tab_cdss:
 # PESTAÑA 2: EXTRACTOR Y AUDITOR DE EVIDENCIA (RS · TRIALS · ARTÍCULOS)
 # ==============================================================================
 with tab_extractor:
-    st.subheader("🧬 Extractor y Auditor de Evidencia Científica (Capa 2)")
+    st.subheader("🧬 Extractor y Auditor de Evidencia Científica (C2)")
     st.caption(
         "Procesa Revisiones Sistemáticas, Ensayos Clínicos (Clinical Trials) y Artículos Primarios para alimentar "
         "`capa_evidencia_rs.json` en tiempo real sin contaminar los protocolos clínicos de la Capa 1."
