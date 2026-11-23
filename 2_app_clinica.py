@@ -149,7 +149,23 @@ class ChunkEvidenciaCientifica(BaseModel):
     seccion_rs: Literal["resumen_conclusiones", "tabla_estudio_primario", "discusion_practica_clinica"]
     prioridad_recuperacion: Literal["alta", "media"]
     dominio_clinico: Literal["Evaluación", "Disartria", "Disfagia Neurogénica", "Afasia", "Dispraxia", "General"]
-    subtipo_ataxia: str = Field(description="Subtipo específico de patología o ataxia (ej. SCA3, Ataxia de Friedreich, Ictus subagudo, Parkinson inicial).")
+    subtipo_ataxia: str = Field(default="hereditaria_inespecifica", description="Subtipo específico: friedreich, sca3, sca2, sca6, sca_general o hereditaria_inespecifica.")
+    evidence_tier: Literal["Tier_1_SR", "Tier_2_Trial"] = Field(
+        default="Tier_1_SR",
+        description="Tier_1_SR para Revisiones Sistemáticas/Metaanálisis; Tier_2_Trial para Ensayos Clínicos o Estudios Piloto primarios."
+    )
+    evidence_status: Literal["insufficient_rct", "contraindicated_or_harmful", "supported"] = Field(
+        default="insufficient_rct",
+        description="insufficient_rct si faltan ECA pero es plausible/seguro; contraindicated_or_harmful si provoca fatiga extrema o riesgo de aspiración; supported si hay respaldo favorable."
+    )
+    phenotypes: List[str] = Field(
+        default_factory=list,
+        description="Fenotipos clínicos ejecutables: disartria_ataxica, disfagia_orofaringea, disfonia, incoordinacion_fonorrespiratoria."
+    )
+    intervention_intent: List[str] = Field(
+        default_factory=list,
+        description="Intención terapéutica: compensatoria, rehabilitadora_motora, higienico_dietetica, instrumental."
+    )
     intervencion_evaluada: str = Field(description="Descripción detallada de la intervención o exposición (dosis, intensidad, frecuencia, duración).")
     comparadores: str = Field(description="Grupo control, placebo, terapia estándar o ausencia de comparador.")
     desenlaces_primarios_secundarios: str = Field(description="Desenlaces primarios y secundarios medidos en el estudio o revisión.")
@@ -188,50 +204,80 @@ def inicializar_indice():
 
 
 @st.cache_data
-def cargar_capa_rs() -> list:
-    if os.path.exists("capa_evidencia_rs.json"):
-        with open("capa_evidencia_rs.json", "r", encoding="utf-8") as f:
-            return json.load(f)
-    return []
+def detectar_subtipo_consulta(texto: str) -> str:
+    t = normalizar_nombre(texto)
+    if "friedreich" in t or "frda" in t:
+        return "friedreich"
+    if "sca3" in t or "machado" in t or "tipo 3" in t:
+        return "sca3"
+    if "sca2" in t or "tipo 2" in t:
+        return "sca2"
+    if "sca6" in t or "tipo 6" in t:
+        return "sca6"
+    return "hereditaria_inespecifica"
 
-
-def recuperar_evidencia_rs(patologia: str, trastorno: str) -> str:
+def recuperar_evidencia_rs(patologia: str, trastorno: str, notas_clinicas: str = "") -> str:
     registros_rs = cargar_capa_rs()
     if not registros_rs:
-        return "No hay revisiones sistemáticas ni ensayos cargados en capa_evidencia_rs.json."
+        return "No hay revisiones sistemáticas cargadas en la capa de evidencia."
 
     filtrados = [r for r in registros_rs if r.get("patologia", "").lower() == patologia.lower()]
+    subtipo_paciente = detectar_subtipo_consulta(notas_clinicas)
+
     resumenes = [r for r in filtrados if r.get("seccion_rs") == "resumen_conclusiones"]
     especificos = [
         r for r in filtrados
         if r.get("seccion_rs") != "resumen_conclusiones"
-        and (
-            r.get("dominio_clinico", "").lower() in [trastorno.lower(), "evaluación", "general"]
-            or trastorno.lower().split()[0] in r.get("dominio_clinico", "").lower()
-        )
+        and (r.get("dominio_clinico", "").lower() in [trastorno.lower(), "evaluación", "general"])
     ]
 
+    # Orden cronológico (más reciente primero para Temporal Decay Override)
     resumenes.sort(key=lambda x: x.get("anio_publicacion", 0), reverse=True)
     especificos.sort(key=lambda x: x.get("anio_publicacion", 0), reverse=True)
 
     seleccionados = resumenes[:2] + especificos[:6]
     if not seleccionados:
-        return "Sin registros específicos en capa_evidencia_rs.json para esta combinación."
+        return "Sin registros específicos en la capa de Revisiones Sistemáticas para esta combinación."
 
     bloques = []
+    alertas_subtipo = []
+    bloqueos_seguridad = []
+
     for r in seleccionados:
+        tier = r.get("evidence_tier") or ("Tier_1_SR" if "revision" in str(r.get("tipo_documento", "")).lower() else "Tier_2_Trial")
+        status = r.get("evidence_status", "insufficient_rct")
+        subtipo_est = normalizar_nombre(str(r.get("subtipo_ataxia", "hereditaria_inespecifica")))
+        fenotipos = ", ".join(r.get("phenotypes", [])) or r.get("dominio_clinico", "")
+        intencion = ", ".join(r.get("intervention_intent", [])) or "No especificada"
+
+        # Detectar riesgo de sobre-generalización entre subtipos (ej. protocolo probado en SCA3 aplicado a Friedreich)
+        if subtipo_paciente == "friedreich" and ("sca3" in subtipo_est or "machado" in subtipo_est) and "friedreich" not in subtipo_est:
+            alertas_subtipo.append(
+                f"⚠️ ALERTA ANTI-SOBREGENERALIZACIÓN ({r['rs_id']}): Evidencia obtenida en {r.get('subtipo_ataxia')}, NO en Ataxia de Friedreich. No extrapolar dosis intensivas sin adaptar por fatiga neuromuscular y riesgo cardiológico."
+            )
+
+        if status == "contraindicated_or_harmful":
+            bloqueos_seguridad.append(
+                f"🛑 BLOQUEO DE SEGURIDAD ({r['rs_id']}): {r.get('intervencion_evaluada')} marcada como contraindicada o dañina ({r.get('limitaciones')})."
+            )
+
         bloques.append(
-            f"[RS_ID: {r.get('rs_id')} | Año: {r.get('anio_publicacion')} | Tipo: {r.get('tipo_documento', 'Revisión Sistemática')} | "
-            f"Sección: {r.get('seccion_rs')} | Subtipo: {r.get('subtipo_ataxia')} | Dominio: {r.get('dominio_clinico')}]\n"
-            f"- Intervención: {r.get('intervencion_evaluada')} | Comparadores: {r.get('comparadores', 'No especificado')}\n"
-            f"- Desenlaces e instrumentos: {r.get('desenlaces_primarios_secundarios', '')} ({r.get('herramientas_evaluacion', '')}) | Tiempos: {r.get('momentos_medicion', '')}\n"
-            f"- Datos estadísticos: Continuas: {r.get('variables_continuas', 'N/A')} | Categóricas: {r.get('variables_categoricas', 'N/A')}\n"
-            f"- Riesgo de sesgo / Calidad: {r.get('riesgo_sesgo_calidad', 'No reportado')} | Nivel de evidencia: {r.get('nivel_evidencia')}\n"
-            f"- Limitaciones: {r.get('limitaciones')}\n"
+            f"[RS_ID: {r['rs_id']} | Tier: {tier} | Status: {status} | Año: {r['anio_publicacion']} | "
+            f"Subtipo estudio: {r.get('subtipo_ataxia', 'General')} | Fenotipos: {fenotipos} | Intención: {intencion}]\n"
+            f"- Intervención vs Comparador: {r.get('intervencion_evaluada')} vs. {r.get('comparador', 'Control')}\n"
+            f"- Desenlaces e Instrumentos: {r.get('desenlaces_primarios_secundarios', '')} ({r.get('instrumentos_y_tiempos', r.get('herramientas_evaluacion', ''))})\n"
+            f"- Datos Estadísticos: Continuas: {r.get('variables_continuas', 'N/D')} | Categóricas: {r.get('variables_categoricas', 'N/D')}\n"
+            f"- Nivel de evidencia y Sesgo: {r.get('nivel_evidencia')} | Sesgo: {r.get('riesgo_sesgo_calidad', 'N/D')} | Limitaciones: {r.get('limitaciones')}\n"
             f"- Síntesis: {r.get('contenido_chunk')}"
         )
-    return "\n\n".join(bloques)
 
+    cabecera_reglas = ""
+    if bloqueos_seguridad:
+        cabecera_reglas += "\n".join(bloqueos_seguridad) + "\n\n"
+    if alertas_subtipo:
+        cabecera_reglas += "\n".join(alertas_subtipo) + "\n\n"
+
+    return cabecera_reglas + "\n\n".join(bloques)
 
 def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
     mapa_en = {
@@ -447,23 +493,29 @@ with tab_cdss:
         consulta = f"Patología: {pat_sel}. Trastorno: {trast_sel}. Instrumental previo: {'Sí' if instrumental else 'No'}. Hallazgos: {notas}"
         nodos = indice.as_retriever(similarity_top_k=8).retrieve(consulta)
         contexto = "\n\n".join([f"[{n.metadata['claim_id']} | {n.metadata['doc_id']} | {n.metadata['localizador']}] {n.text}" for n in nodos])
-        contexto_rs = recuperar_evidencia_rs(pat_sel, trast_sel)
+            contexto_rs = recuperar_evidencia_rs(pat_sel, trast_sel, notas)
 
-        prompt = (
-            "Eres un Sistema de Soporte a la Decisión Clínica (CDSS) experto en Logopedia Neurológica. "
-            "Redacta un informe técnico amplio, detallado y riguroso para un profesional logopeda, "
-            "basándote ESTRICTAMENTE en dos capas jerárquicas de conocimiento:\n\n"
-            "=== CAPA 1: PROTOCOLOS Y GUÍAS CLÍNICAS (CÓMO HACER / PRÁCTICA SEGURA) ===\n"
-            f"{contexto}\n\n"
-            "=== CAPA 2: REVISIONES SISTEMÁTICAS, TRIALS Y ESTUDIOS PRIMARIOS (NIVEL DE EVIDENCIA Y DATOS ESTADÍSTICOS) ===\n"
-            f"{contexto_rs}\n\n"
-            f"DATOS DEL CASO CLÍNICO:\n{consulta}\n\n"
-            "REGLAS DE RAZONAMIENTO CLÍNICO Y TRAZABILIDAD (OBLIGATORIAS):\n"
-            "1. SEPARAR EFICACIA ESTADÍSTICA DE PRÁCTICA CLÍNICA: Nunca descartes una intervención útil de la Capa 1 solo porque una Revisión Sistemática (ej. Cochrane) indique certeza baja o ausencia de ECA. Primero declara explícitamente el grado de respaldo científico y el riesgo de sesgo según la Capa 2, y a continuación desarrolla el abordaje clínico recomendado y seguro según los manuales y protocolos de la Capa 1.\n"
-            "2. RESOLUCIÓN DE CONFLICTOS TEMPORALES: Si un estudio primario o ensayo reciente (ej. terapia intensiva LSVT o miofuncional en SCA3) muestra resultados prometedores que matizan o contradicen una RS más antigua, prioriza el hallazgo cronológicamente posterior aclarando expresamente que se trata de evidencia preliminar aún no incorporada a una revisión sistemática.\n"
-            "3. TRAZABILIDAD EXPLÍCITA Y DATOS CUANTITATIVOS: Cuando cites un estudio de la Capa 2, incluye sus parámetros clave si constan (n muestral, medias/DE, OR/RR, escalas, momentos de medición y riesgo de sesgo). En 'evidencia_rag', diferencia siempre qué cita proviene de 'Guía Clínica / Manual' y qué cita proviene de 'Revisión Sistemática / Estudio Primario', indicando su ID exacto.\n"
-            "4. SEGURIDAD Y DATOS AUSENTES: Si hay sospecha de disfagia, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay sospecha de disfagia, deja 'adaptacion_dietetica_iddsi' en ''. Declara en 'informacion_clinica_no_disponible' todo dato ausente y en 'evidencia_cientifica_insuficiente' las limitaciones metodológicas detectadas."
-        )
+    prompt = (
+        "Eres un Sistema de Soporte a la Decisión Clínica (CDSS) experto en Logopedia Neurológica. "
+        "Redacta un informe técnico riguroso basándote ESTRICTAMENTE en dos capas jerárquicas de conocimiento:\n\n"
+        "=== CAPA 1: PROTOCOLOS Y GUÍAS CLÍNICAS (Tier_3_Protocol · CÓMO HACER / PRÁCTICA SEGURA) ===\n"
+        f"{contexto}\n\n"
+        "=== CAPA 2: REVISIONES SISTEMÁTICAS (Tier_1_SR) Y ENSAYOS PRIMARIOS (Tier_2_Trial) ===\n"
+        f"{contexto_rs}\n\n"
+        f"DATOS DEL CASO CLÍNICO:\n{consulta}\n\n"
+        "REGLAS DETERMINISTAS DE RAZONAMIENTO Y SÍNTESIS (OBLIGATORIAS):\n"
+        "1. DISTINCIÓN ENTRE 'insufficient_rct' Y 'contraindicated_or_harmful':\n"
+        "   - Si un registro tiene Status 'insufficient_rct' (ej. Cochrane indica ausencia de ECA), NO paralices ni rechaces el tratamiento: extrae los protocolos seguros de Tier_3_Protocol y Tier_2_Trial para ofrecer un plan de acción real, aclarando el nivel de certeza bajo.\n"
+        "   - Si un registro o regla clínica marca 'contraindicated_or_harmful' (ej. NMES en Ataxia de Friedreich, tDCS fuera de ensayo o cargas extremas con riesgo de fatiga/aspiración), activa el bloqueo y desaconséjalo explícitamente.\n"
+        "2. RESOLUCIÓN TEMPORAL (TEMPORAL DECAY OVERRIDE): Si un ensayo clínico reciente (Tier_2_Trial) es posterior a una Revisión Sistemática (Tier_1_SR) y evalúa el fenotipo del paciente, prioriza los parámetros del ensayo reciente aclarando que aún no ha sido incorporado a una RS.\n"
+        "3. ANTI-SOBREGENERALIZACIÓN DE SUBTIPO: Nunca extrapoles automáticamente dosificaciones intensivas probadas solo en SCA3 hacia Ataxia de Friedreich o fenotipos con fatiga severa/miocardiopatía; adapta la intensidad y exige control de fatiga.\n"
+        "4. ESTRUCTURA EN 3 BLOQUES DENTRO DE 'respuesta_dilema_clinico':\n"
+        "   - [Bloque 1 · Recomendación Operativa]: Acción terapéutica concreta (frecuencia, intensidad, foco y maniobras) extraída de Tier_2_Trial y Tier_3_Protocol.\n"
+        "   - [Bloque 2 · Nivel de Certeza y Contexto RS]: Grado de respaldo según Tier_1_SR (citando datos estadísticos o limitaciones).\n"
+        "   - [Bloque 3 · Banderas Rojas y Contraindicaciones]: Criterios de seguridad, control de fatiga y derivaciones.\n"
+        "5. TRAZABILIDAD Y SEGURIDAD IDDSI: Diferencia en 'evidencia_rag' entre [Guía Clínica / Manual] y [Revisión Sistemática / Estudio Primario]. Si hay sospecha de disfagia, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay disfagia, déjalo en ''."
+    )
+
 
         for intento in range(1, 4):
             try:
