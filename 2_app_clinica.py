@@ -446,7 +446,10 @@ with tab_cdss:
 
         if modo_ingreso == "Banco Maestro (25 Casos)":
             casos_dict = {"-- Selecciona un caso --": None}
-            archivo_maestro = "LOGO_LLM_25_Casos_Clinicos_Sinteticos_Banco_Maestro_v1_0.json"
+            for archivo_maestro in [
+            "LOGO_LLM_25_Casos_Clinicos_Sinteticos_Banco_Maestro_v1_0.json",
+            "casos_desafio_ataxia_rs_26_31.json"
+        ]:
             if os.path.exists(archivo_maestro):
                 with open(archivo_maestro, "r", encoding="utf-8") as f:
                     for c in json.load(f).get("casos", []):
