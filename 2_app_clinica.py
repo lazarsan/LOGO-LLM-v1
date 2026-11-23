@@ -467,15 +467,17 @@ with tab_cdss:
             list(casos_dict.keys()),
             on_change=limpiar_estado_anterior
         )
-    caso_activo = casos_dict[seleccion]
-        pat_caso = str(caso_activo.get("patologia_base") or caso_activo.get("patologia") or "")
-        idx_pat = next((i for i, p in enumerate(opciones_pat) if p.lower() in pat_caso.lower()), 0)
-        lineas_caso = [
-            f"{k.upper().replace('_', ' ')}: {v}"
-            for k, v in caso_activo.items()
-            if k not in ["id_caso", "id", "numero", "rubrica", "criterio_experto"] and isinstance(v, str)
-        ]
-        texto_auto = "\n".join(lineas_caso)
+           caso_activo = casos_dict[seleccion]
+
+        if caso_activo:
+            pat_caso = str(caso_activo.get("patologia_base") or caso_activo.get("patologia") or "")
+            idx_pat = next((i for i, p in enumerate(opciones_pat) if p.lower() in pat_caso.lower()), 0)
+            lineas_caso = [
+                f"{k.upper().replace('_', ' ')}: {v}"
+                for k, v in caso_activo.items()
+                if k not in ["id_caso", "id", "numero", "rubrica", "criterio_experto"] and isinstance(v, str)
+            ]
+            texto_auto = "\n".join(lineas_caso)
 
         elif modo_ingreso == "Subir Informe (PDF/DOCX/TXT/XLSX)":
             archivo_informe = st.file_uploader("Sube el informe clínico:", type=["pdf", "docx", "txt", "xlsx"])
