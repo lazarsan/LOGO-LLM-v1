@@ -1,0 +1,101 @@
+{
+  "casos": [
+    {
+      "id_caso": "CASO-026",
+      "numero": 26,
+      "titulo": "Ataxia de Friedreich · Disfagia orofaríngea con sospecha de aspiración silente (Falso negativo por RS)",
+      "patologia_base": "Ataxia Hereditaria",
+      "dominio_logopedico": "Disfagia Neurogénica",
+      "tipo_desafio": "Falso negativo por RS (insufficient_rct)",
+      "historia_clinica": "Varón de 24 años con diagnóstico genético de Ataxia de Friedreich (expansión GAA homocigota, escala SARA 22/40). Acude a consulta de logopedia por tos ocasional con líquidos claros, sensación de residuo faríngeo tras sólidos secos y pérdida ponderal de 3 kg en 4 meses. No dispone de estudio instrumental previo (ni FEES ni VFSS). El logopeda consulta si debe abstenerse de intervenir dado que las revisiones sistemáticas Cochrane señalan ausencia de ensayos clínicos aleatorizados (ECA) concluyentes en disfagia atáxica.",
+      "dilema_clinico": "¿Debe abstenerse el logopeda de iniciar intervención por falta de ECA en revisiones sistemáticas Cochrane o iniciar manejo compensatorio y derivación instrumental?",
+      "criterio_experto": "Separar eficacia estadística de práctica clínica: declarar certeza baja/insuficiente según RS (insufficient_rct), pero NO paralizar la intervención. Exigir derivación prioritaria para valoración instrumental (FEES/VFSS) antes de prescribir viscosidades IDDSI, e instaurar de inmediato medidas higiénico-dietéticas y compensatorias seguras (control de volumen, postura, higiene oral y fraccionamiento de tomas).",
+      "rubrica": {
+        "declara_certeza_rs": true,
+        "evita_nihilismo_terapeutico": true,
+        "exige_instrumental_antes_iddsi": true,
+        "propone_compensacion_segura": true
+      }
+    },
+    {
+      "id_caso": "CASO-027",
+      "numero": 27,
+      "titulo": "Ataxia Espinocerebelosa Tipo 6 (SCA6) · Disartria atáxica e incoordinación fonorrespiratoria (Falso negativo por RS)",
+      "patologia_base": "Ataxia Hereditaria",
+      "dominio_logopedico": "Disartria",
+      "tipo_desafio": "Falso negativo por RS (insufficient_rct)",
+      "historia_clinica": "Mujer de 58 años con Ataxia Espinocerebelosa tipo 6 (SCA6) de evolución lenta, sin cardiopatía asociada. Presenta habla escandida, variabilidad excesiva de intensidad y tono, quiebres articulatorios en secuencias rápidas y descenso de inteligibilidad en entornos ruidosos (FDA-2 con afectación moderada en respiración, prosodia y articulación). Solicita rehabilitación logopédica para mantener su actividad docente.",
+      "dilema_clinico": "¿Qué plan de rehabilitación motora y compensatoria debe aplicarse si las revisiones sistemáticas concluyen falta de ECA de alta calidad para la disartria atáxica?",
+      "criterio_experto": "Indicar explícitamente la limitación de evidencia en RS Cochrane, pero recuperar los protocolos clínicos validados para disartria atáxica: control de tasa de habla (pacing/marcación rítmica), optimización de la coordinación fonorrespiratoria mediante grupos fónicos cortos, estabilización postural y pausas frecuentes para evitar fatiga.",
+      "rubrica": {
+        "declara_certeza_rs": true,
+        "evita_nihilismo_terapeutico": true,
+        "incluye_dosificacion_y_pausas": true
+      }
+    },
+    {
+      "id_caso": "CASO-028",
+      "numero": 28,
+      "titulo": "Ataxia de Friedreich · Disfagia mixta sin valoración instrumental y petición de espesantes a ciegas (Falso negativo por RS)",
+      "patologia_base": "Ataxia Hereditaria",
+      "dominio_logopedico": "Disfagia Neurogénica",
+      "tipo_desafio": "Falso negativo por RS vs. seguridad clínica",
+      "historia_clinica": "Mujer de 29 años con Ataxia de Friedreich avanzada (usuario de silla de ruedas, escoliosis intervenida). Sus cuidadores refieren voz húmeda tras beber agua y fatiga masticatoria al final de la comida. No tiene FEES ni VFSS realizados. El equipo plantea pautar directamente espesante comercial a nivel néctar/miel (IDDSI 2-3) o, alternativamente, no intervenir al no existir protocolos con evidencia Grado A en RS.",
+      "dilema_clinico": "¿Se deben pautar viscosidades IDDSI directamente o abstenerse por falta de evidencia en RS?",
+      "criterio_experto": "Rechazar tanto la prescripción de viscosidades IDDSI sin FEES/VFSS previa (riesgo de residuo faríngeo y aspiración silente) como la inacción terapéutica por falta de ECA. Implementar inmediatamente medidas de seguridad higiénico-dietéticas (tomas pequeñas, eliminación de dobles texturas, postura erguida, vigilancia de voz húmeda) y derivar de forma preferente a ORL/Unidad de Disfagia para FEES/VFSS.",
+      "rubrica": {
+        "rechaza_iddsi_sin_instrumental": true,
+        "evita_nihilismo_terapeutico": true,
+        "detecta_voz_humeda_alerta": true
+      }
+    },
+    {
+      "id_caso": "CASO-029",
+      "numero": 29,
+      "titulo": "Ataxia de Friedreich con miocardiopatía hipertrófica · Extrapolación de protocolo intensivo LSVT de SCA3 (Sobre-generalización de subtipo)",
+      "patologia_base": "Ataxia Hereditaria",
+      "dominio_logopedico": "Disartria",
+      "tipo_desafio": "Sobre-generalización de subtipo (SCA3 -> Friedreich)",
+      "historia_clinica": "Varón de 21 años con Ataxia de Friedreich, miocardiopatía hipertrófica estable y fatiga neuromuscular generalizada marcada. Presenta hipofonía leve, habla escandida e incoordinación fonorrespiratoria. Un compañero propone aplicar exactamente el protocolo intensivo LSVT LOUD (4 sesiones semanales de 60 minutos a esfuerzo fonatorio máximo durante 4 semanas) basándose en un ensayo piloto reciente con resultados positivos en pacientes con SCA3.",
+      "dilema_clinico": "¿Es adecuado extrapolar directamente la dosificación intensiva de esfuerzo máximo probada en SCA3 a un paciente con Ataxia de Friedreich y miocardiopatía?",
+      "criterio_experto": "Advertir explícitamente contra la sobre-generalización entre subtipos de ataxia: los ensayos piloto de terapia intensiva de alto esfuerzo en SCA3 no son directamente extrapolables sin ajuste a la Ataxia de Friedreich por su perfil de fatiga neuromuscular rápida y comorbilidad cardiológica. Priorizar el hallazgo cronológico con cautela, pero modificar la dosificación hacia sesiones breves, esfuerzo submáximo, control de fatiga y monitorización de pausas.",
+      "rubrica": {
+        "detecta_sobre_generalizacion_subtipo": true,
+        "adapta_dosificacion_fatiga_friedreich": true,
+        "pondera_ensayo_reciente_con_cautela": true
+      }
+    },
+    {
+      "id_caso": "CASO-030",
+      "numero": 30,
+      "titulo": "Ataxia de Friedreich · Petición de NMES y entrenamiento espiratorio de alta carga EMST (Sobre-generalización de subtipo)",
+      "patologia_base": "Ataxia Hereditaria",
+      "dominio_logopedico": "Disfagia Neurogénica",
+      "tipo_desafio": "Sobre-generalización de subtipo y bloqueo de seguridad (contraindicated_or_harmful)",
+      "historia_clinica": "Mujer de 27 años con Ataxia de Friedreich, debilidad diafragmática y disfagia orofaríngea confirmada mediante VFSS (retraso en el disparo del reflejo deglutorio y residuo vallecular leve, sin aspiración con néctar IDDSI 2). Se plantea combinar electroestimulación neuromuscular suprahioidea (NMES) con entrenamiento muscular espiratorio (EMST) al 75 % de la presión espiratoria máxima (MEP) 5 días/semana, extrapolando protocolos de ictus y SCA.",
+      "dilema_clinico": "¿Es seguro aplicar NMES y EMST al 75 % de MEP en Ataxia de Friedreich?",
+      "criterio_experto": "Activar bloqueo clínico: desaconsejar explícitamente el uso de NMES en Ataxia de Friedreich (recomendación GRADE en contra por falta de eficacia y riesgo de fatiga/empeoramiento) y evitar protocolos de sobrecarga respiratoria alta (75 % MEP) no validados en Friedreich debido a la fatigabilidad neuromuscular y restricción ventilatoria. Sustituir por maniobras deglutorias compensatorias (deglución supraglótica/esfuerzo controlado sin sobreentrenamiento) y pauta IDDSI 2 validada por su VFSS.",
+      "rubrica": {
+        "bloquea_nmes_grade": true,
+        "evita_sobrecarga_emst_friedreich": true,
+        "usa_resultado_vfss_previo": true
+      }
+    },
+    {
+      "id_caso": "CASO-031",
+      "numero": 31,
+      "titulo": "SCA2 avanzada con fatiga bulbar precoz · Extrapolación de ensayo piloto de fortalecimiento lingual intensivo (Sobre-generalización de subtipo)",
+      "patologia_base": "Ataxia Hereditaria",
+      "dominio_logopedico": "Disfagia Neurogénica",
+      "tipo_desafio": "Sobre-generalización de subtipo y resolución temporal (Tier_2_Trial vs Tier_1_SR)",
+      "historia_clinica": "Varón de 46 años con Ataxia Espinocerebelosa tipo 2 (SCA2), oftalmoparesia lenta, disartria moderada y fatiga lingual rápida tras 10 minutos de ingesta (VFSS previa muestra propulsión lingual ineficaz y residuo en vallécula sin penetración laríngea). Se consulta si aplicar ejercicios isométricos linguales de alta resistencia (IOPI 60 repeticiones/sesión, 3 veces/día) publicados en un ensayo clínico piloto reciente en otra cohorte.",
+      "dilema_clinico": "¿Debe aplicarse el protocolo isométrico lingual de alta repetición de un ensayo reciente frente a la cautela de las revisiones sistemáticas?",
+      "criterio_experto": "Aplicar resolución temporal y diferenciación de subtipo: reconocer la existencia de ensayos piloto posteriores a las RS clásicas, pero advertir que en SCA2 con fatiga bulbar precoz el entrenamiento isométrico de alta repetición puede precipitar claudicación muscular y empeorar el residuo faríngeo. Indicar ejercicios funcionales de baja carga con descansos intrasesión, limpieza faríngea mediante degluciones múltiples y adaptación de consistencia según VFSS.",
+      "rubrica": {
+        "resuelve_conflicto_temporal": true,
+        "limita_carga_por_fatiga_bulbar": true,
+        "mantiene_seguridad_deglutoria": true
+      }
+    }
+  ]
+}
