@@ -69,8 +69,18 @@ class DiagnosticoEstructurado(BaseModel):
             "'8B11 / 8B20' para DCA vascular (ictus), 'NA07' para DCA traumático (TCE)."
         )
     )
-    analisis_fisiopatologico: str = Field(description="Explicación detallada de subsistemas afectados.")
-    diagnostico_diferencial: str = Field(description="Diferenciación clínica frente a cuadros similares.")
+    analisis_fisiopatologico: str = Field(
+    description=(
+            "Análisis fisiopatológico exhaustivo y estructurado en varios párrafos (mínimo 180-250 palabras): "
+            "1) Correlato neuroanatómico y circuito afectado según la etiología base; "
+            "2) Desglose funcional detallado por subsistemas implicados (respiración, fonación, resonancia, articulación, prosodia, fases deglutorias o procesamiento lingüístico); "
+            "3) Mecanismo fisiopatológico que explica los signos clínicos del paciente y factores agravantes (fatiga neuromuscular, fluctuación motora, riesgo de aspiración)."
+        )
+    )
+    diagnostico_diferencial: str = Field(
+        description="Diferenciación clínica detallada (2 párrafos) frente a cuadros neurológicos y logopédicos similares, indicando límites de certeza diagnóstica."
+    )
+
 
     @model_validator(mode="after")
     def asegurar_cie11_exacto(self) -> "DiagnosticoEstructurado":
@@ -458,6 +468,7 @@ with tab_cdss:
             f"{contexto_rs}\n\n"
             f"DATOS DEL CASO CLÍNICO:\n{consulta}\n\n"
             "REGLAS DETERMINISTAS DE RAZONAMIENTO Y SÍNTESIS (OBLIGATORIAS):\n"
+            "0. PROFUNDIDAD FISIOPATOLÓGICA OBLIGATORIA: En 'analisis_fisiopatologico', redacta una explicación clínica extensa y rigurosa (mínimo 3 párrafos) vinculando la lesión neuroanatómica con cada subsistema afectado y su impacto funcional.\n"
             "1. DISTINCIÓN ENTRE 'insufficient_rct' Y 'contraindicated_or_harmful':\n"
             "   - Si un registro tiene Status 'insufficient_rct' (ej. Cochrane indica ausencia de ECA), NO paralices ni rechaces el tratamiento: extrae los protocolos seguros de Tier_3_Protocol y Tier_2_Trial para ofrecer un plan de acción real, aclarando el nivel de certeza bajo.\n"
             "   - Si un registro o regla clínica marca 'contraindicated_or_harmful' (ej. NMES en Ataxia de Friedreich, tDCS fuera de ensayo o cargas extremas con riesgo de fatiga/aspiración), activa el bloqueo y desaconséjalo explícitamente.\n"
