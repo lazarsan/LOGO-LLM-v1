@@ -428,200 +428,95 @@ with tab_cdss:
     indice = inicializar_indice()
     col_izq, col_centro, col_der = st.columns([1, 1.4, 1])
 
-       with col_izq:
-        c1, c1_i = st.columns([0.85, 0.15])
-        c1.subheader("1. Contexto Clínico")
-        with c1_i.popover("ℹ️"):
-            st.caption("1. Elija fuente de datos.\n2. Verifique anonimización (sin nombres ni NHC).\n3. Pulse Analizar.")
+   File "/mount/src/logo-llm-v1/2_app_clinica.py", line 431
+     with col_izq:
+    ^
+IndentationError: unexpected indent
+if "reporte" in st.session_state:
+    reporte = st.session_state["reporte"]
+    with col_centro:
+        st.subheader("2. Reporte Clínico")
 
-        # 1. Selector de las 3 vías de entrada
-        modo_ingreso = st.radio(
-            "Modo de entrada de datos:",
-            ["Banco Maestro (31 Casos)", "Subir Informe (PDF/DOCX/TXT/XLSX)", "Ficha Caso Real (Manual)"],
-            on_change=limpiar_estado_anterior
+        c_cie, c_cie_i = st.columns([0.88, 0.12])
+        c_cie.info(f"**CIE-11:** {reporte.diagnostico.codigo_cie11} | **Patología:** {reporte.diagnostico.patologia_neuro_base.value}")
+        pop_cie = c_cie_i.popover("ℹ️")
+        pop_cie.markdown(f"**Guía de Codificación CIE-11 ({reporte.diagnostico.codigo_cie11})**")
+        pop_cie.caption("Valida la correspondencia entre el diagnóstico neurológico base y el trastorno funcional:")
+        pop_cie.markdown(
+            "- **8A00.0:** Enfermedad de Parkinson.\n"
+            "- **8A03.10:** Ataxias hereditarias (Ataxia de Friedreich).\n"
+            "- **8B11 / 8B20:** DCA vascular (Ictus isquémico / hemorrágico).\n"
+            "- **NA07:** DCA traumático (Traumatismo intracraneal / TCE)."
+        )
+        pop_cie.markdown("[Consultar navegador OMS CIE-11](https://icd.who.int/browse/2024-01/mms/es)")
+
+        c_an, c_an_i = st.columns([0.88, 0.12])
+        c_an.markdown("#### Análisis Fisiopatológico y Diagnóstico Diferencial")
+        pop_an = c_an_i.popover("ℹ️")
+        pop_an.markdown("**Auditoría del Razonamiento Fisiopatológico**")
+        pop_an.caption(
+            "• **Subsistemas motores:** Verifica respiración, fonación, resonancia, articulación y prosodia.\n"
+            "• **Fases deglutorias:** Distingue alteración de eficacia (residuo) frente a seguridad (aspiración).\n"
+            "• **Diferencial:** Comprueba que no se confundan déficits motores (disartria/apraxia) con trastornos lingüísticos o cognitivos."
         )
 
-        opciones_pat = [p.value for p in PatologiaBase]
-        idx_pat = 0
-        texto_auto = ""
-
-        # VÍA 1: Desplegable del Banco Maestro
-        if modo_ingreso == "Banco Maestro (31 Casos)":
-            casos_dict = {"-- Selecciona un caso --": None}
-            for archivo_maestro in [
-                "LOGO_LLM_25_Casos_Clinicos_Sinteticos_Banco_Maestro_v1_0.json",
-                "casos_desafio_ataxia_rs_26_31.json"
-            ]:
-                if os.path.exists(archivo_maestro):
-                    with open(archivo_maestro, "r", encoding="utf-8") as f:
-                        datos_json = json.load(f)
-                        lista_casos = datos_json.get("casos", []) if isinstance(datos_json, dict) else datos_json
-                        for c in lista_casos:
-                            if isinstance(c, dict):
-                                cid = c.get("id_caso") or c.get("id") or "CASO"
-                                tit = c.get("titulo") or c.get("perfil") or ""
-                                casos_dict[f"{cid} · {tit}"] = c
-
-            seleccion = st.selectbox(
-                "Selecciona caso sintético:",
-                list(casos_dict.keys()),
-                on_change=limpiar_estado_anterior
-            )
-            caso_activo = casos_dict[seleccion]
-
-            if caso_activo:
-                pat_caso = str(caso_activo.get("patologia_base") or caso_activo.get("patologia") or "")
-                idx_pat = next((i for i, p in enumerate(opciones_pat) if p.lower() in pat_caso.lower()), 0)
-                lineas_caso = [
-                    f"{k.upper().replace('_', ' ')}: {v}"
-                    for k, v in caso_activo.items()
-                    if k not in ["id_caso", "id", "numero", "rubrica", "criterio_experto"] and isinstance(v, str)
-                ]
-                texto_auto = "\n".join(lineas_caso)
-
-        # VÍA 2: Subida de archivos locales
-        elif modo_ingreso == "Subir Informe (PDF/DOCX/TXT/XLSX)":
-            archivo_informe = st.file_uploader("Sube el informe clínico:", type=["pdf", "docx", "txt", "xlsx"])
-            if archivo_informe:
-                texto_auto = extraer_texto_archivo(archivo_informe)
-                st.success("Informe cargado y anonimizado localmente.")
-
-        # VÍA 3: Ficha estructurada manual de 8 bloques
-        else:
-            texto_auto = renderizar_ficha_real()
-
-        # 2. Parámetros fijos y botón de ejecución
-        pat_sel = st.selectbox("Patología Neurológica Base", opciones_pat, index=idx_pat)
-        trast_sel = st.selectbox("Dominio Logopédico", [t.value for t in TipoTrastorno])
-        instrumental = st.checkbox("Consta prueba instrumental previa (FEES / VFSS)")
-        lineas_estimadas = texto_auto.count("\n") + (len(texto_auto) // 48) + 3
-        altura_dinamica = max(150, min(lineas_estimadas * 22, 650))
-        notas = st.text_area("Hallazgos clínicos consolidados (Revisar antes de enviar):", value=texto_auto, height=altura_dinamica)
-
-        analizar = st.button("Analizar Caso Clínico", type="primary", use_container_width=True)
-
-    if analizar and notas:
-        consulta = f"Patología: {pat_sel}. Trastorno: {trast_sel}. Instrumental previo: {'Sí' if instrumental else 'No'}. Hallazgos: {notas}"
-        nodos = indice.as_retriever(similarity_top_k=8).retrieve(consulta)
-        contexto = "\n\n".join([f"[{n.metadata['claim_id']} | {n.metadata['doc_id']} | {n.metadata['localizador']}] {n.text}" for n in nodos])
-        contexto_rs = recuperar_evidencia_rs(pat_sel, trast_sel, notas)
-
-        prompt = (
-            "Eres un Sistema de Soporte a la Decisión Clínica (CDSS) experto en Logopedia Neurológica. "
-            "Redacta un informe técnico riguroso basándote ESTRICTAMENTE en dos capas jerárquicas de conocimiento:\n\n"
-            "=== CAPA 1: PROTOCOLOS Y GUÍAS CLÍNICAS (Tier_3_Protocol · CÓMO HACER / PRÁCTICA SEGURA) ===\n"
-            f"{contexto}\n\n"
-            "=== CAPA 2: REVISIONES SISTEMÁTICAS (Tier_1_SR) Y ENSAYOS PRIMARIOS (Tier_2_Trial) ===\n"
-            f"{contexto_rs}\n\n"
-            f"DATOS DEL CASO CLÍNICO:\n{consulta}\n\n"
-            "REGLAS DETERMINISTAS DE RAZONAMIENTO Y SÍNTESIS (OBLIGATORIAS):\n"
-            "1. DISTINCIÓN ENTRE 'insufficient_rct' Y 'contraindicated_or_harmful':\n"
-            "   - Si un registro tiene Status 'insufficient_rct' (ej. Cochrane indica ausencia de ECA), NO paralices ni rechaces el tratamiento: extrae los protocolos seguros de Tier_3_Protocol y Tier_2_Trial para ofrecer un plan de acción real, aclarando el nivel de certeza bajo.\n"
-            "   - Si un registro o regla clínica marca 'contraindicated_or_harmful' (ej. NMES en Ataxia de Friedreich, tDCS fuera de ensayo o cargas extremas con riesgo de fatiga/aspiración), activa el bloqueo y desaconséjalo explícitamente.\n"
-            "2. RESOLUCIÓN TEMPORAL (TEMPORAL DECAY OVERRIDE): Si un ensayo clínico reciente (Tier_2_Trial) es posterior a una Revisión Sistemática (Tier_1_SR) y evalúa el fenotipo del paciente, prioriza los parámetros del ensayo reciente aclarando que aún no ha sido incorporado a una RS.\n"
-            "3. ANTI-SOBREGENERALIZACIÓN DE SUBTIPO: Nunca extrapoles automáticamente dosificaciones intensivas probadas solo en SCA3 hacia Ataxia de Friedreich o fenotipos con fatiga severa/miocardiopatía; adapta la intensidad y exige control de fatiga.\n"
-            "4. ESTRUCTURA EN 3 BLOQUES DENTRO DE 'respuesta_dilema_clinico':\n"
-            "   - [Bloque 1 · Recomendación Operativa]: Acción terapéutica concreta (frecuencia, intensidad, foco y maniobras) extraída de Tier_2_Trial y Tier_3_Protocol.\n"
-            "   - [Bloque 2 · Nivel de Certeza y Contexto RS]: Grado de respaldo según Tier_1_SR (citando datos estadísticos o limitaciones).\n"
-            "   - [Bloque 3 · Banderas Rojas y Contraindicaciones]: Criterios de seguridad, control de fatiga y derivaciones.\n"
-            "5. TRAZABILIDAD Y SEGURIDAD IDDSI: Diferencia en 'evidencia_rag' entre [Guía Clínica / Manual] y [Revisión Sistemática / Estudio Primario]. Si hay sospecha de disfagia, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay disfagia, déjalo en ''."
+        st.write(reporte.diagnostico.analisis_fisiopatologico)
+        st.markdown(
+            f"""<div style="background-color: #F5F3FF; border-left: 4px solid #4C1D95; padding: 0.95rem 1.15rem; border-radius: 6px; margin: 0.8rem 0 1.2rem 0; color: #1E293B; font-size: 1.03rem; line-height: 1.55;">
+            <strong style="color: #1E1B4B;">Diagnóstico Diferencial:</strong> {reporte.diagnostico.diagnostico_diferencial}
+            </div>""",
+            unsafe_allow_html=True
         )
 
-        for intento in range(1, 4):
-            try:
-                llm_activo = LlamaOpenAI(model="gpt-4o", temperature=0.1 if intento == 1 else 0.0)
-                st.session_state["reporte"] = llm_activo.as_structured_llm(ReporteClinicoLogopedico).complete(prompt).raw
-                st.session_state.pop("ensayos_externos", None)
-                st.session_state.pop("enlaces_externos", None)
-                break
-            except ValidationError as e:
-                prompt += f"\nCORRECCIÓN (Intento {intento}): {e}"
+        st.error(f"**Resolución del Dilema Clínico:** {reporte.intervencion.respuesta_dilema_clinico}")
 
-    if "reporte" in st.session_state:
-        reporte = st.session_state["reporte"]
-        with col_centro:
-            st.subheader("2. Reporte Clínico")
+        if reporte.evaluacion.signos_alerta_seguridad:
+            st.error("**Alertas de Seguridad:**\n" + "\n".join([f"- {a}" for a in reporte.evaluacion.signos_alerta_seguridad]))
 
-            c_cie, c_cie_i = st.columns([0.88, 0.12])
-            c_cie.info(f"**CIE-11:** {reporte.diagnostico.codigo_cie11} | **Patología:** {reporte.diagnostico.patologia_neuro_base.value}")
-            pop_cie = c_cie_i.popover("ℹ️")
-            pop_cie.markdown(f"**Guía de Codificación CIE-11 ({reporte.diagnostico.codigo_cie11})**")
-            pop_cie.caption("Valida la correspondencia entre el diagnóstico neurológico base y el trastorno funcional:")
-            pop_cie.markdown(
-                "- **8A00.0:** Enfermedad de Parkinson.\n"
-                "- **8A03.10:** Ataxias hereditarias (Ataxia de Friedreich).\n"
-                "- **8B11 / 8B20:** DCA vascular (Ictus isquémico / hemorrágico).\n"
-                "- **NA07:** DCA traumático (Traumatismo intracraneal / TCE)."
-            )
-            pop_cie.markdown("[Consultar navegador OMS CIE-11](https://icd.who.int/browse/2024-01/mms/es)")
+        if reporte.evaluacion.informacion_clinica_no_disponible:
+            st.info("**Información Clínica No Disponible (Datos Ausentes):**\n" + "\n".join([f"- {d}" for d in reporte.evaluacion.informacion_clinica_no_disponible]))
 
-            c_an, c_an_i = st.columns([0.88, 0.12])
-            c_an.markdown("#### Análisis Fisiopatológico y Diagnóstico Diferencial")
-            pop_an = c_an_i.popover("ℹ️")
-            pop_an.markdown("**Auditoría del Razonamiento Fisiopatológico**")
-            pop_an.caption(
-                "• **Subsistemas motores:** Verifica respiración, fonación, resonancia, articulación y prosodia.\n"
-                "• **Fases deglutorias:** Distingue alteración de eficacia (residuo) frente a seguridad (aspiración).\n"
-                "• **Diferencial:** Comprueba que no se confundan déficits motores (disartria/apraxia) con trastornos lingüísticos o cognitivos."
-            )
+        if reporte.evaluacion.evidencia_cientifica_insuficiente:
+            st.warning("**Declaración de Evidencia Científica Insuficiente:**\n" + "\n".join([f"- {ev}" for ev in reporte.evaluacion.evidencia_cientifica_insuficiente]))
+            if st.button("🔎 Consultar Bases Científicas y Ensayos (PubMed, Cochrane, ClinicalTrials, ASHA)", key="btn_pubmed"):
+                with st.spinner("Consultando PubMed/MEDLINE, Cochrane y ClinicalTrials.gov..."):
+                    res_ext = buscar_evidencia_externa(pat_sel, trast_sel)
+                    st.session_state["enlaces_externos"] = res_ext["enlaces"]
+                    if res_ext["datos_api"]:
+                        prompt_ev = (
+                            f"Extrae los estudios y ensayos clínicos más relevantes de estos registros sobre {pat_sel} y {trast_sel}, "
+                            f"enfocándote en las dudas del caso ({'; '.join(reporte.evaluacion.evidencia_cientifica_insuficiente)}). "
+                            f"Indica la base de origen (PubMed, Cochrane o ClinicalTrials NCT). No inventes datos ni códigos:\n\n{res_ext['datos_api']}\n\n"
+                            "REGLA ESTRICTA DE ENLACES en 'referencia_estudio': Incluye autor, año y el enlace Markdown usando EXCLUSIVAMENTE el PMID o código NCT literal que aparece en los registros anteriores:\n"
+                            "- Si tiene PMID: [PubMed PMID](https://pubmed.ncbi.nlm.nih.gov/CODIGO_PMID/)\n"
+                            "- Si tiene NCT: [ClinicalTrials NCT](https://clinicaltrials.gov/study/CODIGO_NCT)\n"
+                            "Nunca uses https://nih.gov ni /ct2/show/. Si un registro no tiene código PMID ni NCT, pon solo autor y año sin enlace."
+                        )
+                        llm_ev = LlamaOpenAI(model="gpt-4o", temperature=0.0)
+                        res_ev = llm_ev.as_structured_llm(SintesisEnsayosExternos).complete(prompt_ev).raw
+                        st.session_state["ensayos_externos"] = res_ev.ensayos
+                    else:
+                        st.session_state["ensayos_externos"] = []
 
-            st.write(reporte.diagnostico.analisis_fisiopatologico)
-            st.markdown(
-                f"""<div style="background-color: #F5F3FF; border-left: 4px solid #4C1D95; padding: 0.95rem 1.15rem; border-radius: 6px; margin: 0.8rem 0 1.2rem 0; color: #1E293B; font-size: 1.03rem; line-height: 1.55;">
-                <strong style="color: #1E1B4B;">Diagnóstico Diferencial:</strong> {reporte.diagnostico.diagnostico_diferencial}
-                </div>""",
-                unsafe_allow_html=True
-            )
+            if "ensayos_externos" in st.session_state:
+                if st.session_state["ensayos_externos"]:
+                    st.markdown("**Síntesis de Ensayos y Revisiones (PubMed · Cochrane · ClinicalTrials.gov):**")
+                    for e in st.session_state["ensayos_externos"]:
+                        st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
 
-            st.error(f"**Resolución del Dilema Clínico:** {reporte.intervencion.respuesta_dilema_clinico}")
+                if "enlaces_externos" in st.session_state:
+                    links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
+                    st.info(f"**Búsqueda directa pre-filtrada en repositorios especializados:**\n\n{links_md}")
 
-            if reporte.evaluacion.signos_alerta_seguridad:
-                st.error("**Alertas de Seguridad:**\n" + "\n".join([f"- {a}" for a in reporte.evaluacion.signos_alerta_seguridad]))
-
-            if reporte.evaluacion.informacion_clinica_no_disponible:
-                st.info("**Información Clínica No Disponible (Datos Ausentes):**\n" + "\n".join([f"- {d}" for d in reporte.evaluacion.informacion_clinica_no_disponible]))
-
-            if reporte.evaluacion.evidencia_cientifica_insuficiente:
-                st.warning("**Declaración de Evidencia Científica Insuficiente:**\n" + "\n".join([f"- {ev}" for ev in reporte.evaluacion.evidencia_cientifica_insuficiente]))
-                if st.button("🔎 Consultar Bases Científicas y Ensayos (PubMed, Cochrane, ClinicalTrials, ASHA)", key="btn_pubmed"):
-                    with st.spinner("Consultando PubMed/MEDLINE, Cochrane y ClinicalTrials.gov..."):
-                        res_ext = buscar_evidencia_externa(pat_sel, trast_sel)
-                        st.session_state["enlaces_externos"] = res_ext["enlaces"]
-                        if res_ext["datos_api"]:
-                            prompt_ev = (
-                                f"Extrae los estudios y ensayos clínicos más relevantes de estos registros sobre {pat_sel} y {trast_sel}, "
-                                f"enfocándote en las dudas del caso ({'; '.join(reporte.evaluacion.evidencia_cientifica_insuficiente)}). "
-                                f"Indica la base de origen (PubMed, Cochrane o ClinicalTrials NCT). No inventes datos ni códigos:\n\n{res_ext['datos_api']}\n\n"
-                                "REGLA ESTRICTA DE ENLACES en 'referencia_estudio': Incluye autor, año y el enlace Markdown usando EXCLUSIVAMENTE el PMID o código NCT literal que aparece en los registros anteriores:\n"
-                                "- Si tiene PMID: [PubMed PMID](https://pubmed.ncbi.nlm.nih.gov/CODIGO_PMID/)\n"
-                                "- Si tiene NCT: [ClinicalTrials NCT](https://clinicaltrials.gov/study/CODIGO_NCT)\n"
-                                "Nunca uses https://nih.gov ni /ct2/show/. Si un registro no tiene código PMID ni NCT, pon solo autor y año sin enlace."
-                            )
-                            llm_ev = LlamaOpenAI(model="gpt-4o", temperature=0.0)
-                            res_ev = llm_ev.as_structured_llm(SintesisEnsayosExternos).complete(prompt_ev).raw
-                            st.session_state["ensayos_externos"] = res_ev.ensayos
-                        else:
-                            st.session_state["ensayos_externos"] = []
-
-                if "ensayos_externos" in st.session_state:
-                    if st.session_state["ensayos_externos"]:
-                        st.markdown("**Síntesis de Ensayos y Revisiones (PubMed · Cochrane · ClinicalTrials.gov):**")
-                        for e in st.session_state["ensayos_externos"]:
-                            st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
-
-                    if "enlaces_externos" in st.session_state:
-                        links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
-                        st.info(f"**Búsqueda directa pre-filtrada en repositorios especializados:**\n\n{links_md}")
-
-            c_ev, c_ev_i = st.columns([0.88, 0.12])
-            c_ev.markdown("**Evaluación Sugerida:**")
-            pop_ev = c_ev_i.popover("ℹ️")
-            pop_ev.markdown("**Criterio de Selección de Pruebas y Escalas**")
-            pop_ev.caption(
-                "• **Pertinencia clínica:** Las escalas se seleccionan según los subsistemas afectados y la etiología base.\n"
-                "• **Cribado vs. Instrumental:** Diferencia herramientas clínicas (MECV-V, EAT-10, FDA-2, CAPE-V) de pruebas instrumentales confirmatorias (FEES / VFSS).\n"
-                "• **Supervisión:** Marca únicamente las pruebas que consideres indicadas para el caso."
-            )
+        c_ev, c_ev_i = st.columns([0.88, 0.12])
+        c_ev.markdown("**Evaluación Sugerida:**")
+        pop_ev = c_ev_i.popover("ℹ️")
+        pop_ev.markdown("**Criterio de Selección de Pruebas y Escalas**")
+        pop_ev.caption(
+            "• **Pertinencia clínica:** Las escalas se seleccionan según los subsistemas afectados y la etiología base.\n"
+            "• **Cribado vs. Instrumental:** Diferencia herramientas clínicas (MECV-V, EAT-10, FDA-2, CAPE-V) de pruebas instrumentales confirmatorias (FEES / VFSS).\n"
+            "• **Supervisión:** Marca únicamente las pruebas que consideres indicadas para el caso."
+        )
 
             for esc in reporte.evaluacion.escalas_sugeridas:
                 st.checkbox(esc, value=True, key=f"e_{esc}")
