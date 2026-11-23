@@ -520,15 +520,15 @@ prompt = (
     )
 
 
-    for intento in range(1, 4):
-        try:
-            llm_activo = LlamaOpenAI(model="gpt-4o", temperature=0.1 if intento == 1 else 0.0)
-            st.session_state["reporte"] = llm_activo.as_structured_llm(ReporteClinicoLogopedico).complete(prompt).raw
-            st.session_state.pop("ensayos_externos", None)
-            st.session_state.pop("enlaces_externos", None)
-            break
-        except ValidationError as e:
-            prompt += f"\nCORRECCIÓN (Intento {intento}): {e}"
+for intento in range(1, 4):
+    try:
+        llm_activo = LlamaOpenAI(model="gpt-4o", temperature=0.1 if intento == 1 else 0.0)
+        st.session_state["reporte"] = llm_activo.as_structured_llm(ReporteClinicoLogopedico).complete(prompt).raw
+        st.session_state.pop("ensayos_externos", None)
+        st.session_state.pop("enlaces_externos", None)
+        break
+    except ValidationError as e:
+        prompt += f"\nCORRECCIÓN (Intento {intento}): {e}"
 
     if "reporte" in st.session_state:
         reporte = st.session_state["reporte"]
