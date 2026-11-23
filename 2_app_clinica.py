@@ -462,7 +462,7 @@ with tab_cdss:
             list(casos_dict.keys()),
                 on_change=limpiar_estado_anterior
             )
-            caso_activo = casos_dict[seleccion]
+        caso_activo = casos_dict[seleccion]
 
             if caso_activo:
                 pat_caso = str(caso_activo.get("patologia_base") or caso_activo.get("patologia") or "")
