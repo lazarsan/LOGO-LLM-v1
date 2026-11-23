@@ -445,25 +445,26 @@ with tab_cdss:
         texto_auto = ""
 
         if modo_ingreso == "Banco Maestro (25 Casos)":
-            casos_dict = {"-- Selecciona un caso --": None}
-            for archivo_maestro in [
+                    casos_dict = {"-- Selecciona un caso --": None}
+        for archivo_maestro in [
             "LOGO_LLM_25_Casos_Clinicos_Sinteticos_Banco_Maestro_v1_0.json",
             "casos_desafio_ataxia_rs_26_31.json"
         ]:
-        if os.path.exists(archivo_maestro):
-            with open(archivo_maestro, "r", encoding="utf-8") as f:
-                datos_json = json.load(f)
-                lista_casos = datos_json.get("casos", []) if isinstance(datos_json, dict) else datos_json
-                for c in lista_casos:
-                    if isinstance(c, dict):
-                        cid = c.get("id_caso") or c.get("id") or "CASO"
-                        tit = c.get("titulo") or c.get("perfil") or ""
-                        casos_dict[f"{cid} · {tit}"] = c
+            if os.path.exists(archivo_maestro):
+                with open(archivo_maestro, "r", encoding="utf-8") as f:
+                    datos_json = json.load(f)
+                    lista_casos = datos_json.get("casos", []) if isinstance(datos_json, dict) else datos_json
+                    for c in lista_casos:
+                        if isinstance(c, dict):
+                            cid = c.get("id_caso") or c.get("id") or "CASO"
+                            tit = c.get("titulo") or c.get("perfil") or ""
+                            casos_dict[f"{cid} · {tit}"] = c
 
         seleccion = st.selectbox(
             "Selecciona caso sintético:",
             list(casos_dict.keys()),
-                on_change=limpiar_estado_anterior
+            on_change=limpiar_estado_anterior
+
             )
         caso_activo = casos_dict[seleccion]
 
