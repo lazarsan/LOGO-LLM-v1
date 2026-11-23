@@ -496,27 +496,27 @@ with tab_cdss:
         consulta = f"Patología: {pat_sel}. Trastorno: {trast_sel}. Instrumental previo: {'Sí' if instrumental else 'No'}. Hallazgos: {notas}"
         nodos = indice.as_retriever(similarity_top_k=8).retrieve(consulta)
         contexto = "\n\n".join([f"[{n.metadata['claim_id']} | {n.metadata['doc_id']} | {n.metadata['localizador']}] {n.text}" for n in nodos])
-            contexto_rs = recuperar_evidencia_rs(pat_sel, trast_sel, notas)
+        contexto_rs = recuperar_evidencia_rs(pat_sel, trast_sel, notas)
 
-    prompt = (
-        "Eres un Sistema de Soporte a la Decisión Clínica (CDSS) experto en Logopedia Neurológica. "
-        "Redacta un informe técnico riguroso basándote ESTRICTAMENTE en dos capas jerárquicas de conocimiento:\n\n"
-        "=== CAPA 1: PROTOCOLOS Y GUÍAS CLÍNICAS (Tier_3_Protocol · CÓMO HACER / PRÁCTICA SEGURA) ===\n"
-        f"{contexto}\n\n"
-        "=== CAPA 2: REVISIONES SISTEMÁTICAS (Tier_1_SR) Y ENSAYOS PRIMARIOS (Tier_2_Trial) ===\n"
-        f"{contexto_rs}\n\n"
-        f"DATOS DEL CASO CLÍNICO:\n{consulta}\n\n"
-        "REGLAS DETERMINISTAS DE RAZONAMIENTO Y SÍNTESIS (OBLIGATORIAS):\n"
-        "1. DISTINCIÓN ENTRE 'insufficient_rct' Y 'contraindicated_or_harmful':\n"
-        "   - Si un registro tiene Status 'insufficient_rct' (ej. Cochrane indica ausencia de ECA), NO paralices ni rechaces el tratamiento: extrae los protocolos seguros de Tier_3_Protocol y Tier_2_Trial para ofrecer un plan de acción real, aclarando el nivel de certeza bajo.\n"
-        "   - Si un registro o regla clínica marca 'contraindicated_or_harmful' (ej. NMES en Ataxia de Friedreich, tDCS fuera de ensayo o cargas extremas con riesgo de fatiga/aspiración), activa el bloqueo y desaconséjalo explícitamente.\n"
-        "2. RESOLUCIÓN TEMPORAL (TEMPORAL DECAY OVERRIDE): Si un ensayo clínico reciente (Tier_2_Trial) es posterior a una Revisión Sistemática (Tier_1_SR) y evalúa el fenotipo del paciente, prioriza los parámetros del ensayo reciente aclarando que aún no ha sido incorporado a una RS.\n"
-        "3. ANTI-SOBREGENERALIZACIÓN DE SUBTIPO: Nunca extrapoles automáticamente dosificaciones intensivas probadas solo en SCA3 hacia Ataxia de Friedreich o fenotipos con fatiga severa/miocardiopatía; adapta la intensidad y exige control de fatiga.\n"
-        "4. ESTRUCTURA EN 3 BLOQUES DENTRO DE 'respuesta_dilema_clinico':\n"
-        "   - [Bloque 1 · Recomendación Operativa]: Acción terapéutica concreta (frecuencia, intensidad, foco y maniobras) extraída de Tier_2_Trial y Tier_3_Protocol.\n"
-        "   - [Bloque 2 · Nivel de Certeza y Contexto RS]: Grado de respaldo según Tier_1_SR (citando datos estadísticos o limitaciones).\n"
-        "   - [Bloque 3 · Banderas Rojas y Contraindicaciones]: Criterios de seguridad, control de fatiga y derivaciones.\n"
-        "5. TRAZABILIDAD Y SEGURIDAD IDDSI: Diferencia en 'evidencia_rag' entre [Guía Clínica / Manual] y [Revisión Sistemática / Estudio Primario]. Si hay sospecha de disfagia, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay disfagia, déjalo en ''."
+prompt = (
+    "Eres un Sistema de Soporte a la Decisión Clínica (CDSS) experto en Logopedia Neurológica. "
+    "Redacta un informe técnico riguroso basándote ESTRICTAMENTE en dos capas jerárquicas de conocimiento:\n\n"
+    "=== CAPA 1: PROTOCOLOS Y GUÍAS CLÍNICAS (Tier_3_Protocol · CÓMO HACER / PRÁCTICA SEGURA) ===\n"
+    f"{contexto}\n\n"
+    "=== CAPA 2: REVISIONES SISTEMÁTICAS (Tier_1_SR) Y ENSAYOS PRIMARIOS (Tier_2_Trial) ===\n"
+    f"{contexto_rs}\n\n"
+    f"DATOS DEL CASO CLÍNICO:\n{consulta}\n\n"
+    "REGLAS DETERMINISTAS DE RAZONAMIENTO Y SÍNTESIS (OBLIGATORIAS):\n"
+    "1. DISTINCIÓN ENTRE 'insufficient_rct' Y 'contraindicated_or_harmful':\n"
+    "   - Si un registro tiene Status 'insufficient_rct' (ej. Cochrane indica ausencia de ECA), NO paralices ni rechaces el tratamiento: extrae los protocolos seguros de Tier_3_Protocol y Tier_2_Trial para ofrecer un plan de acción real, aclarando el nivel de certeza bajo.\n"
+    "   - Si un registro o regla clínica marca 'contraindicated_or_harmful' (ej. NMES en Ataxia de Friedreich, tDCS fuera de ensayo o cargas extremas con riesgo de fatiga/aspiración), activa el bloqueo y desaconséjalo explícitamente.\n"
+    "2. RESOLUCIÓN TEMPORAL (TEMPORAL DECAY OVERRIDE): Si un ensayo clínico reciente (Tier_2_Trial) es posterior a una Revisión Sistemática (Tier_1_SR) y evalúa el fenotipo del paciente, prioriza los parámetros del ensayo reciente aclarando que aún no ha sido incorporado a una RS.\n"
+    "3. ANTI-SOBREGENERALIZACIÓN DE SUBTIPO: Nunca extrapoles automáticamente dosificaciones intensivas probadas solo en SCA3 hacia Ataxia de Friedreich o fenotipos con fatiga severa/miocardiopatía; adapta la intensidad y exige control de fatiga.\n"
+    "4. ESTRUCTURA EN 3 BLOQUES DENTRO DE 'respuesta_dilema_clinico':\n"
+    "   - [Bloque 1 · Recomendación Operativa]: Acción terapéutica concreta (frecuencia, intensidad, foco y maniobras) extraída de Tier_2_Trial y Tier_3_Protocol.\n"
+    "   - [Bloque 2 · Nivel de Certeza y Contexto RS]: Grado de respaldo según Tier_1_SR (citando datos estadísticos o limitaciones).\n"
+    "   - [Bloque 3 · Banderas Rojas y Contraindicaciones]: Criterios de seguridad, control de fatiga y derivaciones.\n"
+    "5. TRAZABILIDAD Y SEGURIDAD IDDSI: Diferencia en 'evidencia_rag' entre [Guía Clínica / Manual] y [Revisión Sistemática / Estudio Primario]. Si hay sospecha de disfagia, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay disfagia, déjalo en ''."
     )
 
 
