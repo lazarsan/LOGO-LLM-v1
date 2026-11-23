@@ -38,7 +38,6 @@ def evaluar_semaforo(riesgo_sesgo: str, nivel_evidencia: str) -> tuple[str, str,
     return "🔵", "Precaución / Evidencia intermedia (Algunas preocupaciones / Piloto)", "#DBEAFE"
 
 
-# 1. ESQUEMAS DE DATOS Y CORTAFUEGOS CLÍNICO
 class PatologiaBase(str, Enum):
     DCA = "Daño Cerebral Adquirido"
     PARKINSON = "Enfermedad de Parkinson"
@@ -53,12 +52,12 @@ class TipoTrastorno(str, Enum):
 
 
 class EvaluacionClinica(BaseModel):
-    escalas_sugeridas: List[str] = Field(description="Escalas y pruebas instrumentales recomendadas con su justificación clínica.")
+    escalas_sugeridas: List[str] = Field(description="Escalas y pruebas instrumentales recomendadas.")
     signos_alerta_seguridad: List[str] = Field(description="Signos clínicos críticos detectados.")
-    informacion_clinica_no_disponible: List[str] = Field(description="Datos ausentes en la historia del paciente que impiden confirmar diagnósticos o riesgos (ej. ausencia de FEES/VFSS, estado ON/OFF no registrado, sintaxis compleja no evaluada).")
-    evidencia_cientifica_insuficiente: List[str] = Field(description="Áreas donde la literatura recuperada tiene certeza baja/muy baja, falta de ensayos clínicos o riesgo de extrapolación entre fenotipos.")
-    criterios_derivacion: List[str] = Field(description="Especialidades a las que derivar (ej. Neurología, ORL, Nutrición, Farmacia).")
-    prueba_instrumental_previa: bool = Field(description="True solo si el caso indica FEES o VFSS ya realizados.")
+    informacion_clinica_no_disponible: List[str] = Field(description="Datos ausentes en la historia del paciente.")
+    evidencia_cientifica_insuficiente: List[str] = Field(description="Áreas con certeza baja/muy baja o riesgo de extrapolación.")
+    criterios_derivacion: List[str] = Field(description="Especialidades a las que derivar.")
+    prueba_instrumental_previa: bool = Field(description="True solo si consta FEES o VFSS previos.")
 
 
 class DiagnosticoEstructurado(BaseModel):
@@ -66,16 +65,12 @@ class DiagnosticoEstructurado(BaseModel):
     trastorno_logopedico: TipoTrastorno
     codigo_cie11: str = Field(
         description=(
-            "Código CIE-11 exacto según etiología: "
-            "'8A03.10' para Ataxia Hereditaria (Ataxia de Friedreich / ataxias cerebelosas hereditarias), "
-            "'8A00.0' para Enfermedad de Parkinson, "
-            "'8B11 / 8B20' para Daño Cerebral Adquirido de origen vascular (ictus isquémico/hemorrágico), "
-            "'NA07' para Daño Cerebral Adquirido de origen traumático (traumatismo craneoencefálico / TCE), "
-            "añadiendo el código secundario del trastorno funcional si procede."
+            "Código CIE-11 exacto: '8A03.10' para Ataxia Hereditaria, '8A00.0' para Parkinson, "
+            "'8B11 / 8B20' para DCA vascular (ictus), 'NA07' para DCA traumático (TCE)."
         )
     )
-    analisis_fisiopatologico: str = Field(description="Explicación detallada de los subsistemas afectados (respiración, fonación, articulación, resonancia, prosodia, deglución o lenguaje).")
-    diagnostico_diferencial: str = Field(description="Diferenciación clínica frente a cuadros similares y límites de certeza diagnóstica.")
+    analisis_fisiopatologico: str = Field(description="Explicación detallada de subsistemas afectados.")
+    diagnostico_diferencial: str = Field(description="Diferenciación clínica frente a cuadros similares.")
 
     @model_validator(mode="after")
     def asegurar_cie11_exacto(self) -> "DiagnosticoEstructurado":
@@ -92,26 +87,24 @@ class DiagnosticoEstructurado(BaseModel):
 
 
 class IntervencionLogopedica(BaseModel):
-    respuesta_dilema_clinico: str = Field(description="Respuesta directa, argumentada y segura frente a la propuesta o trampa planteada en la consulta.")
-    objetivos_terapeuticos: List[str] = Field(description="Objetivos funcionales y comunicativos/deglutorios individualizados.")
-    estrategias_compensatorias: List[str] = Field(description="Maniobras deglutorias, postura, CAA o ajustes del entorno detallados.")
-    reactivacion_neuromuscular: List[str] = Field(description="Procedimientos motores o programas validados con sus parámetros de dosificación y fatiga.")
-    adaptacion_dietetica_iddsi: str = Field(description="Pauta detallada sobre viscosidades/texturas IDDSI y condiciones obligatorias previas.")
+    respuesta_dilema_clinico: str = Field(description="Respuesta directa y segura al dilema planteado.")
+    objetivos_terapeuticos: List[str] = Field(description="Objetivos funcionales individualizados.")
+    estrategias_compensatorias: List[str] = Field(description="Maniobras, postura, CAA o ajustes del entorno.")
+    reactivacion_neuromuscular: List[str] = Field(description="Procedimientos motores validados con dosificación y control de fatiga.")
+    adaptacion_dietetica_iddsi: str = Field(description="Pauta sobre viscosidades/texturas IDDSI y condiciones previas.")
 
 
 class CitaRAG(BaseModel):
-    id_nodo: str = Field(description="ID exacto del claim (ej. DCA-C001, EP-CLM-002, ATX-CL-007) o RS_ID de la capa de evidencia.")
-    tipo_fuente: Literal["Guía Clínica / Manual", "Revisión Sistemática / Estudio Primario"] = Field(
-        description="Origen jerárquico de la evidencia."
-    )
-    fuente_documental: str = Field(description="ID del documento, año y localizador físico PDF o sección de la revisión/estudio.")
-    hecho_clinico_factual: str = Field(description="Dato clínico objetivo extraído sin narrativa autoral.")
+    id_nodo: str
+    tipo_fuente: Literal["Guía Clínica / Manual", "Revisión Sistemática / Estudio Primario"]
+    fuente_documental: str
+    hecho_clinico_factual: str
 
 
 class EnsayoComparado(BaseModel):
-    referencia_estudio: str = Field(description="Autor, año o identificador NCT y tipo de diseño (ECA, Revisión Sistemática).")
-    intervenciones_comparadas: str = Field(description="Intervención experimental frente a grupo control o terapia estándar.")
-    hallazgos_principales: str = Field(description="Resultados cuantitativos/funcionales principales y nivel de significación o certeza.")
+    referencia_estudio: str
+    intervenciones_comparadas: str
+    hallazgos_principales: str
 
 
 class SintesisEnsayosExternos(BaseModel):
@@ -126,68 +119,47 @@ class ReporteClinicoLogopedico(BaseModel):
 
     @model_validator(mode="after")
     def cortafuegos_clinico(self) -> "ReporteClinicoLogopedico":
-        plan = " ".join(
-            self.intervencion.estrategias_compensatorias +
-            self.intervencion.reactivacion_neuromuscular
-        ).lower()
+        plan = " ".join(self.intervencion.estrategias_compensatorias + self.intervencion.reactivacion_neuromuscular).lower()
         negaciones = ["desaconseja", "no se recomienda", "contraindicado", "evitar", "no utilizar", "no aplicar"]
-
         if self.diagnostico.patologia_neuro_base == PatologiaBase.ATAXIA and "nmes" in plan:
             if not any(n in plan for n in negaciones):
                 raise ValueError("VIOLACIÓN GRADE: Desaconsejado el uso de NMES en Ataxia de Friedreich.")
-
         if self.diagnostico.patologia_neuro_base == PatologiaBase.DCA and "tdcs" in plan:
             if not any(n in plan for n in negaciones) and "ensayo" not in plan:
                 raise ValueError("VIOLACIÓN ESO 2025: La tDCS no debe prescribirse fuera de ensayos clínicos.")
-
         return self
 
-
-# ESQUEMA DE EXTRACCIÓN PARA EL MÓDULO DE EVIDENCIA (CAPA 2)
 class ChunkEvidenciaCientifica(BaseModel):
-    rs_id: str = Field(description="Identificador único del bloque (ej. COCHRANE-2014-ATX-RESUMEN, TRIAL-SCA3-2023-01).")
+    rs_id: str
     seccion_rs: Literal["resumen_conclusiones", "tabla_estudio_primario", "discusion_practica_clinica"]
     prioridad_recuperacion: Literal["alta", "media"]
     dominio_clinico: Literal["Evaluación", "Disartria", "Disfagia Neurogénica", "Afasia", "Dispraxia", "General"]
-    subtipo_ataxia: str = Field(default="hereditaria_inespecifica", description="Subtipo específico: friedreich, sca3, sca2, sca6, sca_general o hereditaria_inespecifica.")
-    evidence_tier: Literal["Tier_1_SR", "Tier_2_Trial"] = Field(
-        default="Tier_1_SR",
-        description="Tier_1_SR para Revisiones Sistemáticas/Metaanálisis; Tier_2_Trial para Ensayos Clínicos o Estudios Piloto primarios."
-    )
-    evidence_status: Literal["insufficient_rct", "contraindicated_or_harmful", "supported"] = Field(
-        default="insufficient_rct",
-        description="insufficient_rct si faltan ECA pero es plausible/seguro; contraindicated_or_harmful si provoca fatiga extrema o riesgo de aspiración; supported si hay respaldo favorable."
-    )
-    phenotypes: List[str] = Field(
-        default_factory=list,
-        description="Fenotipos clínicos ejecutables: disartria_ataxica, disfagia_orofaringea, disfonia, incoordinacion_fonorrespiratoria."
-    )
-    intervention_intent: List[str] = Field(
-        default_factory=list,
-        description="Intención terapéutica: compensatoria, rehabilitadora_motora, higienico_dietetica, instrumental."
-    )
-    intervencion_evaluada: str = Field(description="Descripción detallada de la intervención o exposición (dosis, intensidad, frecuencia, duración).")
-    comparadores: str = Field(description="Grupo control, placebo, terapia estándar o ausencia de comparador.")
-    desenlaces_primarios_secundarios: str = Field(description="Desenlaces primarios y secundarios medidos en el estudio o revisión.")
-    herramientas_evaluacion: str = Field(description="Instrumentos, escalas clínicas y pruebas instrumentales empleadas.")
-    momentos_medicion: str = Field(description="Tiempos de evaluación (basal, post-intervención, seguimiento a X semanas/meses).")
-    variables_continuas: str = Field(description="Tamaño muestral (n) por grupos, media y desviación estándar (DE), mediana y rango intercuartílico (RIC), error estándar (EE) si aplica.")
-    variables_categoricas: str = Field(description="Número de eventos, proporciones/porcentajes, Odds Ratio (OR), Riesgo Relativo (RR) con intervalos de confianza (IC 95%) y valores p.")
-    hallazgos_cualitativos_citas: str = Field(description="Categorías temáticas, citas textuales o hallazgos cualitativos relevantes.")
-    riesgo_sesgo_calidad: str = Field(description="Valoración del riesgo de sesgo o calidad metodológica según Cochrane RoB 2, ROBINS-I, JBI o GRADE (indicar explícitamente si es Bajo riesgo, Algunas preocupaciones/Moderado o Alto riesgo).")
-    nivel_evidencia: str = Field(description="Nivel de certeza global o diseño (ej. Alta, Moderada, Baja, Muy baja, ECA, Serie de casos).")
-    limitaciones: str = Field(description="Limitaciones metodológicas principales reportadas.")
-    contenido_chunk: str = Field(description="Síntesis clínica completa y autocontenida del bloque para recuperación RAG.")
+    subtipo_ataxia: str = Field(default="hereditaria_inespecifica")
+    evidence_tier: Literal["Tier_1_SR", "Tier_2_Trial"] = Field(default="Tier_1_SR")
+    evidence_status: Literal["insufficient_rct", "contraindicated_or_harmful", "supported"] = Field(default="insufficient_rct")
+    phenotypes: List[str] = Field(default_factory=list)
+    intervention_intent: List[str] = Field(default_factory=list)
+    intervencion_evaluada: str
+    comparadores: str = Field(default="No reportado")
+    desenlaces_primarios_secundarios: str = Field(default="No reportado")
+    herramientas_evaluacion: str = Field(default="No reportado")
+    momentos_medicion: str = Field(default="No reportado")
+    variables_continuas: str = Field(default="No reportado")
+    variables_categoricas: str = Field(default="No reportado")
+    hallazgos_cualitativos_citas: str = Field(default="No reportado")
+    riesgo_sesgo_calidad: str = Field(default="No evaluado")
+    nivel_evidencia: str
+    limitaciones: str
+    contenido_chunk: str
 
 
 class ExtraccionDocumentoCientifico(BaseModel):
     titulo_documento: str
     autores_principales: str
-    doi: str = Field(description="DOI del documento si aparece en el texto, o cadena vacía ''.")
+    doi: str = Field(default="")
     chunks: List[ChunkEvidenciaCientifica]
 
 
-# 2. CARGA DEL ÍNDICE VECTORIAL Y CAPA 2 DE EVIDENCIA
 @st.cache_resource
 def inicializar_indice():
     Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-large")
@@ -204,6 +176,13 @@ def inicializar_indice():
 
 
 @st.cache_data
+def cargar_capa_rs() -> list:
+    if os.path.exists("capa_evidencia_rs.json"):
+        with open("capa_evidencia_rs.json", "r", encoding="utf-8") as f:
+            return json.load(f)
+    return []
+
+
 def detectar_subtipo_consulta(texto: str) -> str:
     t = normalizar_nombre(texto)
     if "friedreich" in t or "frda" in t:
@@ -215,6 +194,7 @@ def detectar_subtipo_consulta(texto: str) -> str:
     if "sca6" in t or "tipo 6" in t:
         return "sca6"
     return "hereditaria_inespecifica"
+
 
 def recuperar_evidencia_rs(patologia: str, trastorno: str, notas_clinicas: str = "") -> str:
     registros_rs = cargar_capa_rs()
@@ -228,10 +208,12 @@ def recuperar_evidencia_rs(patologia: str, trastorno: str, notas_clinicas: str =
     especificos = [
         r for r in filtrados
         if r.get("seccion_rs") != "resumen_conclusiones"
-        and (r.get("dominio_clinico", "").lower() in [trastorno.lower(), "evaluación", "general"])
+        and (
+            r.get("dominio_clinico", "").lower() in [trastorno.lower(), "evaluación", "general"]
+            or trastorno.lower().split()[0] in r.get("dominio_clinico", "").lower()
+        )
     ]
 
-    # Orden cronológico (más reciente primero para Temporal Decay Override)
     resumenes.sort(key=lambda x: x.get("anio_publicacion", 0), reverse=True)
     especificos.sort(key=lambda x: x.get("anio_publicacion", 0), reverse=True)
 
@@ -250,34 +232,31 @@ def recuperar_evidencia_rs(patologia: str, trastorno: str, notas_clinicas: str =
         fenotipos = ", ".join(r.get("phenotypes", [])) or r.get("dominio_clinico", "")
         intencion = ", ".join(r.get("intervention_intent", [])) or "No especificada"
 
-        # Detectar riesgo de sobre-generalización entre subtipos (ej. protocolo probado en SCA3 aplicado a Friedreich)
         if subtipo_paciente == "friedreich" and ("sca3" in subtipo_est or "machado" in subtipo_est) and "friedreich" not in subtipo_est:
             alertas_subtipo.append(
-                f"⚠️ ALERTA ANTI-SOBREGENERALIZACIÓN ({r['rs_id']}): Evidencia obtenida en {r.get('subtipo_ataxia')}, NO en Ataxia de Friedreich. No extrapolar dosis intensivas sin adaptar por fatiga neuromuscular y riesgo cardiológico."
+                f"⚠️ ALERTA ANTI-SOBREGENERALIZACIÓN ({r['rs_id']}): Evidencia obtenida en {r.get('subtipo_ataxia')}, NO en Ataxia de Friedreich."
             )
-
         if status == "contraindicated_or_harmful":
             bloqueos_seguridad.append(
-                f"🛑 BLOQUEO DE SEGURIDAD ({r['rs_id']}): {r.get('intervencion_evaluada')} marcada como contraindicada o dañina ({r.get('limitaciones')})."
+                f"🛑 BLOQUEO DE SEGURIDAD ({r['rs_id']}): {r.get('intervencion_evaluada')} contraindicada ({r.get('limitaciones')})."
             )
 
         bloques.append(
             f"[RS_ID: {r['rs_id']} | Tier: {tier} | Status: {status} | Año: {r['anio_publicacion']} | "
             f"Subtipo estudio: {r.get('subtipo_ataxia', 'General')} | Fenotipos: {fenotipos} | Intención: {intencion}]\n"
-            f"- Intervención vs Comparador: {r.get('intervencion_evaluada')} vs. {r.get('comparador', 'Control')}\n"
-            f"- Desenlaces e Instrumentos: {r.get('desenlaces_primarios_secundarios', '')} ({r.get('instrumentos_y_tiempos', r.get('herramientas_evaluacion', ''))})\n"
+            f"- Intervención vs Comparador: {r.get('intervencion_evaluada')} vs. {r.get('comparadores', 'Control')}\n"
+            f"- Desenlaces e Instrumentos: {r.get('desenlaces_primarios_secundarios', '')} ({r.get('herramientas_evaluacion', '')}) | Tiempos: {r.get('momentos_medicion', '')}\n"
             f"- Datos Estadísticos: Continuas: {r.get('variables_continuas', 'N/D')} | Categóricas: {r.get('variables_categoricas', 'N/D')}\n"
             f"- Nivel de evidencia y Sesgo: {r.get('nivel_evidencia')} | Sesgo: {r.get('riesgo_sesgo_calidad', 'N/D')} | Limitaciones: {r.get('limitaciones')}\n"
             f"- Síntesis: {r.get('contenido_chunk')}"
         )
 
-    cabecera_reglas = ""
+    cabecera = ""
     if bloqueos_seguridad:
-        cabecera_reglas += "\n".join(bloqueos_seguridad) + "\n\n"
+        cabecera += "\n".join(bloqueos_seguridad) + "\n\n"
     if alertas_subtipo:
-        cabecera_reglas += "\n".join(alertas_subtipo) + "\n\n"
-
-    return cabecera_reglas + "\n\n".join(bloques)
+        cabecera += "\n".join(alertas_subtipo) + "\n\n"
+    return cabecera + "\n\n".join(bloques)
 
 def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
     mapa_en = {
@@ -289,51 +268,52 @@ def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
         "Afasia": "aphasia",
         "Dispraxia / Apraxia del Habla / Orofacial": "apraxia of speech"
     }
-    q_pat = mapa_en.get(patologia, "neurological disorder")
-    q_trast = mapa_en.get(trastorno, "speech therapy")
-    query_simple = f"{q_pat} {q_trast}"
+    query_simple = f"{mapa_en.get(patologia, 'neurological disorder')} {mapa_en.get(trastorno, 'speech therapy')}"
     query_enc = urllib.parse.quote_plus(query_simple)
     headers = {"User-Agent": "Mozilla/5.0"}
-
     texto_recuperado = ""
 
-    url_pm = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={query_enc}&retmode=json&retmax=5&sort=relevance"
     try:
-        req_pm = urllib.request.Request(url_pm, headers=headers)
+        req_pm = urllib.request.Request(
+            f"https://nih.gov{query_enc}&retmode=json&retmax=5&sort=relevance",
+            headers=headers
+        )
         ids = json.loads(urllib.request.urlopen(req_pm, timeout=8).read().decode()).get("esearchresult", {}).get("idlist", [])
         if ids:
-            url_fetch = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={','.join(ids)}&retmode=xml"
-            req_fetch = urllib.request.Request(url_fetch, headers=headers)
+            req_fetch = urllib.request.Request(
+                f"https://nih.gov{','.join(ids)}&retmode=xml",
+                headers=headers
+            )
             texto_recuperado += "=== PUBMED ===\n" + urllib.request.urlopen(req_fetch, timeout=8).read().decode("utf-8", errors="ignore")[:9000]
     except Exception as err_pm:
         texto_recuperado += f"\n[Aviso PubMed: {err_pm}]\n"
 
-    url_ct = f"https://clinicaltrials.gov/api/v2/studies?query.term={query_enc}&pageSize=3"
     try:
-        req_ct = urllib.request.Request(url_ct, headers=headers)
+        req_ct = urllib.request.Request(
+            f"https://clinicaltrials.gov{query_enc}&pageSize=3",
+            headers=headers
+        )
         datos_ct = json.loads(urllib.request.urlopen(req_ct, timeout=8).read().decode())
         for est in datos_ct.get("studies", []):
             prot = est.get("protocolSection", {})
             nct = prot.get("identificationModule", {}).get("nctId", "")
             tit = prot.get("identificationModule", {}).get("briefTitle", "")
             estado = prot.get("statusModule", {}).get("overallStatus", "")
-            texto_recuperado += f"\nCLINICALTRIALS | ID: {nct} | URL: https://clinicaltrials.gov/study/{nct} | Estado: {estado} | Título: {tit}"
+            texto_recuperado += f"\nCLINICALTRIALS | ID: {nct} | URL: https://clinicaltrials.gov{nct} | Estado: {estado} | Título: {tit}"
     except Exception as err_ct:
         texto_recuperado += f"\n[Aviso ClinicalTrials: {err_ct}]\n"
 
     enlaces = {
-        "PubMed": f"https://pubmed.ncbi.nlm.nih.gov/?term={query_enc}",
-        "PubMed Central (PMC)": f"https://pmc.ncbi.nlm.nih.gov/?term={query_enc}",
-        "Cochrane Library": f"https://www.cochranelibrary.com/search?q={query_enc}",
-        "speechBITE": "https://speechbite.com/",
-        "ASHAWire": f"https://pubs.asha.org/action/doSearch?AllField={query_enc}",
-        "ASHA Evidence Maps": "https://www.asha.org/evidence-maps/"
+        "PubMed": f"https://nih.gov{query_enc}",
+        "PubMed Central (PMC)": f"https://nih.gov{query_enc}",
+        "Cochrane Library": f"https://cochranelibrary.com{query_enc}",
+        "speechBITE": "https://speechbite.com",
+        "ASHAWire": f"https://asha.org{query_enc}",
+        "ASHA Evidence Maps": "https://asha.org"
     }
-
     return {"datos_api": texto_recuperado, "enlaces": enlaces}
 
 
-# 3. INTERFAZ VISUAL Y ENCABEZADO DEGRADADO
 st.set_page_config(page_title="LogoPilot | CDSS Logopedia Neurológica", page_icon="🧭", layout="wide")
 
 archivos_img = glob.glob("**/*.png", recursive=True) + glob.glob("**/*.jpg", recursive=True) + glob.glob("**/*.jpeg", recursive=True)
@@ -362,42 +342,13 @@ st.markdown(f"""
         mix-blend-mode: multiply;
         filter: contrast(1.06) brightness(1.03);
     }}
-    .header-contenido {{
-        flex: 1;
-        min-width: 0;
-    }}
-    .header-cdss h2 {{
-        margin: 0;
-        font-size: 1.55rem;
-        font-weight: 800;
-        letter-spacing: 0.3px;
-    }}
-    .titulo-logo {{
-        color: #0F172A;
-    }}
-    .titulo-pilot {{
-        color: #FFFFFF;
-        text-shadow: 0 1px 3px rgba(15, 23, 42, 0.45);
-    }}
-    .header-inferior {{
-        text-align: right;
-        margin-top: 0.55rem;
-    }}
-    .header-cdss p {{
-        margin: 0;
-        font-size: 0.93rem;
-        color: #F8FAFC;
-        font-weight: 500;
-        text-shadow: 0 1px 3px rgba(15, 23, 42, 0.55);
-    }}
-    .subtexto-rag {{
-        display: block;
-        color: #CBD5E1;
-        font-size: 0.78rem;
-        margin-top: 0.3rem;
-        font-weight: 600;
-        letter-spacing: 0.2px;
-    }}
+    .header-contenido {{ flex: 1; min-width: 0; }}
+    .header-cdss h2 {{ margin: 0; font-size: 1.55rem; font-weight: 800; letter-spacing: 0.3px; }}
+    .titulo-logo {{ color: #0F172A; }}
+    .titulo-pilot {{ color: #FFFFFF; text-shadow: 0 1px 3px rgba(15, 23, 42, 0.45); }}
+    .header-inferior {{ text-align: right; margin-top: 0.55rem; }}
+    .header-cdss p {{ margin: 0; font-size: 0.93rem; color: #F8FAFC; font-weight: 500; text-shadow: 0 1px 3px rgba(15, 23, 42, 0.55); }}
+    .subtexto-rag {{ display: block; color: #CBD5E1; font-size: 0.78rem; margin-top: 0.3rem; font-weight: 600; letter-spacing: 0.2px; }}
     div[data-testid="stExpander"] {{ border: 1px solid #CBD5E1; border-radius: 6px; background-color: #F8FAFC; }}
 </style>
 <div class="header-cdss">
@@ -421,102 +372,199 @@ tab_cdss, tab_extractor = st.tabs([
     "🧬 Extractor y Auditor de Evidencia (RS · Trials · Artículos)"
 ])
 
-# ==============================================================================
-# PESTAÑA 1: SOPORTE CLÍNICO (CDSS)
-# ==============================================================================
 with tab_cdss:
     indice = inicializar_indice()
     col_izq, col_centro, col_der = st.columns([1, 1.4, 1])
 
-File "/mount/src/logo-llm-v1/2_app_clinica.py", line 431
- with col_izq:
-^
-IndentationError: unexpected indent
-if "reporte" in st.session_state:
-reporte = st.session_state["reporte"]
-with col_centro:
-    st.subheader("2. Reporte Clínico")
+    with col_izq:
+        c1, c1_i = st.columns([0.85, 0.15])
+        c1.subheader("1. Contexto Clínico")
+        with c1_i.popover("ℹ️"):
+            st.caption("1. Elija fuente de datos.\n2. Verifique anonimización (sin nombres ni NHC).\n3. Pulse Analizar.")
 
-    c_cie, c_cie_i = st.columns([0.88, 0.12])
-    c_cie.info(f"**CIE-11:** {reporte.diagnostico.codigo_cie11} | **Patología:** {reporte.diagnostico.patologia_neuro_base.value}")
-    pop_cie = c_cie_i.popover("ℹ️")
-    pop_cie.markdown(f"**Guía de Codificación CIE-11 ({reporte.diagnostico.codigo_cie11})**")
-    pop_cie.caption("Valida la correspondencia entre el diagnóstico neurológico base y el trastorno funcional:")
-    pop_cie.markdown(
-        "- **8A00.0:** Enfermedad de Parkinson.\n"
-        "- **8A03.10:** Ataxias hereditarias (Ataxia de Friedreich).\n"
-        "- **8B11 / 8B20:** DCA vascular (Ictus isquémico / hemorrágico).\n"
-        "- **NA07:** DCA traumático (Traumatismo intracraneal / TCE)."
-    )
-    pop_cie.markdown("[Consultar navegador OMS CIE-11](https://icd.who.int/browse/2024-01/mms/es)")
+        modo_ingreso = st.radio(
+            "Modo de entrada de datos:",
+            ["Banco Maestro (31 Casos)", "Subir Informe (PDF/DOCX/TXT/XLSX)", "Ficha Caso Real (Manual)"],
+            on_change=limpiar_estado_anterior
+        )
 
-    c_an, c_an_i = st.columns([0.88, 0.12])
-    c_an.markdown("#### Análisis Fisiopatológico y Diagnóstico Diferencial")
-    pop_an = c_an_i.popover("ℹ️")
-    pop_an.markdown("**Auditoría del Razonamiento Fisiopatológico**")
-    pop_an.caption(
-        "• **Subsistemas motores:** Verifica respiración, fonación, resonancia, articulación y prosodia.\n"
-        "• **Fases deglutorias:** Distingue alteración de eficacia (residuo) frente a seguridad (aspiración).\n"
-        "• **Diferencial:** Comprueba que no se confundan déficits motores (disartria/apraxia) con trastornos lingüísticos o cognitivos."
-    )
+        opciones_pat = [p.value for p in PatologiaBase]
+        idx_pat = 0
+        texto_auto = ""
 
-    st.write(reporte.diagnostico.analisis_fisiopatologico)
-    st.markdown(
-        f"""<div style="background-color: #F5F3FF; border-left: 4px solid #4C1D95; padding: 0.95rem 1.15rem; border-radius: 6px; margin: 0.8rem 0 1.2rem 0; color: #1E293B; font-size: 1.03rem; line-height: 1.55;">
-        <strong style="color: #1E1B4B;">Diagnóstico Diferencial:</strong> {reporte.diagnostico.diagnostico_diferencial}
-        </div>""",
-        unsafe_allow_html=True
-    )
+        if modo_ingreso == "Banco Maestro (31 Casos)":
+            casos_dict = {"-- Selecciona un caso --": None}
+            for archivo_maestro in [
+                "LOGO_LLM_25_Casos_Clinicos_Sinteticos_Banco_Maestro_v1_0.json",
+                "casos_desafio_ataxia_rs_26_31.json"
+            ]:
+                if os.path.exists(archivo_maestro):
+                    with open(archivo_maestro, "r", encoding="utf-8") as f:
+                        datos_json = json.load(f)
+                        lista_casos = datos_json.get("casos", []) if isinstance(datos_json, dict) else datos_json
+                        for c in lista_casos:
+                            if isinstance(c, dict):
+                                cid = c.get("id_caso") or c.get("id") or "CASO"
+                                tit = c.get("titulo") or c.get("perfil") or ""
+                                casos_dict[f"{cid} · {tit}"] = c
 
-    st.error(f"**Resolución del Dilema Clínico:** {reporte.intervencion.respuesta_dilema_clinico}")
+            seleccion = st.selectbox(
+                "Selecciona caso sintético:",
+                list(casos_dict.keys()),
+                on_change=limpiar_estado_anterior
+            )
+            caso_activo = casos_dict[seleccion]
 
-    if reporte.evaluacion.signos_alerta_seguridad:
-        st.error("**Alertas de Seguridad:**\n" + "\n".join([f"- {a}" for a in reporte.evaluacion.signos_alerta_seguridad]))
+            if caso_activo:
+                pat_caso = str(caso_activo.get("patologia_base") or caso_activo.get("patologia") or "")
+                idx_pat = next((i for i, p in enumerate(opciones_pat) if p.lower() in pat_caso.lower()), 0)
+                lineas_caso = [
+                    f"{k.upper().replace('_', ' ')}: {v}"
+                    for k, v in caso_activo.items()
+                    if k not in ["id_caso", "id", "numero", "rubrica", "criterio_experto"] and isinstance(v, str)
+                ]
+                texto_auto = "\n".join(lineas_caso)
 
-    if reporte.evaluacion.informacion_clinica_no_disponible:
-        st.info("**Información Clínica No Disponible (Datos Ausentes):**\n" + "\n".join([f"- {d}" for d in reporte.evaluacion.informacion_clinica_no_disponible]))
+        elif modo_ingreso == "Subir Informe (PDF/DOCX/TXT/XLSX)":
+            archivo_informe = st.file_uploader("Sube el informe clínico:", type=["pdf", "docx", "txt", "xlsx"])
+            if archivo_informe:
+                texto_auto = extraer_texto_archivo(archivo_informe)
+                st.success("Informe cargado y anonimizado localmente.")
 
-    if reporte.evaluacion.evidencia_cientifica_insuficiente:
-        st.warning("**Declaración de Evidencia Científica Insuficiente:**\n" + "\n".join([f"- {ev}" for ev in reporte.evaluacion.evidencia_cientifica_insuficiente]))
-        if st.button("🔎 Consultar Bases Científicas y Ensayos (PubMed, Cochrane, ClinicalTrials, ASHA)", key="btn_pubmed"):
-            with st.spinner("Consultando PubMed/MEDLINE, Cochrane y ClinicalTrials.gov..."):
-                res_ext = buscar_evidencia_externa(pat_sel, trast_sel)
-                st.session_state["enlaces_externos"] = res_ext["enlaces"]
-                if res_ext["datos_api"]:
-                    prompt_ev = (
-                        f"Extrae los estudios y ensayos clínicos más relevantes de estos registros sobre {pat_sel} y {trast_sel}, "
-                        f"enfocándote en las dudas del caso ({'; '.join(reporte.evaluacion.evidencia_cientifica_insuficiente)}). "
-                        f"Indica la base de origen (PubMed, Cochrane o ClinicalTrials NCT). No inventes datos ni códigos:\n\n{res_ext['datos_api']}\n\n"
-                        "REGLA ESTRICTA DE ENLACES en 'referencia_estudio': Incluye autor, año y el enlace Markdown usando EXCLUSIVAMENTE el PMID o código NCT literal que aparece en los registros anteriores:\n"
-                        "- Si tiene PMID: [PubMed PMID](https://pubmed.ncbi.nlm.nih.gov/CODIGO_PMID/)\n"
-                        "- Si tiene NCT: [ClinicalTrials NCT](https://clinicaltrials.gov/study/CODIGO_NCT)\n"
-                        "Nunca uses https://nih.gov ni /ct2/show/. Si un registro no tiene código PMID ni NCT, pon solo autor y año sin enlace."
-                    )
-                    llm_ev = LlamaOpenAI(model="gpt-4o", temperature=0.0)
-                    res_ev = llm_ev.as_structured_llm(SintesisEnsayosExternos).complete(prompt_ev).raw
-                    st.session_state["ensayos_externos"] = res_ev.ensayos
-                else:
-                    st.session_state["ensayos_externos"] = []
+        else:
+            texto_auto = renderizar_ficha_real()
 
-        if "ensayos_externos" in st.session_state:
-            if st.session_state["ensayos_externos"]:
-                st.markdown("**Síntesis de Ensayos y Revisiones (PubMed · Cochrane · ClinicalTrials.gov):**")
-                for e in st.session_state["ensayos_externos"]:
-                    st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
+        pat_sel = st.selectbox("Patología Neurológica Base", opciones_pat, index=idx_pat)
+        trast_sel = st.selectbox("Dominio Logopédico", [t.value for t in TipoTrastorno])
+        instrumental = st.checkbox("Consta prueba instrumental previa (FEES / VFSS)")
+        lineas_estimadas = texto_auto.count("\n") + (len(texto_auto) // 48) + 3
+        altura_dinamica = max(150, min(lineas_estimadas * 22, 650))
+        notas = st.text_area("Hallazgos clínicos consolidados (Revisar antes de enviar):", value=texto_auto, height=altura_dinamica)
 
-            if "enlaces_externos" in st.session_state:
-                links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
-                st.info(f"**Búsqueda directa pre-filtrada en repositorios especializados:**\n\n{links_md}")
+        analizar = st.button("Analizar Caso Clínico", type="primary", use_container_width=True)
 
-    c_ev, c_ev_i = st.columns([0.88, 0.12])
-    c_ev.markdown("**Evaluación Sugerida:**")
-    pop_ev = c_ev_i.popover("ℹ️")
-    pop_ev.markdown("**Criterio de Selección de Pruebas y Escalas**")
-    pop_ev.caption(
-        "• **Pertinencia clínica:** Las escalas se seleccionan según los subsistemas afectados y la etiología base.\n"
-        "• **Cribado vs. Instrumental:** Diferencia herramientas clínicas (MECV-V, EAT-10, FDA-2, CAPE-V) de pruebas instrumentales confirmatorias (FEES / VFSS).\n"
-        "• **Supervisión:** Marca únicamente las pruebas que consideres indicadas para el caso."
-    )
+    if analizar and notas:
+        consulta = f"Patología: {pat_sel}. Trastorno: {trast_sel}. Instrumental previo: {'Sí' if instrumental else 'No'}. Hallazgos: {notas}"
+        nodos = indice.as_retriever(similarity_top_k=8).retrieve(consulta)
+        contexto = "\n\n".join([f"[{n.metadata['claim_id']} | {n.metadata['doc_id']} | {n.metadata['localizador']}] {n.text}" for n in nodos])
+        contexto_rs = recuperar_evidencia_rs(pat_sel, trast_sel, notas)
+
+        prompt = (
+            "Eres un Sistema de Soporte a la Decisión Clínica (CDSS) experto en Logopedia Neurológica. "
+            "Redacta un informe técnico riguroso basándote ESTRICTAMENTE en dos capas jerárquicas de conocimiento:\n\n"
+            "=== CAPA 1: PROTOCOLOS Y GUÍAS CLÍNICAS (Tier_3_Protocol · CÓMO HACER / PRÁCTICA SEGURA) ===\n"
+            f"{contexto}\n\n"
+            "=== CAPA 2: REVISIONES SISTEMÁTICAS (Tier_1_SR) Y ENSAYOS PRIMARIOS (Tier_2_Trial) ===\n"
+            f"{contexto_rs}\n\n"
+            f"DATOS DEL CASO CLÍNICO:\n{consulta}\n\n"
+            "REGLAS DETERMINISTAS DE RAZONAMIENTO Y SÍNTESIS (OBLIGATORIAS):\n"
+            "1. DISTINCIÓN ENTRE 'insufficient_rct' Y 'contraindicated_or_harmful':\n"
+            "   - Si un registro tiene Status 'insufficient_rct' (ej. Cochrane indica ausencia de ECA), NO paralices ni rechaces el tratamiento: extrae los protocolos seguros de Tier_3_Protocol y Tier_2_Trial para ofrecer un plan de acción real, aclarando el nivel de certeza bajo.\n"
+            "   - Si un registro o regla clínica marca 'contraindicated_or_harmful' (ej. NMES en Ataxia de Friedreich, tDCS fuera de ensayo o cargas extremas con riesgo de fatiga/aspiración), activa el bloqueo y desaconséjalo explícitamente.\n"
+            "2. RESOLUCIÓN TEMPORAL (TEMPORAL DECAY OVERRIDE): Si un ensayo clínico reciente (Tier_2_Trial) es posterior a una Revisión Sistemática (Tier_1_SR) y evalúa el fenotipo del paciente, prioriza los parámetros del ensayo reciente aclarando que aún no ha sido incorporado a una RS.\n"
+            "3. ANTI-SOBREGENERALIZACIÓN DE SUBTIPO: Nunca extrapoles automáticamente dosificaciones intensivas probadas solo en SCA3 hacia Ataxia de Friedreich o fenotipos con fatiga severa/miocardiopatía; adapta la intensidad y exige control de fatiga.\n"
+            "4. ESTRUCTURA EN 3 BLOQUES DENTRO DE 'respuesta_dilema_clinico':\n"
+            "   - [Bloque 1 · Recomendación Operativa]: Acción terapéutica concreta (frecuencia, intensidad, foco y maniobras) extraída de Tier_2_Trial y Tier_3_Protocol.\n"
+            "   - [Bloque 2 · Nivel de Certeza y Contexto RS]: Grado de respaldo según Tier_1_SR (citando datos estadísticos o limitaciones).\n"
+            "   - [Bloque 3 · Banderas Rojas y Contraindicaciones]: Criterios de seguridad, control de fatiga y derivaciones.\n"
+            "5. TRAZABILIDAD Y SEGURIDAD IDDSI: Diferencia en 'evidencia_rag' entre [Guía Clínica / Manual] y [Revisión Sistemática / Estudio Primario]. Si hay sospecha de disfagia, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay disfagia, déjalo en ''."
+        )
+
+        for intento in range(1, 4):
+            try:
+                llm_activo = LlamaOpenAI(model="gpt-4o", temperature=0.1 if intento == 1 else 0.0)
+                st.session_state["reporte"] = llm_activo.as_structured_llm(ReporteClinicoLogopedico).complete(prompt).raw
+                st.session_state.pop("ensayos_externos", None)
+                st.session_state.pop("enlaces_externos", None)
+                break
+            except ValidationError as e:
+                prompt += f"\nCORRECCIÓN (Intento {intento}): {e}"
+
+    if "reporte" in st.session_state:
+        reporte = st.session_state["reporte"]
+        with col_centro:
+            st.subheader("2. Reporte Clínico")
+
+            c_cie, c_cie_i = st.columns([0.88, 0.12])
+            c_cie.info(f"**CIE-11:** {reporte.diagnostico.codigo_cie11} | **Patología:** {reporte.diagnostico.patologia_neuro_base.value}")
+            pop_cie = c_cie_i.popover("ℹ️")
+            pop_cie.markdown(f"**Guía de Codificación CIE-11 ({reporte.diagnostico.codigo_cie11})**")
+            pop_cie.caption("Valida la correspondencia entre el diagnóstico neurológico base y el trastorno funcional:")
+            pop_cie.markdown(
+                "- **8A00.0:** Enfermedad de Parkinson.\n"
+                "- **8A03.10:** Ataxias hereditarias (Ataxia de Friedreich).\n"
+                "- **8B11 / 8B20:** DCA vascular (Ictus isquémico / hemorrágico).\n"
+                "- **NA07:** DCA traumático (Traumatismo intracraneal / TCE)."
+            )
+            pop_cie.markdown("[Consultar navegador OMS CIE-11](https://who.int)")
+
+            c_an, c_an_i = st.columns([0.88, 0.12])
+            c_an.markdown("#### Análisis Fisiopatológico y Diagnóstico Diferencial")
+            pop_an = c_an_i.popover("ℹ️")
+            pop_an.markdown("**Auditoría del Razonamiento Fisiopatológico**")
+            pop_an.caption(
+                "• **Subsistemas motores:** Verifica respiración, fonación, resonancia, articulación y prosodia.\n"
+                "• **Fases deglutorias:** Distingue alteración de eficacia (residuo) frente a seguridad (aspiración).\n"
+                "• **Diferencial:** Comprueba que no se confundan déficits motores (disartria/apraxia) con trastornos lingüísticos o cognitivos."
+            )
+
+            st.write(reporte.diagnostico.analisis_fisiopatologico)
+            st.markdown(
+                f"""<div style="background-color: #F5F3FF; border-left: 4px solid #4C1D95; padding: 0.95rem 1.15rem; border-radius: 6px; margin: 0.8rem 0 1.2rem 0; color: #1E293B; font-size: 1.03rem; line-height: 1.55;">
+                <strong style="color: #1E1B4B;">Diagnóstico Diferencial:</strong> {reporte.diagnostico.diagnostico_diferencial}
+                </div>""",
+                unsafe_allow_html=True
+            )
+
+            st.error(f"**Resolución del Dilema Clínico:** {reporte.intervencion.respuesta_dilema_clinico}")
+
+            if reporte.evaluacion.signos_alerta_seguridad:
+                st.error("**Alertas de Seguridad:**\n" + "\n".join([f"- {a}" for a in reporte.evaluacion.signos_alerta_seguridad]))
+
+            if reporte.evaluacion.informacion_clinica_no_disponible:
+                st.info("**Información Clínica No Disponible (Datos Ausentes):**\n" + "\n".join([f"- {d}" for d in reporte.evaluacion.informacion_clinica_no_disponible]))
+
+            if reporte.evaluacion.evidencia_cientifica_insuficiente:
+                st.warning("**Declaración de Evidencia Científica Insuficiente:**\n" + "\n".join([f"- {ev}" for ev in reporte.evaluacion.evidencia_cientifica_insuficiente]))
+                if st.button("🔎 Consultar Bases Científicas y Ensayos (PubMed, Cochrane, ClinicalTrials, ASHA)", key="btn_pubmed"):
+                    with st.spinner("Consultando PubMed/MEDLINE, Cochrane y ClinicalTrials.gov..."):
+                        res_ext = buscar_evidencia_externa(pat_sel, trast_sel)
+                        st.session_state["enlaces_externos"] = res_ext["enlaces"]
+                        if res_ext["datos_api"]:
+                            prompt_ev = (
+                                f"Extrae los estudios y ensayos clínicos más relevantes de estos registros sobre {pat_sel} y {trast_sel}, "
+                                f"enfocándote en las dudas del caso ({'; '.join(reporte.evaluacion.evidencia_cientifica_insuficiente)}). "
+                                f"Indica la base de origen (PubMed, Cochrane o ClinicalTrials NCT). No inventes datos ni códigos:\n\n{res_ext['datos_api']}\n\n"
+                                "REGLA ESTRICTA DE ENLACES en 'referencia_estudio': Incluye autor, año y el enlace Markdown usando EXCLUSIVAMENTE el PMID o código NCT literal que aparece en los registros anteriores:\n"
+                                "- Si tiene PMID: [PubMed PMID](https://nih.gov)\n"
+                                "- Si tiene NCT: [ClinicalTrials NCT](https://clinicaltrials.gov)\n"
+                                "Nunca uses https://nih.gov ni /ct2/show/. Si un registro no tiene código PMID ni NCT, pon solo autor y año sin enlace."
+                            )
+                            llm_ev = LlamaOpenAI(model="gpt-4o", temperature=0.0)
+                            res_ev = llm_ev.as_structured_llm(SintesisEnsayosExternos).complete(prompt_ev).raw
+                            st.session_state["ensayos_externos"] = res_ev.ensayos
+                        else:
+                            st.session_state["ensayos_externos"] = []
+
+                if "ensayos_externos" in st.session_state:
+                    if st.session_state["ensayos_externos"]:
+                        st.markdown("**Síntesis de Ensayos y Revisiones (PubMed · Cochrane · ClinicalTrials.gov):**")
+                        for e in st.session_state["ensayos_externos"]:
+                            st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
+
+                    if "enlaces_externos" in st.session_state:
+                        links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
+                        st.info(f"**Búsqueda directa pre-filtrada en repositorios especializados:**\n\n{links_md}")
+
+            c_ev, c_ev_i = st.columns([0.88, 0.12])
+            c_ev.markdown("**Evaluación Sugerida:**")
+            pop_ev = c_ev_i.popover("ℹ️")
+            pop_ev.markdown("**Criterio de Selección de Pruebas y Escalas**")
+            pop_ev.caption(
+                "• **Pertinencia clínica:** Las escalas se seleccionan según los subsistemas afectados y la etiología base.\n"
+                "• **Cribado vs. Instrumental:** Diferencia herramientas clínicas (MECV-V, EAT-10, FDA-2, CAPE-V) de pruebas instrumentales confirmatorias (FEES / VFSS).\n"
+                "• **Supervisión:** Marca únicamente las pruebas que consideres indicadas para el caso."
+            )
 
             for esc in reporte.evaluacion.escalas_sugeridas:
                 st.checkbox(esc, value=True, key=f"e_{esc}")
@@ -658,7 +706,7 @@ with col_centro:
 
                     doi = str(info_doc.get("doi", "") or (meta_rs.get("doi", "") if meta_rs else "")).strip()
                     if doi.startswith("10."):
-                        st.markdown(f"[Abrir publicación oficial (DOI: {doi})](https://doi.org/{doi})")
+                        st.markdown(f"[Abrir publicación oficial (DOI: {doi})](https://doi.org{doi})")
 
                     nombre_pdf = info_doc.get("archivo_pdf", "")
                     if not nombre_pdf:
@@ -689,10 +737,6 @@ with col_centro:
                                 key=f"pdf_{id_limpio}_{idx}"
                             )
 
-
-# ==============================================================================
-# PESTAÑA 2: EXTRACTOR Y AUDITOR DE EVIDENCIA (RS · TRIALS · ARTÍCULOS)
-# ==============================================================================
 with tab_extractor:
     st.subheader("🧬 Extractor y Auditor de Evidencia Científica (C2)")
     st.caption(
@@ -760,14 +804,12 @@ with tab_extractor:
                     "REGLAS DE FRAGMENTACIÓN:\n"
                     "1. 'resumen_conclusiones' (prioridad 'alta'): 1 bloque único con las conclusiones globales de los autores.\n"
                     "2. 'tabla_estudio_primario' (prioridad 'media'): Si es una Revisión Sistemática, convierte cada estudio incluido en un bloque independiente; si es un Ensayo Clínico o Artículo Primario, extrae sus brazos o subgrupos principales.\n"
-                    "3. 'discusion_practica_clinica' (prioridad 'media'): Fragmenta las implicaciones clínicas y de seguridad por dominio (Evaluación, Disartria, Disfagia Neurogénica, etc.).\n\n"
-                    "REGLAS DE EXTRACCIÓN DE DATOS:\n"
-                    "- Extrae descripciones detalladas de intervenciones/exposición y comparadores.\n"
-                    "- Detalla desenlaces primarios y secundarios, escalas/instrumentos empleados y momentos de medición.\n"
-                    "- Variables continuas: tamaño muestral (n) por grupos, media y desviación estándar (DE), mediana y rango intercuartílico (RIC), error estándar (EE) si aplica.\n"
-                    "- Variables categóricas: número de eventos, proporciones, Odds Ratio (OR), Riesgo Relativo (RR) con IC 95% y valores p.\n"
-                    "- Hallazgos cualitativos: categorías, citas o hallazgos relevantes.\n"
-                    "- Riesgo de sesgo / calidad metodológica: especifica la valoración (Cochrane RoB 2, ROBINS-I, JBI o GRADE) indicando claramente 'Bajo riesgo', 'Algunas preocupaciones / Moderado' o 'Alto riesgo'.\n\n"
+                    "3. 'discusion_practica_clinica' (prioridad 'media'): Fragmenta las implicaciones clínicas y de seguridad por dominio.\n\n"
+                    "REGLAS DE EXTRACCIÓN Y ETIQUETADO EJECUTABLE:\n"
+                    "- Clasifica 'evidence_tier' como 'Tier_1_SR' (Revisión Sistemática) o 'Tier_2_Trial' (Ensayo Clínico / Piloto).\n"
+                    "- Clasifica 'evidence_status' como 'insufficient_rct' (sin ECA concluyentes pero plausible/seguro), 'contraindicated_or_harmful' (provoca fatiga extrema o riesgo de aspiración) o 'supported' (respaldo favorable).\n"
+                    "- Especifica 'subtipo_ataxia' (friedreich, sca3, sca2, sca6, sca_general o hereditaria_inespecifica), 'phenotypes' e 'intervention_intent'.\n"
+                    "- Extrae intervenciones/comparadores, desenlaces primarios/secundarios, instrumentos y tiempos de medición, variables continuas (n, media, DE, mediana, RIC, EE), variables categóricas (eventos, proporciones, OR, RR, IC 95%, p), hallazgos cualitativos y riesgo de sesgo (Cochrane RoB 2, ROBINS-I, JBI o GRADE).\n\n"
                     f"TEXTO DEL DOCUMENTO ({pdf_subido.name}):\n{texto_pdf}"
                 )
 
@@ -801,7 +843,6 @@ with tab_extractor:
                     reg["semaforo"] = f"{emoji_s} {etiqueta_s}"
                     nuevos_registros.append(reg)
 
-                # Reemplazar bloques previos del mismo id_prefijo y conservar el resto
                 existentes = [
                     r for r in st.session_state["capa_rs_acumulada"]
                     if not str(r.get("rs_id", "")).upper().startswith(id_prefijo)
@@ -809,7 +850,6 @@ with tab_extractor:
                 st.session_state["capa_rs_acumulada"] = existentes + nuevos_registros
                 st.session_state["ultimos_extraidos"] = nuevos_registros
 
-                # Guardar en disco local y refrescar caché de la Pestaña 1 al instante
                 with open("capa_evidencia_rs.json", "w", encoding="utf-8") as f_out:
                     json.dump(st.session_state["capa_rs_acumulada"], f_out, ensure_ascii=False, indent=2)
                 cargar_capa_rs.clear()
