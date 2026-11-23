@@ -428,95 +428,95 @@ with tab_cdss:
     indice = inicializar_indice()
     col_izq, col_centro, col_der = st.columns([1, 1.4, 1])
 
-   File "/mount/src/logo-llm-v1/2_app_clinica.py", line 431
-     with col_izq:
-    ^
+File "/mount/src/logo-llm-v1/2_app_clinica.py", line 431
+ with col_izq:
+^
 IndentationError: unexpected indent
 if "reporte" in st.session_state:
-    reporte = st.session_state["reporte"]
-    with col_centro:
-        st.subheader("2. Reporte Clínico")
+reporte = st.session_state["reporte"]
+with col_centro:
+    st.subheader("2. Reporte Clínico")
 
-        c_cie, c_cie_i = st.columns([0.88, 0.12])
-        c_cie.info(f"**CIE-11:** {reporte.diagnostico.codigo_cie11} | **Patología:** {reporte.diagnostico.patologia_neuro_base.value}")
-        pop_cie = c_cie_i.popover("ℹ️")
-        pop_cie.markdown(f"**Guía de Codificación CIE-11 ({reporte.diagnostico.codigo_cie11})**")
-        pop_cie.caption("Valida la correspondencia entre el diagnóstico neurológico base y el trastorno funcional:")
-        pop_cie.markdown(
-            "- **8A00.0:** Enfermedad de Parkinson.\n"
-            "- **8A03.10:** Ataxias hereditarias (Ataxia de Friedreich).\n"
-            "- **8B11 / 8B20:** DCA vascular (Ictus isquémico / hemorrágico).\n"
-            "- **NA07:** DCA traumático (Traumatismo intracraneal / TCE)."
-        )
-        pop_cie.markdown("[Consultar navegador OMS CIE-11](https://icd.who.int/browse/2024-01/mms/es)")
+    c_cie, c_cie_i = st.columns([0.88, 0.12])
+    c_cie.info(f"**CIE-11:** {reporte.diagnostico.codigo_cie11} | **Patología:** {reporte.diagnostico.patologia_neuro_base.value}")
+    pop_cie = c_cie_i.popover("ℹ️")
+    pop_cie.markdown(f"**Guía de Codificación CIE-11 ({reporte.diagnostico.codigo_cie11})**")
+    pop_cie.caption("Valida la correspondencia entre el diagnóstico neurológico base y el trastorno funcional:")
+    pop_cie.markdown(
+        "- **8A00.0:** Enfermedad de Parkinson.\n"
+        "- **8A03.10:** Ataxias hereditarias (Ataxia de Friedreich).\n"
+        "- **8B11 / 8B20:** DCA vascular (Ictus isquémico / hemorrágico).\n"
+        "- **NA07:** DCA traumático (Traumatismo intracraneal / TCE)."
+    )
+    pop_cie.markdown("[Consultar navegador OMS CIE-11](https://icd.who.int/browse/2024-01/mms/es)")
 
-        c_an, c_an_i = st.columns([0.88, 0.12])
-        c_an.markdown("#### Análisis Fisiopatológico y Diagnóstico Diferencial")
-        pop_an = c_an_i.popover("ℹ️")
-        pop_an.markdown("**Auditoría del Razonamiento Fisiopatológico**")
-        pop_an.caption(
-            "• **Subsistemas motores:** Verifica respiración, fonación, resonancia, articulación y prosodia.\n"
-            "• **Fases deglutorias:** Distingue alteración de eficacia (residuo) frente a seguridad (aspiración).\n"
-            "• **Diferencial:** Comprueba que no se confundan déficits motores (disartria/apraxia) con trastornos lingüísticos o cognitivos."
-        )
+    c_an, c_an_i = st.columns([0.88, 0.12])
+    c_an.markdown("#### Análisis Fisiopatológico y Diagnóstico Diferencial")
+    pop_an = c_an_i.popover("ℹ️")
+    pop_an.markdown("**Auditoría del Razonamiento Fisiopatológico**")
+    pop_an.caption(
+        "• **Subsistemas motores:** Verifica respiración, fonación, resonancia, articulación y prosodia.\n"
+        "• **Fases deglutorias:** Distingue alteración de eficacia (residuo) frente a seguridad (aspiración).\n"
+        "• **Diferencial:** Comprueba que no se confundan déficits motores (disartria/apraxia) con trastornos lingüísticos o cognitivos."
+    )
 
-        st.write(reporte.diagnostico.analisis_fisiopatologico)
-        st.markdown(
-            f"""<div style="background-color: #F5F3FF; border-left: 4px solid #4C1D95; padding: 0.95rem 1.15rem; border-radius: 6px; margin: 0.8rem 0 1.2rem 0; color: #1E293B; font-size: 1.03rem; line-height: 1.55;">
-            <strong style="color: #1E1B4B;">Diagnóstico Diferencial:</strong> {reporte.diagnostico.diagnostico_diferencial}
-            </div>""",
-            unsafe_allow_html=True
-        )
+    st.write(reporte.diagnostico.analisis_fisiopatologico)
+    st.markdown(
+        f"""<div style="background-color: #F5F3FF; border-left: 4px solid #4C1D95; padding: 0.95rem 1.15rem; border-radius: 6px; margin: 0.8rem 0 1.2rem 0; color: #1E293B; font-size: 1.03rem; line-height: 1.55;">
+        <strong style="color: #1E1B4B;">Diagnóstico Diferencial:</strong> {reporte.diagnostico.diagnostico_diferencial}
+        </div>""",
+        unsafe_allow_html=True
+    )
 
-        st.error(f"**Resolución del Dilema Clínico:** {reporte.intervencion.respuesta_dilema_clinico}")
+    st.error(f"**Resolución del Dilema Clínico:** {reporte.intervencion.respuesta_dilema_clinico}")
 
-        if reporte.evaluacion.signos_alerta_seguridad:
-            st.error("**Alertas de Seguridad:**\n" + "\n".join([f"- {a}" for a in reporte.evaluacion.signos_alerta_seguridad]))
+    if reporte.evaluacion.signos_alerta_seguridad:
+        st.error("**Alertas de Seguridad:**\n" + "\n".join([f"- {a}" for a in reporte.evaluacion.signos_alerta_seguridad]))
 
-        if reporte.evaluacion.informacion_clinica_no_disponible:
-            st.info("**Información Clínica No Disponible (Datos Ausentes):**\n" + "\n".join([f"- {d}" for d in reporte.evaluacion.informacion_clinica_no_disponible]))
+    if reporte.evaluacion.informacion_clinica_no_disponible:
+        st.info("**Información Clínica No Disponible (Datos Ausentes):**\n" + "\n".join([f"- {d}" for d in reporte.evaluacion.informacion_clinica_no_disponible]))
 
-        if reporte.evaluacion.evidencia_cientifica_insuficiente:
-            st.warning("**Declaración de Evidencia Científica Insuficiente:**\n" + "\n".join([f"- {ev}" for ev in reporte.evaluacion.evidencia_cientifica_insuficiente]))
-            if st.button("🔎 Consultar Bases Científicas y Ensayos (PubMed, Cochrane, ClinicalTrials, ASHA)", key="btn_pubmed"):
-                with st.spinner("Consultando PubMed/MEDLINE, Cochrane y ClinicalTrials.gov..."):
-                    res_ext = buscar_evidencia_externa(pat_sel, trast_sel)
-                    st.session_state["enlaces_externos"] = res_ext["enlaces"]
-                    if res_ext["datos_api"]:
-                        prompt_ev = (
-                            f"Extrae los estudios y ensayos clínicos más relevantes de estos registros sobre {pat_sel} y {trast_sel}, "
-                            f"enfocándote en las dudas del caso ({'; '.join(reporte.evaluacion.evidencia_cientifica_insuficiente)}). "
-                            f"Indica la base de origen (PubMed, Cochrane o ClinicalTrials NCT). No inventes datos ni códigos:\n\n{res_ext['datos_api']}\n\n"
-                            "REGLA ESTRICTA DE ENLACES en 'referencia_estudio': Incluye autor, año y el enlace Markdown usando EXCLUSIVAMENTE el PMID o código NCT literal que aparece en los registros anteriores:\n"
-                            "- Si tiene PMID: [PubMed PMID](https://pubmed.ncbi.nlm.nih.gov/CODIGO_PMID/)\n"
-                            "- Si tiene NCT: [ClinicalTrials NCT](https://clinicaltrials.gov/study/CODIGO_NCT)\n"
-                            "Nunca uses https://nih.gov ni /ct2/show/. Si un registro no tiene código PMID ni NCT, pon solo autor y año sin enlace."
-                        )
-                        llm_ev = LlamaOpenAI(model="gpt-4o", temperature=0.0)
-                        res_ev = llm_ev.as_structured_llm(SintesisEnsayosExternos).complete(prompt_ev).raw
-                        st.session_state["ensayos_externos"] = res_ev.ensayos
-                    else:
-                        st.session_state["ensayos_externos"] = []
+    if reporte.evaluacion.evidencia_cientifica_insuficiente:
+        st.warning("**Declaración de Evidencia Científica Insuficiente:**\n" + "\n".join([f"- {ev}" for ev in reporte.evaluacion.evidencia_cientifica_insuficiente]))
+        if st.button("🔎 Consultar Bases Científicas y Ensayos (PubMed, Cochrane, ClinicalTrials, ASHA)", key="btn_pubmed"):
+            with st.spinner("Consultando PubMed/MEDLINE, Cochrane y ClinicalTrials.gov..."):
+                res_ext = buscar_evidencia_externa(pat_sel, trast_sel)
+                st.session_state["enlaces_externos"] = res_ext["enlaces"]
+                if res_ext["datos_api"]:
+                    prompt_ev = (
+                        f"Extrae los estudios y ensayos clínicos más relevantes de estos registros sobre {pat_sel} y {trast_sel}, "
+                        f"enfocándote en las dudas del caso ({'; '.join(reporte.evaluacion.evidencia_cientifica_insuficiente)}). "
+                        f"Indica la base de origen (PubMed, Cochrane o ClinicalTrials NCT). No inventes datos ni códigos:\n\n{res_ext['datos_api']}\n\n"
+                        "REGLA ESTRICTA DE ENLACES en 'referencia_estudio': Incluye autor, año y el enlace Markdown usando EXCLUSIVAMENTE el PMID o código NCT literal que aparece en los registros anteriores:\n"
+                        "- Si tiene PMID: [PubMed PMID](https://pubmed.ncbi.nlm.nih.gov/CODIGO_PMID/)\n"
+                        "- Si tiene NCT: [ClinicalTrials NCT](https://clinicaltrials.gov/study/CODIGO_NCT)\n"
+                        "Nunca uses https://nih.gov ni /ct2/show/. Si un registro no tiene código PMID ni NCT, pon solo autor y año sin enlace."
+                    )
+                    llm_ev = LlamaOpenAI(model="gpt-4o", temperature=0.0)
+                    res_ev = llm_ev.as_structured_llm(SintesisEnsayosExternos).complete(prompt_ev).raw
+                    st.session_state["ensayos_externos"] = res_ev.ensayos
+                else:
+                    st.session_state["ensayos_externos"] = []
 
-            if "ensayos_externos" in st.session_state:
-                if st.session_state["ensayos_externos"]:
-                    st.markdown("**Síntesis de Ensayos y Revisiones (PubMed · Cochrane · ClinicalTrials.gov):**")
-                    for e in st.session_state["ensayos_externos"]:
-                        st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
+        if "ensayos_externos" in st.session_state:
+            if st.session_state["ensayos_externos"]:
+                st.markdown("**Síntesis de Ensayos y Revisiones (PubMed · Cochrane · ClinicalTrials.gov):**")
+                for e in st.session_state["ensayos_externos"]:
+                    st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
 
-                if "enlaces_externos" in st.session_state:
-                    links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
-                    st.info(f"**Búsqueda directa pre-filtrada en repositorios especializados:**\n\n{links_md}")
+            if "enlaces_externos" in st.session_state:
+                links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
+                st.info(f"**Búsqueda directa pre-filtrada en repositorios especializados:**\n\n{links_md}")
 
-        c_ev, c_ev_i = st.columns([0.88, 0.12])
-        c_ev.markdown("**Evaluación Sugerida:**")
-        pop_ev = c_ev_i.popover("ℹ️")
-        pop_ev.markdown("**Criterio de Selección de Pruebas y Escalas**")
-        pop_ev.caption(
-            "• **Pertinencia clínica:** Las escalas se seleccionan según los subsistemas afectados y la etiología base.\n"
-            "• **Cribado vs. Instrumental:** Diferencia herramientas clínicas (MECV-V, EAT-10, FDA-2, CAPE-V) de pruebas instrumentales confirmatorias (FEES / VFSS).\n"
-            "• **Supervisión:** Marca únicamente las pruebas que consideres indicadas para el caso."
-        )
+    c_ev, c_ev_i = st.columns([0.88, 0.12])
+    c_ev.markdown("**Evaluación Sugerida:**")
+    pop_ev = c_ev_i.popover("ℹ️")
+    pop_ev.markdown("**Criterio de Selección de Pruebas y Escalas**")
+    pop_ev.caption(
+        "• **Pertinencia clínica:** Las escalas se seleccionan según los subsistemas afectados y la etiología base.\n"
+        "• **Cribado vs. Instrumental:** Diferencia herramientas clínicas (MECV-V, EAT-10, FDA-2, CAPE-V) de pruebas instrumentales confirmatorias (FEES / VFSS).\n"
+        "• **Supervisión:** Marca únicamente las pruebas que consideres indicadas para el caso."
+    )
 
             for esc in reporte.evaluacion.escalas_sugeridas:
                 st.checkbox(esc, value=True, key=f"e_{esc}")
