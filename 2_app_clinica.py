@@ -434,18 +434,20 @@ with tab_cdss:
         with c1_i.popover("ℹ️"):
             st.caption("1. Elija fuente de datos.\n2. Verifique anonimización (sin nombres ni NHC).\n3. Pulse Analizar.")
 
-        modo_ingreso = st.radio(
-            "Modo de entrada de datos:",
-            ["Banco Maestro (25 Casos)", "Subir Informe (PDF/DOCX/TXT/XLSX)", "Ficha Caso Real (Manual)"],
-            on_change=limpiar_estado_anterior
-        )
+            # 1. Selector de las 3 vías de entrada
+    modo_ingreso = st.radio(
+        "Modo de entrada de datos:",
+        ["Banco Maestro (31 Casos)", "Subir Informe (PDF/DOCX/TXT/XLSX)", "Ficha Caso Real (Manual)"],
+        on_change=limpiar_estado_anterior
+    )
 
-        opciones_pat = [p.value for p in PatologiaBase]
-        idx_pat = 0
-        texto_auto = ""
+    opciones_pat = [p.value for p in PatologiaBase]
+    idx_pat = 0
+    texto_auto = ""
 
-        if modo_ingreso == "Banco Maestro (25 Casos)":
-                    casos_dict = {"-- Selecciona un caso --": None}
+    # VÍA 1: Desplegable del Banco Maestro
+    if modo_ingreso == "Banco Maestro (31 Casos)":
+        casos_dict = {"-- Selecciona un caso --": None}
         for archivo_maestro in [
             "LOGO_LLM_25_Casos_Clinicos_Sinteticos_Banco_Maestro_v1_0.json",
             "casos_desafio_ataxia_rs_26_31.json"
@@ -464,11 +466,8 @@ with tab_cdss:
             "Selecciona caso sintético:",
             list(casos_dict.keys()),
             on_change=limpiar_estado_anterior
-
-            )
+        )
         caso_activo = casos_dict[seleccion]
-
-        if caso_activo:
             pat_caso = str(caso_activo.get("patologia_base") or caso_activo.get("patologia") or "")
             idx_pat = next((i for i, p in enumerate(opciones_pat) if p.lower() in pat_caso.lower()), 0)
             lineas_caso = [
