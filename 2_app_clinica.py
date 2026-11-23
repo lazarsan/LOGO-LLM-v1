@@ -450,15 +450,15 @@ with tab_cdss:
             "LOGO_LLM_25_Casos_Clinicos_Sinteticos_Banco_Maestro_v1_0.json",
             "casos_desafio_ataxia_rs_26_31.json"
         ]:
-            if os.path.exists(archivo_maestro):
-                with open(archivo_maestro, "r", encoding="utf-8") as f:
-                    datos_json = json.load(f)
-                    lista_casos = datos_json.get("casos", []) if isinstance(datos_json, dict) else datos_json
-                    for c in lista_casos:
-                        if isinstance(c, dict):
-                            cid = c.get("id_caso") or c.get("id") or "CASO"
-                            tit = c.get("titulo") or c.get("perfil") or ""
-                            casos_dict[f"{cid} · {tit}"] = c
+        if os.path.exists(archivo_maestro):
+            with open(archivo_maestro, "r", encoding="utf-8") as f:
+                datos_json = json.load(f)
+                lista_casos = datos_json.get("casos", []) if isinstance(datos_json, dict) else datos_json
+                for c in lista_casos:
+                    if isinstance(c, dict):
+                        cid = c.get("id_caso") or c.get("id") or "CASO"
+                        tit = c.get("titulo") or c.get("perfil") or ""
+                        casos_dict[f"{cid} · {tit}"] = c
 
         seleccion = st.selectbox(
             "Selecciona caso sintético:",
