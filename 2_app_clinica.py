@@ -708,7 +708,14 @@ with tab_cdss:
 
             st.download_button(
                 "Validar y Descargar para Historia Clínica (Registra Supervisión Art. 14)",
-                 def construir_bundle_fhir_r4() -> str:
+                data=resumen_txt,
+                file_name="informe_LOGO_Pilot_validado.txt",
+                on_click=registrar_validacion_humana,
+                use_container_width=True
+            )
+
+            def construir_bundle_fhir_r4() -> str:
+
                 ahora_iso = datetime.now(timezone.utc).isoformat()
                 pat_uuid = str(uuid.uuid4())
                 cond_uuid = str(uuid.uuid4())
