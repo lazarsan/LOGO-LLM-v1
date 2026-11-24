@@ -496,8 +496,10 @@ with tab_cdss:
             "   - [Bloque 3 · Banderas Rojas y Contraindicaciones]: Criterios de seguridad, control de fatiga y derivaciones.\n"
             "5. ETIQUETADO EPISTÉMICO OBLIGATORIO EN INTERVENCIÓN PROPUESTA: Para evitar incoherencias entre guías con evidencia baja (ej. GRADE en Friedreich) y el manejo terapéutico real, encabeza CADA elemento de 'estrategias_compensatorias' y 'reactivacion_neuromuscular' con '[Evidencia Guía/Estudio · ID_EXACTO]' cuando exista respaldo directo en Capa 1/2 para esa patología, o con '[Consenso Clínico / Extrapolación Segura]' cuando sea práctica estándar logopédica por ausencia de ensayos específicos.\n"
             "6. CITAS GRANULARES EN EL TEXTO Y SEGURIDAD IDDSI: Incluye siempre el identificador entre corchetes (ej. [ATX-007], [COCHRANE-2014]) al final de cada regla en 'signos_alerta_seguridad' y en 'diagnostico_diferencial', asegurando correspondencia exacta con 'evidencia_rag'. Si hay sospecha de disfagia, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay disfagia, déjalo en ''."
+        )
 
         for intento in range(1, 4):
+
             try:
                 llm_activo = LlamaOpenAI(model="gpt-4o", temperature=0.1 if intento == 1 else 0.0)
                 st.session_state["reporte"] = llm_activo.as_structured_llm(ReporteClinicoLogopedico).complete(prompt).raw
