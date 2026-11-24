@@ -1055,8 +1055,13 @@ with tab_auditoria:
             for i_c, caso in enumerate(lote):
                 cid = str(caso.get("id_caso") or caso.get("id") or f"CASO-{i_c+1}")
                 tit = str(caso.get("titulo") or caso.get("perfil") or "")
-                pat_raw = str(caso.get("patologia_base") or caso.get("patologia") or "Ataxia Hereditaria")
-                pat_norm = next((p.value for p in PatologiaBase if p.value.lower() in pat_raw.lower()), PatologiaBase.ATAXIA.value)
+                pat_raw = f"{cid} {tit} {caso.get('patologia_base', '')} {caso.get('patologia', '')} {caso.get('categoria', '')}".lower()
+                if cid.upper().startswith("DCA") or any(w in pat_raw for w in ["dca", "daño cerebral", "ictus", "tce", "traumatismo", "hemorrag"]):
+                    pat_norm = PatologiaBase.DCA.value
+                elif cid.upper().startswith(("EP", "PK")) or "parkinson" in pat_raw:
+                    pat_norm = PatologiaBase.PARKINSON.value
+                else:
+                    pat_norm = PatologiaBase.ATAXIA.value
 
                 trast_raw = str(caso.get("dominio_logopedico") or caso.get("trastorno") or tit).lower()
                 if "disfagia" in trast_raw or "deglu" in trast_raw:
