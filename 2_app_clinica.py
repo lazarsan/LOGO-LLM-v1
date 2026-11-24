@@ -1,5 +1,6 @@
 import json 
 from datetime import datetime, timezone
+import uuid
 import os
 import base64
 import glob
@@ -718,6 +719,148 @@ with tab_cdss:
                     datos_log_json = f_down.read()
                 st.download_button(
                     label="🛡️ Descargar Log de Supervisión Humana (registro_supervision_art14.json)",
+            def construir_bundle_fhir_r4() -> str:
+                ahora_iso = datetime.now(timezone.utc).isoformat()
+                pat_uuid = str(uuid.uuid4())
+                cond_uuid = str(uuid.uuid4())
+                diag_uuid = str(uuid.uuid4())
+                cp_uuid = str(uuid.uuid4())
+
+                entries = [
+                    {
+                        "fullUrl": f"urn:uuid:{pat_uuid}",
+                        "resource": {
+                            "resourceType": "Patient",
+                            "id": pat_uuid,
+                            "active": True,
+                            "gender": "unknown",
+                            "extension": [
+                                {
+                                    "url": "https://logo-pilot.eu",
+                                    "valueBoolean": True
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "fullUrl": f"urn:uuid:{cond_uuid}",
+                        "resource": {
+                            "resourceType": "Condition",
+                            "id": cond_uuid,
+                            "clinicalStatus": {
+                                "coding": [{"system": "http://hl7.org", "code": "active"}]
+                            },
+                            "code": {
+                                "coding": [
+                                    {
+                                        "system": "http://who.int",
+                                        "code": reporte.diagnostico.codigo_cie11.split()[0],
+                                        "display": reporte.diagnostico.patologia_neuro_base.value
+                                    }
+                                ],
+                                "text": f"{reporte.diagnostico.patologia_neuro_base.value} - {reporte.diagnostico.trastorno_logopedico.value}"
+                            },
+                            "subject": {"reference": f"urn:uuid:{pat_uuid}"},
+                            "note": [{"text": reporte.diagnostico.analisis_fisiopatologico}]
+                        }
+                    },
+                    {
+                        "fullUrl": f"urn:uuid:{diag_uuid}",
+                        "resource": {
+                            "resourceType": "DiagnosticReport",
+                            "id": diag_uuid,
+                            "status": "final" if instrumental else "registered",
+                            "code": {
+                                "coding": [
+                                    {
+                                        "system": "http://snomed.info",
+                                        "code": "409052002",
+                                        "display": "Videofluoroscopic swallowing study / FEES"
+                                    }
+                                ],
+                                "text": "Evaluación instrumental de la deglución (FEES / VFSS)"
+                            },
+                            "subject": {"reference": f"urn:uuid:{pat_uuid}"},
+                            "issued": ahora_iso,
+                            "conclusion": "Prueba instrumental previa confirmada." if instrumental else "Pendiente valoración instrumental previa a prescripción IDDSI."
+                        }
+                    }
+                ]
+
+                for alerta in reporte.evaluacion.signos_alerta_seguridad:
+                    iss_uuid = str(uuid.uuid4())
+                    entries.append({
+                        "fullUrl": f"urn:uuid:{iss_uuid}",
+                        "resource": {
+                            "resourceType": "DetectedIssue",
+                            "id": iss_uuid,
+                            "status": "final",
+                            "severity": "high",
+                            "code": {"text": "Alerta de Seguridad Clínica y Cortafuegos CDSS"},
+                            "patient": {"reference": f"urn:uuid:{pat_uuid}"},
+                            "identifiedDateTime": ahora_iso,
+                            "detail": alerta
+                        }
+                    })
+
+                actividades_careplan = []
+                for esc in escalas_aprobadas:
+                    actividades_careplan.append({
+                        "detail": {
+                            "kind": "ServiceRequest",
+                            "status": "scheduled",
+                            "description": f"[Evaluación Validada] {esc}"
+                        }
+                    })
+                for interv in int_aprobadas:
+                    actividades_careplan.append({
+                        "detail": {
+                            "kind": "Task",
+                            "status": "not-started",
+                            "description": interv
+                        }
+                    })
+
+                citas_str = ", ".join([f"{c.id_nodo} ({c.tipo_fuente})" for c in reporte.evidencia_rag])
+                entries.append({
+                    "fullUrl": f"urn:uuid:{cp_uuid}",
+                    "resource": {
+                        "resourceType": "CarePlan",
+                        "id": cp_uuid,
+                        "status": "active",
+                        "intent": "proposal",
+                        "title": "Plan de Intervención Logopédica Asistido por LOGO-Pilot (Supervisión Humana Art. 14 EU AI Act)",
+                        "subject": {"reference": f"urn:uuid:{pat_uuid}"},
+                        "addresses": [{"reference": f"urn:uuid:{cond_uuid}"}],
+                        "created": ahora_iso,
+                        "activity": actividades_careplan,
+                        "note": [
+                            {"text": f"Trazabilidad CitaRAG: {citas_str}"},
+                            {"text": f"Supervisión Humana (Human Override Rate): {tasa_override}% | Observaciones: {nota_supervisor.strip() or 'Ninguna'}"}
+                        ]
+                    }
+                })
+
+                bundle_fhir = {
+                    "resourceType": "Bundle",
+                    "id": str(uuid.uuid4()),
+                    "meta": {
+                        "lastUpdated": ahora_iso,
+                        "profile": ["http://hl7.org"]
+                    },
+                    "type": "collection",
+                    "entry": entries
+                }
+                return json.dumps(bundle_fhir, ensure_ascii=False, indent=2)
+
+            st.download_button(
+                label="🏥 Exportar Plan Clínico Interoperable (HL7 FHIR R4 JSON)",
+                data=construir_bundle_fhir_r4(),
+                file_name=f"LOGO_Pilot_FHIR_R4_{reporte.diagnostico.codigo_cie11.split()[0]}.json",
+                mime="application/json",
+                use_container_width=True
+            )
+
                     data=datos_log_json,
                     file_name="registro_supervision_art14.json",
                     mime="application/json",
