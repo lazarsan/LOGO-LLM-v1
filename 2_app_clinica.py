@@ -717,7 +717,7 @@ with tab_cdss:
             if os.path.exists("registro_supervision_art14.json"):
                 with open("registro_supervision_art14.json", "r", encoding="utf-8") as f_down:
                     datos_log_json = f_down.read()
-                                st.download_button(
+                    st.download_button(
                     label="🛡️ Descargar Log de Supervisión Humana (registro_supervision_art14.json)",
                     data=datos_log_json,
                     file_name="registro_supervision_art14.json",
