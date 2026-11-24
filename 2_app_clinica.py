@@ -708,29 +708,13 @@ with tab_cdss:
 
             st.download_button(
                 "Validar y Descargar para Historia Clínica (Registra Supervisión Art. 14)",
-                data=resumen_txt,
-                file_name="informe_LOGO_Pilot_validado.txt",
-                on_click=registrar_validacion_humana,
-                use_container_width=True
-            )
-
-            if os.path.exists("registro_supervision_art14.json"):
-                with open("registro_supervision_art14.json", "r", encoding="utf-8") as f_down:
-                    datos_log_json = f_down.read()
-                    st.download_button(
-                    label="🛡️ Descargar Log de Supervisión Humana (registro_supervision_art14.json)",
-                    data=datos_log_json,
-                    file_name="registro_supervision_art14.json",
-                    mime="application/json",
-                    use_container_width=True
-                )
-
-            def construir_bundle_fhir_r4() -> str:
+                 def construir_bundle_fhir_r4() -> str:
                 ahora_iso = datetime.now(timezone.utc).isoformat()
                 pat_uuid = str(uuid.uuid4())
                 cond_uuid = str(uuid.uuid4())
                 diag_uuid = str(uuid.uuid4())
                 cp_uuid = str(uuid.uuid4())
+                cie_code = reporte.diagnostico.codigo_cie11.split()[0]
 
                 entries = [
                     {
@@ -760,7 +744,7 @@ with tab_cdss:
                                 "coding": [
                                     {
                                         "system": "http://who.int",
-                                        "code": reporte.diagnostico.codigo_cie11.split()[0],
+                                        "code": cie_code,
                                         "display": reporte.diagnostico.patologia_neuro_base.value
                                     }
                                 ],
@@ -836,7 +820,7 @@ with tab_cdss:
                         "status": "active",
                         "intent": "proposal",
                         "title": "Plan de Intervención Logopédica Asistido por LOGO-Pilot (Supervisión Humana Art. 14 EU AI Act)",
-                        "subject": {"reference": f"urn:uuid:{pat_uuid}"},
+                        "subject": {"reference": f"urn:uuid:{pat_uuid}"}],
                         "addresses": [{"reference": f"urn:uuid:{cond_uuid}"}],
                         "created": ahora_iso,
                         "activity": actividades_careplan,
@@ -859,10 +843,10 @@ with tab_cdss:
                 }
                 return json.dumps(bundle_fhir, ensure_ascii=False, indent=2)
 
-                st.download_button(
+            st.download_button(
                 label="🏥 Exportar Plan Clínico Interoperable (HL7 FHIR R4 JSON)",
                 data=construir_bundle_fhir_r4(),
-                file_name=f"LOGO_Pilot_FHIR_R4_{reporte.diagnostico.codigo_cie11.split()}.json",
+                file_name=f"LOGO_Pilot_FHIR_R4_{reporte.diagnostico.codigo_cie11.split()[0]}.json",
                 mime="application/json",
                 use_container_width=True
             )
