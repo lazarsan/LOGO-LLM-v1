@@ -1,4 +1,4 @@
-import json
+import json from datetime import datetime, timezone
 import os
 import base64
 import glob
@@ -613,15 +613,98 @@ with tab_cdss:
                 st.markdown(f"**Pauta IDDSI:** {reporte.intervencion.adaptacion_dietetica_iddsi}")
 
             st.divider()
+            nota_supervisor = st.text_input(
+                "Observaciones / Justificación de supervisión clínica (Art. 14 EU AI Act · Opcional):",
+                placeholder="Ej. Se descarta reactivación intensiva por fatiga motora; se prioriza cribado FEES.",
+                key="nota_sup_art14"
+            )
+
+            # Calcular métricas de Supervisión Humana (Human Override)
+            escalas_aprobadas = [esc for esc in reporte.evaluacion.escalas_sugeridas if st.session_state.get(f"e_{esc}", True)]
+            escalas_descartadas = [esc for esc in reporte.evaluacion.escalas_sugeridas if not st.session_state.get(f"e_{esc}", True)]
+
+            todas_intervenciones = (
+                [f"[Compensatoria] {c}" for c in reporte.intervencion.estrategias_compensatorias] +
+                [f"[Reactivación] {r}" for r in reporte.intervencion.reactivacion_neuromuscular]
+            )
+            claves_int = (
+                [(f"[Compensatoria] {c}", f"c_{c}") for c in reporte.intervencion.estrategias_compensatorias] +
+                [(f"[Reactivación] {r}", f"r_{r}") for r in reporte.intervencion.reactivacion_neuromuscular]
+            )
+            int_aprobadas = [etq for etq, k in claves_int if st.session_state.get(k, False)]
+            int_descartadas = [etq for etq, k in claves_int if not st.session_state.get(k, False)]
+
+            total_items = len(reporte.evaluacion.escalas_sugeridas) + len(todas_intervenciones)
+            total_descartados = len(escalas_descartadas) + len(int_descartadas)
+            tasa_override = round((total_descartados / total_items) * 100, 1) if total_items > 0 else 0.0
+
+            caso_ref = seleccion if modo_ingreso == "Banco Maestro (31 Casos)" else modo_ingreso
+
+            registro_evento = {
+                "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+                "origen_caso": caso_ref,
+                "patologia": reporte.diagnostico.patologia_neuro_base.value,
+                "trastorno": reporte.diagnostico.trastorno_logopedico.value,
+                "codigo_cie11": reporte.diagnostico.codigo_cie11,
+                "escalas_sugeridas_n": len(reporte.evaluacion.escalas_sugeridas),
+                "escalas_aprobadas_n": len(escalas_aprobadas),
+                "escalas_descartadas": escalas_descartadas,
+                "intervenciones_sugeridas_n": len(todas_intervenciones),
+                "intervenciones_aprobadas_n": len(int_aprobadas),
+                "intervenciones_descartadas": int_descartadas,
+                "human_override_rate_pct": tasa_override,
+                "alertas_seguridad_detectadas_n": len(reporte.evaluacion.signos_alerta_seguridad),
+                "datos_ausentes_declarados_n": len(reporte.evaluacion.informacion_clinica_no_disponible),
+                "certeza_insuficiente_declarada_n": len(reporte.evaluacion.evidencia_cientifica_insuficiente),
+                "observaciones_supervisor": nota_supervisor.strip()
+            }
+
             resumen_txt = (
-                f"INFORME CLÍNICO GENERADO CON LOGO-PILOT\n"
-                f"CIE-11: {reporte.diagnostico.codigo_cie11} | Patología: {reporte.diagnostico.patologia_neuro_base.value}\n\n"
+                f"INFORME CLÍNICO VALIDADO CON LOGO-PILOT (ART. 14 EU AI ACT)\n"
+                f"Fecha UTC: {registro_evento['timestamp_utc']} | Caso: {caso_ref}\n"
+                f"CIE-11: {reporte.diagnostico.codigo_cie11} | Patología: {reporte.diagnostico.patologia_neuro_base.value}\n"
+                f"Supervisión Humana (Human Override Rate): {tasa_override}% ({total_descartados}/{total_items} ítems descartados)\n\n"
                 f"ANÁLISIS FISIOPATOLÓGICO:\n{reporte.diagnostico.analisis_fisiopatologico}\n\n"
                 f"DIAGNÓSTICO DIFERENCIAL:\n{reporte.diagnostico.diagnostico_diferencial}\n\n"
                 f"RESOLUCIÓN DEL DILEMA:\n{reporte.intervencion.respuesta_dilema_clinico}\n\n"
-                f"PAUTA IDDSI:\n{reporte.intervencion.adaptacion_dietetica_iddsi}"
+                f"ESCALAS VALIDADAS POR EL LOGOPEDA:\n" + ("\n".join([f"- {x}" for x in escalas_aprobadas]) or "- Ninguna seleccionada") + "\n\n"
+                f"INTERVENCIONES VALIDADAS POR EL LOGOPEDA:\n" + ("\n".join([f"- {x}" for x in int_aprobadas]) or "- Ninguna seleccionada") + "\n\n"
+                f"PAUTA IDDSI:\n{reporte.intervencion.adaptacion_dietetica_iddsi}\n\n"
+                f"OBSERVACIONES DE SUPERVISIÓN CLÍNICA:\n{nota_supervisor.strip() or 'Sin observaciones adicionales.'}"
             )
-            st.download_button("Validar y Descargar para Historia Clínica", data=resumen_txt, file_name="informe_LOGO_Pilot.txt", use_container_width=True)
+
+            def registrar_validacion_humana():
+                ruta_log = "registro_supervision_art14.json"
+                historial = []
+                if os.path.exists(ruta_log):
+                    try:
+                        with open(ruta_log, "r", encoding="utf-8") as f_log:
+                            historial = json.load(f_log)
+                    except Exception:
+                        historial = []
+                historial.append(registro_evento)
+                with open(ruta_log, "w", encoding="utf-8") as f_log:
+                    json.dump(historial, f_log, ensure_ascii=False, indent=2)
+                st.session_state["historial_art14"] = historial
+
+            st.download_button(
+                "Validar y Descargar para Historia Clínica (Registra Supervisión Art. 14)",
+                data=resumen_txt,
+                file_name="informe_LOGO_Pilot_validado.txt",
+                on_click=registrar_validacion_humana,
+                use_container_width=True
+            )
+
+            if os.path.exists("registro_supervision_art14.json"):
+                with open("registro_supervision_art14.json", "r", encoding="utf-8") as f_down:
+                    datos_log_json = f_down.read()
+                st.download_button(
+                    label="🛡️ Descargar Log de Supervisión Humana (registro_supervision_art14.json)",
+                    data=datos_log_json,
+                    file_name="registro_supervision_art14.json",
+                    mime="application/json",
+                    use_container_width=True
+                )
 
         with col_der:
             c_rag, c_rag_i = st.columns([0.85, 0.15])
