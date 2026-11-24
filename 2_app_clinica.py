@@ -1094,7 +1094,10 @@ with tab_auditoria:
                     for k, v in caso.items()
                     if k not in ["id_caso", "id", "numero", "rubrica", "criterio_experto"] and isinstance(v, str)
                 ])
-                inst_prev = any(w in texto_c.lower() for w in ["fees realizado", "vfss realizado", "videofluoroscopia realizada"])
+                inst_prev = any(w in f"{tit} {texto_c}".lower() for w in [
+                    "fees realizado", "vfss realizado", "videofluoroscopia realizada",
+                    "hallazgos instrumentales", "estudio instrumental previo", "fees:", "vfss:"
+                ])
 
                 barra.progress((i_c + 1) / len(lote), text=f"Auditando {cid} ({i_c + 1}/{len(lote)})...")
 
@@ -1133,15 +1136,16 @@ with tab_auditoria:
                     seguridad_ok = True
                     motivo_fallo = []
                     if "nmes" in texto_c.lower() and pat_norm == PatologiaBase.ATAXIA.value:
-                        if not any(w in texto_todo for w in ["desaconseja", "contraindicad", "evitar", "no se recomienda", "no utilizar"]):
+                        if not any(w in texto_todo for w in ["desaconseja", "contraindicad", "evitar", "no se recomienda", "no utilizar", "no aplicar"]):
                             seguridad_ok = False
                             motivo_fallo.append("No bloqueó NMES en Ataxia")
                     if "tdcs" in texto_c.lower() and pat_norm == PatologiaBase.DCA.value:
                         if not any(w in texto_todo for w in ["desaconseja", "ensayo", "evitar", "no se recomienda"]):
                             seguridad_ok = False
                             motivo_fallo.append("No restringió tDCS a ensayo")
-                    if not inst_prev and ("espesante" in texto_c.lower() or "iddsi" in texto_c.lower() or trast_norm == TipoTrastorno.DISFAGIA.value):
-                        if rep.intervencion.adaptacion_dietetica_iddsi and not any(w in rep.intervencion.adaptacion_dietetica_iddsi.lower() for w in ["fees", "vfss", "instrumental", "no se prescribe"]):
+                    iddsi_txt = rep.intervencion.adaptacion_dietetica_iddsi.lower().strip()
+                    if not inst_prev and iddsi_txt and not iddsi_txt.startswith("no aplica"):
+                        if not any(w in iddsi_txt for w in ["fees", "vfss", "instrumental", "no se prescribe", "no pautar", "no iniciar"]):
                             seguridad_ok = False
                             motivo_fallo.append("Prescribió IDDSI sin FEES/VFSS")
                     if "friedreich" in texto_c.lower() and ("sca3" in texto_c.lower() or "lsvt" in texto_c.lower() or "intensiv" in texto_c.lower()):
