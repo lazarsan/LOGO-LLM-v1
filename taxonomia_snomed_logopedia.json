@@ -1,0 +1,99 @@
+{
+  "sistema_terminologico": "http://snomed.info",
+  "version_edicion": "SNOMED CT International / Extensión SNS España",
+  "patologias_neurologicas": {
+    "Daño Cerebral Adquirido": {
+      "sctid": "127295002",
+      "fsn": "Traumatic or non-traumatic brain injury (disorder)",
+      "termino_es": "Lesión cerebral adquirida",
+      "subtipos": {
+        "ictus_isquemico": {"sctid": "422504002", "termino_es": "Ictus isquémico"},
+        "ictus_hemorragico": {"sctid": "230706003", "termino_es": "Ictus hemorrágico"},
+        "tce": {"sctid": "127295002", "termino_es": "Traumatismo craneoencefálico"}
+      }
+    },
+    "Enfermedad de Parkinson": {
+      "sctid": "49049000",
+      "fsn": "Parkinson's disease (disorder)",
+      "termino_es": "Enfermedad de Parkinson"
+    },
+    "Ataxia Hereditaria": {
+      "sctid": "85102008",
+      "fsn": "Hereditary ataxia (disorder)",
+      "termino_es": "Ataxia hereditaria",
+      "subtipos": {
+        "friedreich": {"sctid": "192900001", "termino_es": "Ataxia de Friedreich"},
+        "espinocerebelosa": {"sctid": "230233000", "termino_es": "Ataxia espinocerebelosa (SCA)"}
+      }
+    }
+  },
+  "trastornos_logopedicos": {
+    "Disfagia Neurogénica": {
+      "sctid": "40739000",
+      "fsn": "Oropharyngeal dysphagia (disorder)",
+      "termino_es": "Disfagia orofaríngea neurogénica",
+      "hallazgos_asociados": {
+        "aspiracion_silente": {"sctid": "426976009", "termino_es": "Aspiración silente"},
+        "penetracion_laringea": {"sctid": "71341000119105", "termino_es": "Penetración laríngea"}
+      }
+    },
+    "Disartria": {
+      "sctid": "8011004",
+      "fsn": "Dysarthria (disorder)",
+      "termino_es": "Disartria",
+      "subtipos": {
+        "ataxica": {"sctid": "229668001", "termino_es": "Disartria atáxica"},
+        "hipocinetica": {"sctid": "229667006", "termino_es": "Disartria hipocinética"}
+      }
+    },
+    "Afasia": {
+      "sctid": "87486003",
+      "fsn": "Aphasia (disorder)",
+      "termino_es": "Afasia"
+    },
+    "Dispraxia / Apraxia del Habla / Orofacial": {
+      "sctid": "229721007",
+      "fsn": "Apraxia of speech (disorder)",
+      "termino_es": "Apraxia del habla / Dispraxia orofacial"
+    }
+  },
+  "procedimientos_diagnosticos": {
+    "VFSS": {
+      "sctid": "409052002",
+      "fsn": "Videofluoroscopic swallowing study (procedure)",
+      "termino_es": "Videofluoroscopia de la deglución (VFSS)"
+    },
+    "FEES": {
+      "sctid": "444831000124102",
+      "fsn": "Fiberoptic endoscopic evaluation of swallowing (procedure)",
+      "termino_es": "Evaluación endoscópica de la deglución por fibra óptica (FEES)"
+    },
+    "evaluacion_logopedica": {
+      "sctid": "225368008",
+      "fsn": "Speech and language assessment (procedure)",
+      "termino_es": "Evaluación logopédica funcional"
+    }
+  },
+  "intervenciones_logopedicas": {
+    "terapia_deglucion": {
+      "sctid": "229065009",
+      "fsn": "Swallowing therapy (regime/therapy)",
+      "termino_es": "Terapia de rehabilitación y compensación de la deglución"
+    },
+    "terapia_habla_voz": {
+      "sctid": "311555007",
+      "fsn": "Speech and language therapy (regime/therapy)",
+      "termino_es": "Terapia del habla, voz y lenguaje"
+    },
+    "modificacion_dietetica": {
+      "sctid": "183051005",
+      "fsn": "Dietary modification (regime/therapy)",
+      "termino_es": "Modificación de texturas y viscosidades dietéticas (IDDSI)"
+    },
+    "caa": {
+      "sctid": "229064008",
+      "fsn": "Augmentative and alternative communication therapy (regime/therapy)",
+      "termino_es": "Intervención con Comunicación Aumentativa y Alternativa (CAA)"
+    }
+  }
+}
