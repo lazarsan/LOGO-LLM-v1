@@ -820,7 +820,7 @@ with tab_cdss:
                         "status": "active",
                         "intent": "proposal",
                         "title": "Plan de Intervención Logopédica Asistido por LOGO-Pilot (Supervisión Humana Art. 14 EU AI Act)",
-                        "subject": {"reference": f"urn:uuid:{pat_uuid}"}],
+                        "subject": {"reference": f"urn:uuid:{pat_uuid}"},
                         "addresses": [{"reference": f"urn:uuid:{cond_uuid}"}],
                         "created": ahora_iso,
                         "activity": actividades_careplan,
