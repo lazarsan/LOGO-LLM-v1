@@ -54,7 +54,9 @@ class TipoTrastorno(str, Enum):
 
 class EvaluacionClinica(BaseModel):
     escalas_sugeridas: List[str] = Field(description="Escalas y pruebas instrumentales recomendadas.")
-    signos_alerta_seguridad: List[str] = Field(description="Signos clínicos críticos detectados.")
+    signos_alerta_seguridad: List[str] = Field(
+        description="Signos clínicos críticos y contraindicaciones detectadas, terminando cada alerta con el identificador exacto del documento fuente entre corchetes (ej. [ATX-007], [ESO-2025], [COCHRANE-2014])."
+    )
     informacion_clinica_no_disponible: List[str] = Field(description="Datos ausentes en la historia del paciente.")
     evidencia_cientifica_insuficiente: List[str] = Field(description="Áreas con certeza baja/muy baja o riesgo de extrapolación.")
     criterios_derivacion: List[str] = Field(description="Especialidades a las que derivar.")
@@ -79,9 +81,8 @@ class DiagnosticoEstructurado(BaseModel):
         )
     )
     diagnostico_diferencial: str = Field(
-        description="Diferenciación clínica detallada (2 párrafos) frente a cuadros neurológicos y logopédicos similares, indicando límites de certeza diagnóstica."
+        description="Diferenciación clínica detallada frente a cuadros similares y límites de certeza diagnóstica, citando entre corchetes los nodos o estudios que respaldan cada criterio (ej. [ATX-003], [EP-CLM-004])."
     )
-
 
     @model_validator(mode="after")
     def asegurar_cie11_exacto(self) -> "DiagnosticoEstructurado":
@@ -100,8 +101,21 @@ class DiagnosticoEstructurado(BaseModel):
 class IntervencionLogopedica(BaseModel):
     respuesta_dilema_clinico: str = Field(description="Respuesta directa y segura al dilema planteado.")
     objetivos_terapeuticos: List[str] = Field(description="Objetivos funcionales individualizados.")
-    estrategias_compensatorias: List[str] = Field(description="Maniobras, postura, CAA o ajustes del entorno.")
-    reactivacion_neuromuscular: List[str] = Field(description="Procedimientos motores validados con dosificación y control de fatiga.")
+    estrategias_compensatorias: List[str] = Field(
+        description=(
+            "Maniobras deglutorias, postura, CAA o ajustes del entorno detallados. "
+            "CADA ítem debe empezar obligatoriamente con una etiqueta epistémica entre corchetes que indique su nivel de respaldo: "
+            "'[Evidencia Guía/Estudio · ID_EXACTO]' si está respaldado directamente en el corpus recuperado para esa patología, o "
+            "'[Consenso Clínico / Extrapolación Segura]' si es una medida habitual de práctica clínica logopédica aplicada por falta de ensayos específicos."
+        )
+    )
+    reactivacion_neuromuscular: List[str] = Field(
+        description=(
+            "Procedimientos motores o programas validados con sus parámetros de dosificación y fatiga. "
+            "CADA ítem debe empezar obligatoriamente con '[Evidencia Guía/Estudio · ID_EXACTO]' o '[Consenso Clínico / Extrapolación Segura]'."
+        )
+    )
+
     adaptacion_dietetica_iddsi: str = Field(description="Pauta sobre viscosidades/texturas IDDSI y condiciones previas.")
 
 
@@ -480,8 +494,8 @@ with tab_cdss:
             "   - [Bloque 1 · Recomendación Operativa]: Acción terapéutica concreta (frecuencia, intensidad, foco y maniobras) extraída de Tier_2_Trial y Tier_3_Protocol.\n"
             "   - [Bloque 2 · Nivel de Certeza y Contexto RS]: Grado de respaldo según Tier_1_SR (citando datos estadísticos o limitaciones).\n"
             "   - [Bloque 3 · Banderas Rojas y Contraindicaciones]: Criterios de seguridad, control de fatiga y derivaciones.\n"
-            "5. TRAZABILIDAD Y SEGURIDAD IDDSI: Diferencia en 'evidencia_rag' entre [Guía Clínica / Manual] y [Revisión Sistemática / Estudio Primario]. Si hay sospecha de disfagia, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay disfagia, déjalo en ''."
-        )
+            "5. ETIQUETADO EPISTÉMICO OBLIGATORIO EN INTERVENCIÓN PROPUESTA: Para evitar incoherencias entre guías con evidencia baja (ej. GRADE en Friedreich) y el manejo terapéutico real, encabeza CADA elemento de 'estrategias_compensatorias' y 'reactivacion_neuromuscular' con '[Evidencia Guía/Estudio · ID_EXACTO]' cuando exista respaldo directo en Capa 1/2 para esa patología, o con '[Consenso Clínico / Extrapolación Segura]' cuando sea práctica estándar logopédica por ausencia de ensayos específicos.\n"
+            "6. CITAS GRANULARES EN EL TEXTO Y SEGURIDAD IDDSI: Incluye siempre el identificador entre corchetes (ej. [ATX-007], [COCHRANE-2014]) al final de cada regla en 'signos_alerta_seguridad' y en 'diagnostico_diferencial', asegurando correspondencia exacta con 'evidencia_rag'. Si hay sospecha de disfagia, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay disfagia, déjalo en ''."
 
         for intento in range(1, 4):
             try:
