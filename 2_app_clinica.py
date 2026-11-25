@@ -339,14 +339,26 @@ def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
     }
     return {"datos_api": texto_recuperado, "enlaces": enlaces}
 
-
 st.set_page_config(page_title="LogoPilot | CDSS Logopedia Neurológica", page_icon="🧭", layout="wide")
 
 archivos_img = glob.glob("**/*.png", recursive=True) + glob.glob("**/*.jpg", recursive=True) + glob.glob("**/*.jpeg", recursive=True)
 img_b64 = base64.b64encode(open(archivos_img[0], "rb").read()).decode() if archivos_img else ""
 
 st.markdown(f"""
-<style>
+    div[data-testid="stExpander"] {{ border: 1px solid #CBD5E1; border-radius: 6px; background-color: #F8FAFC; }}
+    div[data-testid="stCheckbox"] label,
+    div[data-testid="stCheckbox"] label p {{
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+        line-height: 1.45 !important;
+        align-items: flex-start !important;
+    }}
+    div[data-testid="stCheckbox"] {{
+        margin-bottom: 0.45rem !important;
+    }}
+</style>
+
     .block-container {{ padding-top: 3.0rem; padding-bottom: 2.5rem; }}
     .header-cdss {{
         box-sizing: border-box;
