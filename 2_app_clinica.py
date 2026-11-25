@@ -345,21 +345,7 @@ archivos_img = glob.glob("**/*.png", recursive=True) + glob.glob("**/*.jpg", rec
 img_b64 = base64.b64encode(open(archivos_img[0], "rb").read()).decode() if archivos_img else ""
 
 st.markdown(f"""
-    div[data-testid="stExpander"] {{ border: 1px solid #CBD5E1; border-radius: 6px; background-color: #F8FAFC; }}
-    div[data-testid="stCheckbox"] label,
-    div[data-testid="stCheckbox"] label p {{
-        white-space: normal !important;
-        overflow: visible !important;
-        text-overflow: unset !important;
-        line-height: 1.45 !important;
-        align-items: flex-start !important;
-    }}
-        div[data-testid="stCheckbox"] {{
-        margin-bottom: 0.45rem !important;
-    }}
-</style>
-<div class="header-cdss">
-
+<style>
     .block-container {{ padding-top: 3.0rem; padding-bottom: 2.5rem; }}
     .header-cdss {{
         box-sizing: border-box;
@@ -389,6 +375,17 @@ st.markdown(f"""
     .header-cdss p {{ margin: 0; font-size: 0.93rem; color: #F8FAFC; font-weight: 500; text-shadow: 0 1px 3px rgba(15, 23, 42, 0.55); }}
     .subtexto-rag {{ display: block; color: #CBD5E1; font-size: 0.78rem; margin-top: 0.3rem; font-weight: 600; letter-spacing: 0.2px; }}
     div[data-testid="stExpander"] {{ border: 1px solid #CBD5E1; border-radius: 6px; background-color: #F8FAFC; }}
+    div[data-testid="stCheckbox"] label,
+    div[data-testid="stCheckbox"] label p {{
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+        line-height: 1.45 !important;
+        align-items: flex-start !important;
+    }}
+    div[data-testid="stCheckbox"] {{
+        margin-bottom: 0.45rem !important;
+    }}
 </style>
 <div class="header-cdss">
     <img src="data:image/png;base64,{img_b64}" class="logo-fundido">
