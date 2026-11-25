@@ -354,10 +354,11 @@ st.markdown(f"""
         line-height: 1.45 !important;
         align-items: flex-start !important;
     }}
-    div[data-testid="stCheckbox"] {{
+        div[data-testid="stCheckbox"] {{
         margin-bottom: 0.45rem !important;
     }}
 </style>
+<div class="header-cdss">
 
     .block-container {{ padding-top: 3.0rem; padding-bottom: 2.5rem; }}
     .header-cdss {{
