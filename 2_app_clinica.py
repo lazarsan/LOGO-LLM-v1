@@ -928,12 +928,32 @@ with tab_cdss:
             st.download_button(
                 label="🏥 Exportar Plan Clínico Interoperable (HL7 FHIR R4 JSON)",
                 data=construir_bundle_fhir_r4(),
-                file_name=f"LOGO_Pilot_FHIR_R4_{reporte.diagnostico.codigo_cie11.split()}.json",
+                file_name=f"LOGO_Pilot_FHIR_R4_{reporte.diagnostico.codigo_cie11.split()[0]}.json",
                 mime="application/json",
                 use_container_width=True
             )
-       
+
+            with st.expander("👁️ Previsualizar Plan Interoperable HL7 FHIR R4 (Vista Clínica)"):
+                bundle_dict = json.loads(construir_bundle_fhir_r4())
+                st.caption(f"**Bundle ID:** `{bundle_dict['id']}` · **Estándar:** HL7 FHIR R4 · **Fecha UTC:** {bundle_dict['meta']['lastUpdated']}")
+                for entry in bundle_dict.get("entry", []):
+                    res = entry.get("resource", {})
+                    rtype = res.get("resourceType")
+                    if rtype == "Condition":
+                        cods = " | ".join([f"{c.get('code')} ({c.get('system').split('/')[-1]})" for c in res.get("code", {}).get("coding", [])])
+                        st.markdown(f"**🩺 Diagnóstico (`Condition`):** {res.get('code', {}).get('text')} — `{cods}`")
+                    elif rtype == "DiagnosticReport":
+                        st.markdown(f"**🔬 Prueba Instrumental (`DiagnosticReport`):** {res.get('conclusion')} *(Estado: `{res.get('status')}`)*")
+                    elif rtype == "DetectedIssue":
+                        st.warning(f"**⚠️ Alerta (`DetectedIssue`):** {res.get('detail')}")
+                    elif rtype == "CarePlan":
+                        st.markdown(f"**📋 Plan Validado (`CarePlan` · `{res.get('intent')}`):**")
+                        for act in res.get("activity", []):
+                            det = act.get("detail", {})
+                            st.markdown(f"- `[{det.get('kind')}]` {det.get('description')}")
+
         with col_der:
+
             c_rag, c_rag_i = st.columns([0.85, 0.15])
             c_rag.subheader("3. Inspector CitaRAG")
             pop_rag = c_rag_i.popover("ℹ️")
