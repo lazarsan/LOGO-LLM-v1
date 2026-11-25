@@ -715,13 +715,37 @@ with tab_cdss:
             )
 
             def construir_bundle_fhir_r4() -> str:
-
                 ahora_iso = datetime.now(timezone.utc).isoformat()
                 pat_uuid = str(uuid.uuid4())
                 cond_uuid = str(uuid.uuid4())
+                cond_trast_uuid = str(uuid.uuid4())
                 diag_uuid = str(uuid.uuid4())
                 cp_uuid = str(uuid.uuid4())
                 cie_code = reporte.diagnostico.codigo_cie11.split()[0]
+
+                tax_snomed = {}
+                if os.path.exists("taxonomia_snomed_logopedia.json"):
+                    with open("taxonomia_snomed_logopedia.json", "r", encoding="utf-8") as fs:
+                        tax_snomed = json.load(fs)
+
+                pat_val = reporte.diagnostico.patologia_neuro_base.value
+                trast_val = reporte.diagnostico.trastorno_logopedico.value
+                info_pat_sct = tax_snomed.get("patologias_neurologicas", {}).get(pat_val, {})
+                info_trast_sct = tax_snomed.get("trastornos_logopedicos", {}).get(trast_val, {})
+
+                codings_patologia = [
+                    {
+                        "system": "http://who.int",
+                        "code": cie_code,
+                        "display": pat_val
+                    }
+                ]
+                if info_pat_sct.get("sctid"):
+                    codings_patologia.append({
+                        "system": "http://snomed.info",
+                        "code": info_pat_sct["sctid"],
+                        "display": info_pat_sct.get("termino_es", pat_val)
+                    })
 
                 entries = [
                     {
@@ -748,17 +772,32 @@ with tab_cdss:
                                 "coding": [{"system": "http://hl7.org", "code": "active"}]
                             },
                             "code": {
-                                "coding": [
-                                    {
-                                        "system": "http://who.int",
-                                        "code": cie_code,
-                                        "display": reporte.diagnostico.patologia_neuro_base.value
-                                    }
-                                ],
-                                "text": f"{reporte.diagnostico.patologia_neuro_base.value} - {reporte.diagnostico.trastorno_logopedico.value}"
+                                "coding": codings_patologia,
+                                "text": pat_val
                             },
                             "subject": {"reference": f"urn:uuid:{pat_uuid}"},
                             "note": [{"text": reporte.diagnostico.analisis_fisiopatologico}]
+                        }
+                    },
+                    {
+                        "fullUrl": f"urn:uuid:{cond_trast_uuid}",
+                        "resource": {
+                            "resourceType": "Condition",
+                            "id": cond_trast_uuid,
+                            "clinicalStatus": {
+                                "coding": [{"system": "http://hl7.org", "code": "active"}]
+                            },
+                            "code": {
+                                "coding": [
+                                    {
+                                        "system": "http://snomed.info",
+                                        "code": info_trast_sct.get("sctid", "311555007"),
+                                        "display": info_trast_sct.get("termino_es", trast_val)
+                                    }
+                                ],
+                                "text": trast_val
+                            },
+                            "subject": {"reference": f"urn:uuid:{pat_uuid}"}
                         }
                     },
                     {
@@ -772,7 +811,12 @@ with tab_cdss:
                                     {
                                         "system": "http://snomed.info",
                                         "code": "409052002",
-                                        "display": "Videofluoroscopic swallowing study / FEES"
+                                        "display": "Videofluoroscopic swallowing study (VFSS)"
+                                    },
+                                    {
+                                        "system": "http://snomed.info",
+                                        "code": "444831000124102",
+                                        "display": "Fiberoptic endoscopic evaluation of swallowing (FEES)"
                                     }
                                 ],
                                 "text": "Evaluación instrumental de la deglución (FEES / VFSS)"
@@ -806,14 +850,32 @@ with tab_cdss:
                         "detail": {
                             "kind": "ServiceRequest",
                             "status": "scheduled",
+                            "code": {
+                                "coding": [{
+                                    "system": "http://snomed.info",
+                                    "code": "225368008",
+                                    "display": "Evaluación logopédica funcional"
+                                }]
+                            },
                             "description": f"[Evaluación Validada] {esc}"
                         }
                     })
+
+                cod_terapia = "229065009" if trast_val == "Disfagia Neurogénica" else "311555007"
+                disp_terapia = "Terapia de rehabilitación y compensación de la deglución" if trast_val == "Disfagia Neurogénica" else "Terapia del habla, voz y lenguaje"
+
                 for interv in int_aprobadas:
                     actividades_careplan.append({
                         "detail": {
                             "kind": "Task",
                             "status": "not-started",
+                            "code": {
+                                "coding": [{
+                                    "system": "http://snomed.info",
+                                    "code": cod_terapia,
+                                    "display": disp_terapia
+                                }]
+                            },
                             "description": interv
                         }
                     })
@@ -828,7 +890,10 @@ with tab_cdss:
                         "intent": "proposal",
                         "title": "Plan de Intervención Logopédica Asistido por LOGO-Pilot (Supervisión Humana Art. 14 EU AI Act)",
                         "subject": {"reference": f"urn:uuid:{pat_uuid}"},
-                        "addresses": [{"reference": f"urn:uuid:{cond_uuid}"}],
+                        "addresses": [
+                            {"reference": f"urn:uuid:{cond_uuid}"},
+                            {"reference": f"urn:uuid:{cond_trast_uuid}"}
+                        ],
                         "created": ahora_iso,
                         "activity": actividades_careplan,
                         "note": [
@@ -849,14 +914,6 @@ with tab_cdss:
                     "entry": entries
                 }
                 return json.dumps(bundle_fhir, ensure_ascii=False, indent=2)
-
-            st.download_button(
-                label="🏥 Exportar Plan Clínico Interoperable (HL7 FHIR R4 JSON)",
-                data=construir_bundle_fhir_r4(),
-                file_name=f"LOGO_Pilot_FHIR_R4_{reporte.diagnostico.codigo_cie11.split()[0]}.json",
-                mime="application/json",
-                use_container_width=True
-            )
 
         with col_der:
             c_rag, c_rag_i = st.columns([0.85, 0.15])
