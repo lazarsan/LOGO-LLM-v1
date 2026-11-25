@@ -915,6 +915,14 @@ with tab_cdss:
                 }
                 return json.dumps(bundle_fhir, ensure_ascii=False, indent=2)
 
+            st.download_button(
+                label="🏥 Exportar Plan Clínico Interoperable (HL7 FHIR R4 JSON)",
+                data=construir_bundle_fhir_r4(),
+                file_name=f"LOGO_Pilot_FHIR_R4_{reporte.diagnostico.codigo_cie11.split()}.json",
+                mime="application/json",
+                use_container_width=True
+            )
+       
         with col_der:
             c_rag, c_rag_i = st.columns([0.85, 0.15])
             c_rag.subheader("3. Inspector CitaRAG")
