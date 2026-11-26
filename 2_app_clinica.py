@@ -511,6 +511,7 @@ with tab_cdss:
             "   - PROHIBICIÓN ABSOLUTA: Nunca menciones, sugieras ni pautes niveles específicos de la escala IDDSI (ej. IDDSI 0-7, néctar, miel, pudin) ni espesantes en 'adaptacion_dietetica_iddsi', 'estrategias_compensatorias' o 'respuesta_dilema_clinico' salvo que el enunciado del caso reporte explícitamente los resultados de una evaluación instrumental previa (FEES o VFSS) que valide dicha consistencia.\n"
             "   - SI EL CASO NO TRATA DE DISFAGIA (ej. afasia, apraxia o disartria aislada) O NO TIENE FEES/VFSS: Deja 'adaptacion_dietetica_iddsi' estrictamente vacío (''). No añadas recomendaciones dietéticas preventivas ni menciones las siglas 'IDDSI' en ningún campo del JSON.\n"
             "   - SI HAY SOSPECHA CLÍNICA DE DISFAGIA SIN FEES/VFSS: Mantén 'adaptacion_dietetica_iddsi' vacío ('') o limita la indicación exclusivamente a derivación instrumental ('Contraindicada la modificación empírica de consistencias; derivar a FEES/VFSS antes de pautar dieta') sin nombrar niveles IDDSI."
+        )
 
         for intento in range(1, 4):
 
