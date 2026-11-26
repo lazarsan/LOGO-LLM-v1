@@ -1,0 +1,27 @@
+{
+  "dataset": "LOGO_Pilot_Dataset_Maestro_Tecnico_v0_4",
+  "fecha_actualizacion": "2026-11-26",
+  "origen": "Dataset Maestro Técnico v0.3 y declaración del usuario sobre dictamen de evaluadores expertos",
+  "evaluacion_experta": "553 afirmaciones válidas; alta concordancia declarada, porcentaje exacto no facilitado",
+  "autorizacion_clinica_rag": true,
+  "autorizacion_clinica_sft": true,
+  "alcance_de_licencias": "Extracción de metadatos exclusivamente; no se infiere autorización jurídica para reproducir textos protegidos o entrenar con dichos textos",
+  "estado_bibliografico": "Persisten entradas bibliográficas provisionales; la vinculación de códigos no equivale a resolución de duplicados bibliográficos",
+  "n_registros": 553,
+  "conteos_patologia": {
+    "Daño Cerebral Adquirido": 123,
+    "Enfermedad de Parkinson": 146,
+    "Ataxia Hereditaria": 284
+  },
+  "schema_claves": [
+    "claim_id",
+    "doc_id",
+    "patologia",
+    "dominio_clinico",
+    "dato_factual_objetivo",
+    "alerta_seguridad",
+    "localizador_pdf"
+  ],
+  "observacion": "El archivo corpus_factual_unificado_rag.json es una lista JSON y puede ser leído mediante json.load. Para ejecutar 2_app_clinica.py debe situarse junto al script en su directorio de trabajo o modificarse su ruta.",
+  "sha256_json": "9028d9167dc1b1267b1219e44b4c55a2d78e8e792c360536deed22d7b62f6815"
+}
