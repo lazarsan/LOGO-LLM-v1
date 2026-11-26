@@ -331,4 +331,31 @@
   "DOC-0136": {"titulo": "Optimizing Communication in Ataxia: A Multifaceted Approach to Alternative and Augmentative Communication (AAC) (Vogel et al., 2024)", "doi": "10.1007/s12311-024-01675-0", "archivo_pdf": "Optimizing Communication in Ataxia.pdf"},
   "DOC-0137": {"titulo": "Quantitative Speech Assessment in Ataxia—Consensus Recommendations by the Ataxia Global Initiative (Vogel et al., 2024)", "doi": "10.1007/s12311-023-01623-4", "archivo_pdf": "Quantitative Speech Assessment in Ataxia.pdf"},
   "DOC-0138": {"titulo": "Feasibility and Acceptability of Lee Silverman Voice Treatment in Progressive Ataxias (Lowit et al., 2020)", "doi": "10.1007/s12311-020-01153-3", "archivo_pdf": "Feasibility and Acceptability of Lee Silverman Voice Treatment in Progressive Ataxias.pdf"}
-}
+},
+    {
+      "doc_id": "DOC-0139",
+      "alias": "ATX-COMP-01",
+      "carpeta": "referencias/Ataxia/",
+      "archivo_local": "Braga-Neto_et_al_2016_Clinical_Approach_Cerebellar_Ataxias.pdf",
+      "titulo": "Current clinical approach to patients with disorders of the cerebellum",
+      "autores": [
+        "Pedro Braga-Neto",
+        "José Luiz Pedroso",
+        "Chien Hsin Fen",
+        "Lívia Almeida Dutra",
+        "Orlando Graziani Povoas Barsottini"
+      ],
+      "anio": 2016,
+      "revista_o_fuente": "Arquivos de Neuro-Psiquiatria",
+      "volumen_paginas": "74(3):244-252",
+      "doi": "10.1590/0004-282X20160038",
+      "idioma": "en",
+      "tipo_documento": "Artículo de revisión clínica",
+      "temas_clave": [
+        "Ataxias cerebelosas",
+        "Diagnóstico diferencial",
+        "Ataxias hereditarias y esporádicas",
+        "Abordaje clínico"
+      ],
+      "estado_verificacion": "Verificado mediante auditoría visual PDF (noviembre 2026)"
+    }
