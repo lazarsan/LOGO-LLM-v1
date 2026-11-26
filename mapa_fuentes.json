@@ -276,7 +276,7 @@
   "EP-019": {"titulo": "Rehabilitación logopédica en la enfermedad de Parkinson (De Zárate Pérez-Trujillo, 2021)", "doi": "", "archivo_pdf": "Rehabilitacion Logopedica en la Enfermedad de Parkinson.pdf"},
   "DOC-0100": {"titulo": "Protocolo de Logopedia en la enfermedad de Parkinson (Agudo Alba, Moreno Auñón y equipo FEP, 2021)", "doi": "", "archivo_pdf": "2_PROTOCOLO-LOGOPEDIA_WEB_FINAL.pdf"},
   "EP-020": {"titulo": "Protocolo de Logopedia en la enfermedad de Parkinson (Agudo Alba, Moreno Auñón y equipo FEP, 2021)", "doi": "", "archivo_pdf": "2_PROTOCOLO-LOGOPEDIA_WEB_FINAL.pdf"},
-    "DOC-0101": {"titulo": "Guía de Práctica Clínica para el Manejo de Pacientes con Enfermedad de Parkinson (Ministerio de Sanidad / IACS, 2014)", "doi": "", "archivo_pdf": "gpc_546_parkinson_iacs_compl.pdf"},
+  "DOC-0101": {"titulo": "Guía de Práctica Clínica para el Manejo de Pacientes con Enfermedad de Parkinson (Ministerio de Sanidad / IACS, 2014)", "doi": "", "archivo_pdf": "gpc_546_parkinson_iacs_compl.pdf"},
   "EP-021": {"titulo": "Guía de Práctica Clínica para el Manejo de Pacientes con Enfermedad de Parkinson (Ministerio de Sanidad / IACS, 2014)", "doi": "", "archivo_pdf": "gpc_546_parkinson_iacs_compl.pdf"},
   "DOC-0102": {"titulo": "Manual de práctica clínica en la enfermedad de Parkinson. Recomendaciones diagnóstico-terapéuticas de la SEN 2024", "doi": "", "archivo_pdf": "GuiaParkinson2024.pdf"},
   "DOC-0103": {"titulo": "Guía Friedreich 2022, capítulo 3.5: Dysarthria (2022)", "doi": "", "archivo_pdf": "3-5-Dysarthria-Chapter-Final-03Jun22.pdf"},
@@ -326,6 +326,6 @@
   "DOC-0134": {"titulo": "Consensus clinical management guidelines for Friedreich ataxia (Delatycki et al., 2014; affirmed ERN-RND 2019)", "doi": "", "archivo_pdf": "ERN-RND-Affirmed-FA-Guidelines_Final.pdf"},
   "DOC-0135": {"titulo": "Clinical Scales Predict Significant Videofluoroscopic Dysphagia in Machado Joseph Disease Patients (Russo et al., 2015)", "doi": "10.1002/mdc3.12173", "archivo_pdf": "Clinical Scales Predict Significant Videofluoroscopic Dysphagia in Machado.pdf"},
   "DOC-0136": {"titulo": "Optimizing Communication in Ataxia: A Multifaceted Approach to Alternative and Augmentative Communication (AAC) (Vogel et al., 2024)", "doi": "10.1007/s12311-024-01675-0", "archivo_pdf": "Optimizing Communication in Ataxia.pdf"},
-   "DOC-0137": {"titulo": "Quantitative Speech Assessment in Ataxia—Consensus Recommendations by the Ataxia Global Initiative (Vogel et al., 2024)", "doi": "10.1007/s12311-023-01623-4", "archivo_pdf": "Quantitative Speech Assessment in Ataxia.pdf"},
+  "DOC-0137": {"titulo": "Quantitative Speech Assessment in Ataxia—Consensus Recommendations by the Ataxia Global Initiative (Vogel et al., 2024)", "doi": "10.1007/s12311-023-01623-4", "archivo_pdf": "Quantitative Speech Assessment in Ataxia.pdf"},
   "DOC-0138": {"titulo": "Feasibility and Acceptability of Lee Silverman Voice Treatment in Progressive Ataxias (Lowit et al., 2020)", "doi": "10.1007/s12311-020-01153-3", "archivo_pdf": "Feasibility and Acceptability of Lee Silverman Voice Treatment in Progressive Ataxias.pdf"}
 }
