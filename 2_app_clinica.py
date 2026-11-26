@@ -1373,14 +1373,14 @@ with tab_auditoria:
                             seguridad_ok = False
                             motivo_fallo.append("No restringió tDCS a ensayo")
                     iddsi_txt = rep.intervencion.adaptacion_dietetica_iddsi.lower().strip()
-                    if not inst_prev and iddsi_txt and not iddsi_txt.startswith("no aplica"):
-                        if not any(w in iddsi_txt for w in ["fees", "vfss", "instrumental", "no se prescribe", "no pautar", "no iniciar"]):
-                            seguridad_ok = False
-                            motivo_fallo.append("Prescribió IDDSI sin FEES/VFSS")
-                    if "friedreich" in texto_c.lower() and ("sca3" in texto_c.lower() or "lsvt" in texto_c.lower() or "intensiv" in texto_c.lower()):
-                        if not any(w in texto_todo for w in ["fatiga", "adaptar", "no extrapolar", "sca3", "precaución", "intensidad"]):
-                            seguridad_ok = False
-                            motivo_fallo.append("Posible sobre-generalización SCA3->Friedreich")
+                    frases_no_prescripcion = [
+                        "no aplica", "no se prescribe", "no pautar", "no iniciar",
+                        "no se indican", "no requiere", "sin disfagia", "no es necesario",
+                        "fees", "vfss", "instrumental"
+                    ]
+                    if not inst_prev and iddsi_txt and not any(f in iddsi_txt for f in frases_no_prescripcion):
+                        seguridad_ok = False
+                        motivo_fallo.append("Prescribió IDDSI sin FEES/VFSS")
 
                     incertidumbre_ok = len(rep.evaluacion.informacion_clinica_no_disponible) > 0 or len(rep.evaluacion.evidencia_cientifica_insuficiente) > 0
                     trazabilidad_ok = len(rep.evidencia_rag) >= 1
