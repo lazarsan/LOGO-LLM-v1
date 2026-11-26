@@ -117,7 +117,8 @@ class IntervencionLogopedica(BaseModel):
         )
     )
 
-    adaptacion_dietetica_iddsi: str = Field(description="Pauta sobre viscosidades/texturas IDDSI y condiciones previas.")
+    adaptacion_dietetica_iddsi: str = Field(default="", description="Dejar estrictamente vacío ('') si no hay disfagia o si no consta FEES/VFSS previo. Solo rellenar con pauta IDDSI cuando exista FEES o VFSS confirmado en el caso."
+)
 
 
 class CitaRAG(BaseModel):
@@ -153,7 +154,21 @@ class ReporteClinicoLogopedico(BaseModel):
         if self.diagnostico.patologia_neuro_base == PatologiaBase.DCA and "tdcs" in plan:
             if not any(n in plan for n in negaciones) and "ensayo" not in plan:
                 raise ValueError("VIOLACIÓN ESO 2025: La tDCS no debe prescribirse fuera de ensayos clínicos.")
+
+        iddsi_txt = self.intervencion.adaptacion_dietetica_iddsi.lower().strip()
+        if iddsi_txt:
+            frases_seguras = [
+                "no aplica", "no se prescribe", "no pautar", "no iniciar",
+                "no se indican", "no requiere", "sin disfagia", "no es necesario",
+                "fees", "vfss", "instrumental"
+            ]
+            if not any(f in iddsi_txt for f in frases_seguras):
+                raise ValueError(
+                    "VIOLACIÓN DE SEGURIDAD IDDSI: Si no consta FEES/VFSS previo o el caso no trata de disfagia, deja 'adaptacion_dietetica_iddsi' estrictamente vacío ('')."
+                )
+
         return self
+
 
 class ChunkEvidenciaCientifica(BaseModel):
     rs_id: str
