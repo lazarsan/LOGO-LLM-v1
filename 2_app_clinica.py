@@ -506,8 +506,11 @@ with tab_cdss:
             "   - [Bloque 2 · Nivel de Certeza y Contexto RS]: Grado de respaldo según Tier_1_SR (citando datos estadísticos o limitaciones).\n"
             "   - [Bloque 3 · Banderas Rojas y Contraindicaciones]: Criterios de seguridad, control de fatiga y derivaciones.\n"
             "5. ETIQUETADO EPISTÉMICO OBLIGATORIO EN INTERVENCIÓN PROPUESTA: Para evitar incoherencias entre guías con evidencia baja (ej. GRADE en Friedreich) y el manejo terapéutico real, encabeza CADA elemento de 'estrategias_compensatorias' y 'reactivacion_neuromuscular' con '[Evidencia Guía/Estudio · ID_EXACTO]' cuando exista respaldo directo en Capa 1/2 para esa patología, o con '[Consenso Clínico / Extrapolación Segura]' cuando sea práctica estándar logopédica por ausencia de ensayos específicos.\n"
-            "6. CITAS GRANULARES EN EL TEXTO Y SEGURIDAD IDDSI: Incluye siempre el identificador entre corchetes (ej. [ATX-007], [COCHRANE-2014]) al final de cada regla en 'signos_alerta_seguridad' y en 'diagnostico_diferencial', asegurando correspondencia exacta con 'evidencia_rag'. Si hay sospecha de disfagia, indica en 'adaptacion_dietetica_iddsi' que no se prescriben viscosidades IDDSI sin valoración instrumental previa (FEES/VFSS); si no hay disfagia, déjalo en ''."
-        )
+            "6. CITAS GRANULARES EN EL TEXTO: Incluye siempre el identificador entre corchetes (ej. [ATX-007], [COCHRANE-2014]) al final de cada regla en 'signos_alerta_seguridad' y en 'diagnostico_diferencial', asegurando correspondencia exacta con 'evidencia_rag'.\n"
+            "7. CORTAFUEGOS ESTRICTO DE SEGURIDAD IDDSI (CERO PRESCRIPCIÓN SIN PRUEBA INSTRUMENTAL):\n"
+            "   - PROHIBICIÓN ABSOLUTA: Nunca menciones, sugieras ni pautes niveles específicos de la escala IDDSI (ej. IDDSI 0-7, néctar, miel, pudin) ni espesantes en 'adaptacion_dietetica_iddsi', 'estrategias_compensatorias' o 'respuesta_dilema_clinico' salvo que el enunciado del caso reporte explícitamente los resultados de una evaluación instrumental previa (FEES o VFSS) que valide dicha consistencia.\n"
+            "   - SI EL CASO NO TRATA DE DISFAGIA (ej. afasia, apraxia o disartria aislada) O NO TIENE FEES/VFSS: Deja 'adaptacion_dietetica_iddsi' estrictamente vacío (''). No añadas recomendaciones dietéticas preventivas ni menciones las siglas 'IDDSI' en ningún campo del JSON.\n"
+            "   - SI HAY SOSPECHA CLÍNICA DE DISFAGIA SIN FEES/VFSS: Mantén 'adaptacion_dietetica_iddsi' vacío ('') o limita la indicación exclusivamente a derivación instrumental ('Contraindicada la modificación empírica de consistencias; derivar a FEES/VFSS antes de pautar dieta') sin nombrar niveles IDDSI."
 
         for intento in range(1, 4):
 
