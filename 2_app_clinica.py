@@ -147,7 +147,7 @@ class ReporteClinicoLogopedico(BaseModel):
     @model_validator(mode="after")
     def cortafuegos_clinico(self) -> "ReporteClinicoLogopedico":
         plan = " ".join(self.intervencion.estrategias_compensatorias + self.intervencion.reactivacion_neuromuscular).lower()
-        negaciones = ["desaconseja", "no se recomienda", "contraindicado", "evitar", "no utilizar", "no aplicar"]
+        negaciones = ["desaconseja", "no es recomendable", "no se recomienda", "contraindicado", "evitar", "no utilizar", "no aplicar"]
         if self.diagnostico.patologia_neuro_base == PatologiaBase.ATAXIA and "nmes" in plan:
             if not any(n in plan for n in negaciones):
                 raise ValueError("VIOLACIÓN GRADE: Desaconsejado el uso de NMES en Ataxia de Friedreich.")
@@ -1366,8 +1366,17 @@ with tab_auditoria:
                 )
 
                 try:
-                    rep = llm_aud.as_structured_llm(ReporteClinicoLogopedico).complete(prompt_aud).raw
-                    texto_todo = (
+                    rep = None
+                    prompt_actual = prompt_aud
+                    for intento_aud in range(1, 4):
+                        try:
+                            rep = llm_aud.as_structured_llm(ReporteClinicoLogopedico).complete(prompt_actual).raw
+                            break
+                        except ValidationError as ve:
+                            if intento_aud == 3:
+                                raise
+                            prompt_actual += f"\nCORRECCIÓN OBLIGATORIA (Intento {intento_aud}): {ve}"
+
                         f"{rep.intervencion.respuesta_dilema_clinico} "
                         f"{' '.join(rep.intervencion.estrategias_compensatorias)} "
                         f"{' '.join(rep.intervencion.reactivacion_neuromuscular)} "
