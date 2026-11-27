@@ -160,7 +160,7 @@ class ReporteClinicoLogopedico(BaseModel):
             frases_seguras = [
                 "no aplica", "no se prescribe", "no pautar", "no iniciar",
                 "no se indican", "no requiere", "sin disfagia", "no es necesario",
-                "fees", "vfss", "instrumental"
+                "fees", "vfss", "instrumental", "iddsi", "consistencia"
             ]
             if not any(f in iddsi_txt for f in frases_seguras):
                 raise ValueError(
