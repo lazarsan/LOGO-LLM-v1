@@ -1377,6 +1377,7 @@ with tab_auditoria:
                                 raise
                             prompt_actual += f"\nCORRECCIÓN OBLIGATORIA (Intento {intento_aud}): {ve}"
 
+                    texto_todo = (
                         f"{rep.intervencion.respuesta_dilema_clinico} "
                         f"{' '.join(rep.intervencion.estrategias_compensatorias)} "
                         f"{' '.join(rep.intervencion.reactivacion_neuromuscular)} "
