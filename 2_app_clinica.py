@@ -1,4 +1,6 @@
-import json 
+import json
+import re
+import html
 from datetime import datetime, timezone
 import uuid
 import os
@@ -10,73 +12,6 @@ import urllib.parse
 from enum import Enum
 from typing import List, Literal, Optional
 import streamlit as st
-def apply_copilot_theme():
-    st.markdown("""
-    <style>
-        /* 1. Limpieza del entorno Streamlit */
-        #MainMenu, footer, header {visibility: hidden;}
-        .block-container {
-            padding-top: 1.2rem;
-            padding-bottom: 4rem;
-            max-width: 96%;
-        }
-        .stApp {
-            background-color: #F8FAFC;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
-        /* 2. Barra superior compacta (48px) */
-        .top-navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            margin-bottom: 1.2rem;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-        }
-        .nav-title { font-weight: 600; font-size: 1.05rem; color: #0F172A; }
-        .nav-badge {
-            background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;
-            padding: 2px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 500;
-        }
-
-        /* 3. Tarjetas modulares estilo Copilot */
-        .copilot-card {
-            background: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            border-radius: 12px;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
-        }
-        .card-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 0.75rem; border-bottom: 1px solid #F1F5F9; padding-bottom: 0.5rem;
-        }
-        .card-title { font-weight: 600; font-size: 0.95rem; color: #1E293B; }
-
-        /* 4. Badges semánticos (reemplazan corchetes técnicos) */
-        .pill {
-            display: inline-block; padding: 2px 8px; border-radius: 6px;
-            font-size: 0.75rem; font-weight: 600; letter-spacing: 0.01em;
-        }
-        .pill-info { background: #F1F5F9; color: #475569; }
-        .pill-warn { background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; }
-        .pill-danger { background: #FEE2E2; color: #B91C1C; border: 1px solid #FECACA; }
-        .pill-success { background: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0; }
-
-        /* 5. Citas interactivas en línea */
-        .cite-chip {
-            display: inline-flex; align-items: center;
-            background: #EFF6FF; color: #0F6CBD; border: 1px solid #BFDBFE;
-            border-radius: 4px; padding: 0 5px; margin: 0 2px;
-            font-size: 0.75rem; font-weight: 600; cursor: pointer;
-        }
-    </style>
-    """, unsafe_allow_html=True)
 
 from pydantic import BaseModel, Field, model_validator, ValidationError
 from llama_index.core import Document, VectorStoreIndex, Settings
@@ -86,6 +21,87 @@ from openai import OpenAI
 from pypdf import PdfReader
 from lector_informes import extraer_texto_archivo
 from ficha_clinica_real import renderizar_ficha_real
+
+
+# ==============================================================================
+# 1. TEMA VISUAL Y COMPONENTES ESTILO COPILOT STUDIO
+# ==============================================================================
+def apply_copilot_theme():
+    st.markdown("""
+    <style>
+        #MainMenu, footer, header {visibility: hidden;}
+        .block-container {
+            padding-top: 1.1rem;
+            padding-bottom: 3.5rem;
+            max-width: 96%;
+        }
+        .stApp {
+            background-color: #F8FAFC;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        button[kind="primary"] {
+            background-color: #0F6CBD !important;
+            border-color: #0F6CBD !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+        }
+        button[kind="primary"]:hover { background-color: #115EA3 !important; }
+        .stDownloadButton button { border-radius: 8px !important; font-weight: 500 !important; }
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 0.65rem 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        }
+        .nav-title { font-weight: 700; font-size: 1.1rem; color: #0F172A; }
+        .nav-badge {
+            background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;
+            padding: 3px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 600;
+        }
+        .copilot-card {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 1.1rem 1.25rem;
+            margin-bottom: 0.95rem;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+        }
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 0.6rem; border-bottom: 1px solid #F1F5F9; padding-bottom: 0.45rem;
+        }
+        .card-title { font-weight: 600; font-size: 0.95rem; color: #0F172A; }
+        .pill {
+            display: inline-block; padding: 2px 8px; border-radius: 6px;
+            font-size: 0.74rem; font-weight: 600; letter-spacing: 0.01em;
+        }
+        .pill-info { background: #F1F5F9; color: #475569; }
+        .pill-warn { background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; }
+        .pill-danger { background: #FEE2E2; color: #B91C1C; border: 1px solid #FECACA; }
+        .pill-success { background: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0; }
+        .cite-chip {
+            display: inline-flex; align-items: center;
+            background: #EFF6FF; color: #0F6CBD; border: 1px solid #BFDBFE;
+            border-radius: 4px; padding: 0 6px; margin: 0 2px;
+            font-size: 0.75rem; font-weight: 600;
+        }
+        div[data-testid="stExpander"] { border: 1px solid #E2E8F0; border-radius: 8px; background-color: #FFFFFF; }
+        div[data-testid="stCheckbox"] label,
+        div[data-testid="stCheckbox"] label p {
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: unset !important;
+            line-height: 1.45 !important;
+            align-items: flex-start !important;
+        }
+        div[data-testid="stCheckbox"] { margin-bottom: 0.45rem !important; }
+    </style>
+    """, unsafe_allow_html=True)
 
 
 def normalizar_nombre(texto: str) -> str:
@@ -99,6 +115,89 @@ def limpiar_estado_anterior():
     st.session_state.pop("enlaces_externos", None)
 
 
+def formatear_texto_copilot(texto: str) -> str:
+    seguro = html.escape(texto)
+    return re.sub(
+        r'\[([A-Z0-9_-]{3,}(?:\s*[·|]\s*[A-Z0-9_-]+)?)\]',
+        r'<span class="cite-chip">📄 \1</span>',
+        seguro
+    )
+
+
+def renderizar_ficha_resumen_caso(caso_dict: dict):
+    if not caso_dict:
+        return
+    cid = html.escape(str(caso_dict.get("id_caso") or caso_dict.get("id") or "CASO"))
+    titulo = html.escape(str(caso_dict.get("titulo") or caso_dict.get("perfil") or "Caso Clínico"))
+    historia = html.escape(str(caso_dict.get("historia_clinica") or caso_dict.get("descripcion") or ""))
+    dilema = html.escape(str(caso_dict.get("dilema_clinico") or caso_dict.get("pregunta_clinica") or ""))
+
+    dilema_html = ""
+    if dilema:
+        dilema_html = f"""
+        <div style="margin-top:0.65rem; padding-top:0.55rem; border-top:1px dashed #E2E8F0; color:#0F6CBD; font-size:0.86rem;">
+            <strong>Consulta clínica:</strong> {dilema}
+        </div>
+        """
+
+    st.markdown(f"""
+    <div class="copilot-card" style="background:#FFFFFF; border-left: 4px solid #0F6CBD;">
+        <div class="card-header">
+            <span class="card-title">{cid}</span>
+            <span class="pill pill-info">Ficha Estructurada</span>
+        </div>
+        <div style="font-weight:600; color:#1E293B; font-size:0.9rem; margin-bottom:0.4rem;">{titulo}</div>
+        <div style="color:#475569; font-size:0.86rem; line-height:1.5;">{historia}</div>
+        {dilema_html}
+    </div>
+    """, unsafe_allow_html=True)
+
+
+def renderizar_dilema_copilot(texto_dilema: str):
+    patrones = [
+        (r'\[Bloque 1[^\]]*\]:?', "Recomendación Operativa", "pill-success", "#15803D"),
+        (r'\[Bloque 2[^\]]*\]:?', "Nivel de Certeza y Contexto RS", "pill-warn", "#B45309"),
+        (r'\[Bloque 3[^\]]*\]:?', "Banderas Rojas y Contraindicaciones", "pill-danger", "#B91C1C"),
+    ]
+    posiciones = []
+    for pat, titulo, clase_pill, color_borde in patrones:
+        m = re.search(pat, texto_dilema, flags=re.IGNORECASE)
+        if m:
+            posiciones.append((m.start(), m.end(), titulo, clase_pill, color_borde))
+
+    if not posiciones:
+        st.markdown(f"""
+        <div class="copilot-card" style="border-left: 4px solid #0F6CBD;">
+            <div class="card-header"><span class="card-title">Resolución del Dilema Clínico</span></div>
+            <div style="color:#334155; font-size:0.94rem; line-height:1.55;">{formatear_texto_copilot(texto_dilema)}</div>
+        </div>
+        """, unsafe_allow_html=True)
+        return
+
+    posiciones.sort(key=lambda x: x[0])
+    for idx, (ini, fin, titulo, clase_pill, color_borde) in enumerate(posiciones):
+        siguiente_ini = posiciones[idx + 1][0] if idx + 1 < len(posiciones) else len(texto_dilema)
+        cuerpo = texto_dilema[fin:siguiente_ini].strip()
+        st.markdown(f"""
+        <div class="copilot-card" style="border-left: 4px solid {color_borde}; padding: 0.95rem 1.2rem;">
+            <div class="card-header" style="margin-bottom: 0.45rem;">
+                <span class="card-title">{titulo}</span>
+                <span class="pill {clase_pill}">Paso {idx+1} de 3</span>
+            </div>
+            <div style="color:#334155; font-size:0.93rem; line-height:1.55;">
+                {formatear_texto_copilot(cuerpo)}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+
+def limpiar_etiqueta_intervencion(texto: str) -> tuple[str, str]:
+    m = re.match(r'^\[([^\]]+)\]\s*(.*)$', texto.strip())
+    if m:
+        return m.group(1), m.group(2)
+    return "Práctica Clínica", texto
+
+
 def evaluar_semaforo(riesgo_sesgo: str, nivel_evidencia: str) -> tuple[str, str, str]:
     texto = f"{riesgo_sesgo} {nivel_evidencia}".lower()
     if any(k in texto for k in ["alto riesgo", "high risk", "muy bajo", "muy baja", "insuficiente", "critico", "crítico", "jbi bajo"]):
@@ -106,8 +205,10 @@ def evaluar_semaforo(riesgo_sesgo: str, nivel_evidencia: str) -> tuple[str, str,
     if any(k in texto for k in ["bajo riesgo", "low risk", "alta", "moderada", "jbi alto", "solido", "sólido"]):
         return "🟢", "Solidez metodológica (Bajo riesgo / Certeza moderada-alta)", "#DCFCE7"
     return "🔵", "Precaución / Evidencia intermedia (Algunas preocupaciones / Piloto)", "#DBEAFE"
-
-
+    
+# ==============================================================================
+# 2. ESQUEMAS PYDANTIC Y CORTAFUEGOS CLÍNICOS
+# ==============================================================================
 class PatologiaBase(str, Enum):
     DCA = "Daño Cerebral Adquirido"
     PARKINSON = "Enfermedad de Parkinson"
@@ -142,7 +243,7 @@ class DiagnosticoEstructurado(BaseModel):
         )
     )
     analisis_fisiopatologico: str = Field(
-    description=(
+        description=(
             "Análisis fisiopatológico exhaustivo y estructurado en varios párrafos (mínimo 180-250 palabras): "
             "1) Correlato neuroanatómico y circuito afectado según la etiología base; "
             "2) Desglose funcional detallado por subsistemas implicados (respiración, fonación, resonancia, articulación, prosodia, fases deglutorias o procesamiento lingüístico); "
@@ -184,9 +285,10 @@ class IntervencionLogopedica(BaseModel):
             "CADA ítem debe empezar obligatoriamente con '[Evidencia Guía/Estudio · ID_EXACTO]' o '[Consenso Clínico / Extrapolación Segura]'."
         )
     )
-
-    adaptacion_dietetica_iddsi: str = Field(default="", description="Dejar estrictamente vacío ('') si no hay disfagia o si no consta FEES/VFSS previo. Solo rellenar con pauta IDDSI cuando exista FEES o VFSS confirmado en el caso."
-)
+    adaptacion_dietetica_iddsi: str = Field(
+        default="",
+        description="Dejar estrictamente vacío ('') si no hay disfagia o si no consta FEES/VFSS previo. Solo rellenar con pauta IDDSI cuando exista FEES o VFSS confirmado en el caso."
+    )
 
 
 class CitaRAG(BaseModel):
@@ -234,7 +336,6 @@ class ReporteClinicoLogopedico(BaseModel):
                 raise ValueError(
                     "VIOLACIÓN DE SEGURIDAD IDDSI: Si no consta FEES/VFSS previo o el caso no trata de disfagia, deja 'adaptacion_dietetica_iddsi' estrictamente vacío ('')."
                 )
-
         return self
 
 
@@ -268,7 +369,9 @@ class ExtraccionDocumentoCientifico(BaseModel):
     doi: str = Field(default="")
     chunks: List[ChunkEvidenciaCientifica]
 
-
+# ==============================================================================
+# 3. MOTOR RAG Y CONECTORES EXTERNOS
+# ==============================================================================
 @st.cache_resource
 def inicializar_indice():
     Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-large")
@@ -319,7 +422,7 @@ def recuperar_evidencia_rs(patologia: str, trastorno: str, notas_clinicas: str =
         if r.get("seccion_rs") != "resumen_conclusiones"
         and (
             r.get("dominio_clinico", "").lower() in [trastorno.lower(), "evaluación", "general"]
-            or trastorno.lower().split()[0] in r.get("dominio_clinico", "").lower()
+            or trastorno.lower().split() in r.get("dominio_clinico", "").lower()
         )
     ]
 
@@ -366,6 +469,7 @@ def recuperar_evidencia_rs(patologia: str, trastorno: str, notas_clinicas: str =
     if alertas_subtipo:
         cabecera += "\n".join(alertas_subtipo) + "\n\n"
     return cabecera + "\n\n".join(bloques)
+
 
 def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
     mapa_en = {
@@ -422,62 +526,28 @@ def buscar_evidencia_externa(patologia: str, trastorno: str) -> dict:
     }
     return {"datos_api": texto_recuperado, "enlaces": enlaces}
 
-st.set_page_config(page_title="LogoPilot | CDSS Logopedia Neurológica", page_icon="🧭", layout="wide")
+# ==============================================================================
+# 4. CONFIGURACIÓN DE PÁGINA Y CABECERA COPILOT STUDIO
+# ==============================================================================
+st.set_page_config(page_title="LOGO-Pilot | CDSS Logopedia Neurológica", page_icon="🧭", layout="wide")
+apply_copilot_theme()
 
 archivos_img = glob.glob("**/*.png", recursive=True) + glob.glob("**/*.jpg", recursive=True) + glob.glob("**/*.jpeg", recursive=True)
-img_b64 = base64.b64encode(open(archivos_img[0], "rb").read()).decode() if archivos_img else ""
+img_b64 = base64.b64encode(open(archivos_img, "rb").read()).decode() if archivos_img else ""
+logo_html = f'<img src="data:image/png;base64,{img_b64}" style="height:34px; margin-right:12px; border-radius:6px;">' if img_b64 else '<span style="font-size:1.4rem; margin-right:10px;">🧭</span>'
 
 st.markdown(f"""
-<style>
-    .block-container {{ padding-top: 3.0rem; padding-bottom: 2.5rem; }}
-    .header-cdss {{
-        box-sizing: border-box;
-        width: 100%;
-        background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 10%, #2563EB 23%, #1E3A8A 62%, #0F172A 100%);
-        padding: 1.4rem 2.2rem;
-        border-radius: 12px;
-        margin-bottom: 1.2rem;
-        border: 1px solid #E2E8F0;
-        border-left: 6px solid #1E3A8A;
-        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-    }}
-    .logo-fundido {{
-        width: 84px;
-        flex-shrink: 0;
-        mix-blend-mode: multiply;
-        filter: contrast(1.06) brightness(1.03);
-    }}
-    .header-contenido {{ flex: 1; min-width: 0; }}
-    .header-cdss h2 {{ margin: 0; font-size: 1.55rem; font-weight: 800; letter-spacing: 0.3px; }}
-    .titulo-logo {{ color: #0F172A; }}
-    .titulo-pilot {{ color: #FFFFFF; text-shadow: 0 1px 3px rgba(15, 23, 42, 0.45); }}
-    .header-inferior {{ text-align: right; margin-top: 0.55rem; }}
-    .header-cdss p {{ margin: 0; font-size: 0.93rem; color: #F8FAFC; font-weight: 500; text-shadow: 0 1px 3px rgba(15, 23, 42, 0.55); }}
-    .subtexto-rag {{ display: block; color: #CBD5E1; font-size: 0.78rem; margin-top: 0.3rem; font-weight: 600; letter-spacing: 0.2px; }}
-    div[data-testid="stExpander"] {{ border: 1px solid #CBD5E1; border-radius: 6px; background-color: #F8FAFC; }}
-    div[data-testid="stCheckbox"] label,
-    div[data-testid="stCheckbox"] label p {{
-        white-space: normal !important;
-        overflow: visible !important;
-        text-overflow: unset !important;
-        line-height: 1.45 !important;
-        align-items: flex-start !important;
-    }}
-    div[data-testid="stCheckbox"] {{
-        margin-bottom: 0.45rem !important;
-    }}
-</style>
-<div class="header-cdss">
-    <img src="data:image/png;base64,{img_b64}" class="logo-fundido">
-    <div class="header-contenido">
-        <h2><span class="titulo-logo">LOGO</span><span class="titulo-pilot">-Pilot · Soporte Clínico para Logopedia Neurológica</span></h2>
-        <div class="header-inferior">
-            <p>Sistema de navegación y apoyo a la toma de decisiones en DCA, Parkinson y Ataxias Hereditarias</p>
-            <span class="subtexto-rag">Corpus Auditado · Trazabilidad CitaRAG · Supervisión Humana (Art. 14 EU AI Act)</span>
+<div class="top-navbar">
+    <div style="display:flex; align-items:center;">
+        {logo_html}
+        <div>
+            <span class="nav-title">LOGO-Pilot</span>
+            <span style="color:#64748B; font-size:0.88rem; margin-left:8px;">Soporte Clínico en Logopedia Neurológica</span>
         </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
+        <span class="pill pill-info">DCA · Parkinson · Ataxias</span>
+        <span class="nav-badge">● Supervisión Humana Activa (Art. 14)</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -486,24 +556,37 @@ if not os.getenv("OPENAI_API_KEY"):
     st.error("Falta configurar OPENAI_API_KEY en Secrets de Streamlit Cloud o en el entorno local.")
     st.stop()
 
-tab_cdss, tab_extractor, tab_auditoria = st.tabs([
-    "🧭 Soporte Clínico (CDSS)",
-    "🧬 Extractor y Auditor de Evidencia (RS · Trials · Artículos)",
-    "🛡️ Auditoría de Riesgos · Art. 14 EU AI Act"
-])
+c_nav1, c_nav2 = st.columns([0.8, 0.2])
+with c_nav1:
+    vista_activa = st.segmented_control(
+        "Espacio de trabajo",
+        ["🩺 Consulta Clínica", "🧬 Evidencia Científica", "🛡️ Auditoría AI Act"],
+        default="🩺 Consulta Clínica",
+        label_visibility="collapsed"
+    )
+with c_nav2:
+    mostrar_inspector = st.toggle("Inspector CitaRAG", value=True, disabled=(vista_activa != "🩺 Consulta Clínica"))
 
-with tab_cdss:
+# ==============================================================================
+# VISTA 1: CONSULTA CLÍNICA (ESTACIÓN DE TRABAJO DEL LOGOPEDA)
+# ==============================================================================
+if vista_activa == "🩺 Consulta Clínica":
     indice = inicializar_indice()
-    col_izq, col_centro, col_der = st.columns([1, 1.4, 1])
+
+    if mostrar_inspector:
+        col_izq, col_centro, col_der = st.columns([1.05, 1.65, 1.05], gap="medium")
+    else:
+        col_izq, col_centro = st.columns([1.0, 2.2], gap="large")
+        col_der = None
 
     with col_izq:
         c1, c1_i = st.columns([0.85, 0.15])
-        c1.subheader("1. Contexto Clínico")
+        c1.markdown("#### 1. Contexto Clínico")
         with c1_i.popover("ℹ️"):
             st.caption("1. Elija fuente de datos.\n2. Verifique anonimización (sin nombres ni NHC).\n3. Pulse Analizar.")
 
         modo_ingreso = st.radio(
-            "Modo de entrada de datos:",
+            "Fuente de datos clínicos:",
             ["Banco Maestro (31 Casos)", "Subir Informe (PDF/DOCX/TXT/XLSX)", "Ficha Caso Real (Manual)"],
             on_change=limpiar_estado_anterior
         )
@@ -511,6 +594,7 @@ with tab_cdss:
         opciones_pat = [p.value for p in PatologiaBase]
         idx_pat = 0
         texto_auto = ""
+        caso_activo = None
 
         if modo_ingreso == "Banco Maestro (31 Casos)":
             casos_dict = {"-- Selecciona un caso --": None}
@@ -529,7 +613,7 @@ with tab_cdss:
                                 casos_dict[f"{cid} · {tit}"] = c
 
             seleccion = st.selectbox(
-                "Selecciona caso sintético:",
+                "Caso clínico:",
                 list(casos_dict.keys()),
                 on_change=limpiar_estado_anterior
             )
@@ -557,11 +641,17 @@ with tab_cdss:
         pat_sel = st.selectbox("Patología Neurológica Base", opciones_pat, index=idx_pat)
         trast_sel = st.selectbox("Dominio Logopédico", [t.value for t in TipoTrastorno])
         instrumental = st.checkbox("Consta prueba instrumental previa (FEES / VFSS)")
-        lineas_estimadas = texto_auto.count("\n") + (len(texto_auto) // 48) + 3
-        altura_dinamica = max(150, min(lineas_estimadas * 22, 650))
-        notas = st.text_area("Hallazgos clínicos consolidados (Revisar antes de enviar):", value=texto_auto, height=altura_dinamica)
 
-        analizar = st.button("Analizar Caso Clínico", type="primary", use_container_width=True)
+        if caso_activo:
+            renderizar_ficha_resumen_caso(caso_activo)
+            with st.expander("Editar / Revisar texto clínico enviado al modelo", expanded=False):
+                notas = st.text_area("Hallazgos clínicos consolidados:", value=texto_auto, height=220, label_visibility="collapsed")
+        else:
+            lineas_estimadas = texto_auto.count("\n") + (len(texto_auto) // 48) + 3
+            altura_dinamica = max(140, min(lineas_estimadas * 22, 420))
+            notas = st.text_area("Hallazgos clínicos consolidados (Revisar antes de enviar):", value=texto_auto, height=altura_dinamica)
+
+        analizar = st.button("✨ Analizar Caso Clínico", type="primary", use_container_width=True)
 
     if analizar and notas:
         consulta = f"Patología: {pat_sel}. Trastorno: {trast_sel}. Instrumental previo: {'Sí' if instrumental else 'No'}. Hallazgos: {notas}"
@@ -596,65 +686,89 @@ with tab_cdss:
             "   - SI HAY SOSPECHA CLÍNICA DE DISFAGIA SIN FEES/VFSS: Mantén 'adaptacion_dietetica_iddsi' vacío ('') o limita la indicación exclusivamente a derivación instrumental ('Contraindicada la modificación empírica de consistencias; derivar a FEES/VFSS antes de pautar dieta') sin nombrar niveles IDDSI."
         )
 
-        for intento in range(1, 4):
-
-            try:
-                llm_activo = LlamaOpenAI(model="gpt-4o", temperature=0.1 if intento == 1 else 0.0)
-                st.session_state["reporte"] = llm_activo.as_structured_llm(ReporteClinicoLogopedico).complete(prompt).raw
-                st.session_state.pop("ensayos_externos", None)
-                st.session_state.pop("enlaces_externos", None)
-                break
-            except ValidationError as e:
-                prompt += f"\nCORRECCIÓN (Intento {intento}): {e}"
+        with st.spinner("Sintetizando evidencia clínica y verificando cortafuegos de seguridad..."):
+            for intento in range(1, 4):
+                try:
+                    llm_activo = LlamaOpenAI(model="gpt-4o", temperature=0.1 if intento == 1 else 0.0)
+                    st.session_state["reporte"] = llm_activo.as_structured_llm(ReporteClinicoLogopedico).complete(prompt).raw
+                    st.session_state.pop("ensayos_externos", None)
+                    st.session_state.pop("enlaces_externos", None)
+                    break
+                except ValidationError as e:
+                    prompt += f"\nCORRECCIÓN (Intento {intento}): {e}"
 
     if "reporte" in st.session_state:
         reporte = st.session_state["reporte"]
         with col_centro:
-            st.subheader("2. Reporte Clínico")
-
-            c_cie, c_cie_i = st.columns([0.88, 0.12])
-            c_cie.info(f"**CIE-11:** {reporte.diagnostico.codigo_cie11} | **Patología:** {reporte.diagnostico.patologia_neuro_base.value}")
-            pop_cie = c_cie_i.popover("ℹ️")
+            c_rep_h, c_cie_pop = st.columns([0.88, 0.12])
+            c_rep_h.markdown("#### 2. Síntesis y Decisión Clínica")
+            pop_cie = c_cie_pop.popover("ℹ️")
             pop_cie.markdown(f"**Guía de Codificación CIE-11 ({reporte.diagnostico.codigo_cie11})**")
-            pop_cie.caption("Valida la correspondencia entre el diagnóstico neurológico base y el trastorno funcional:")
             pop_cie.markdown(
                 "- **8A00.0:** Enfermedad de Parkinson.\n"
                 "- **8A03.10:** Ataxias hereditarias (Ataxia de Friedreich).\n"
-                "- **8B11 / 8B20:** DCA vascular (Ictus isquémico / hemorrágico).\n"
-                "- **NA07:** DCA traumático (Traumatismo intracraneal / TCE)."
+                "- **8B11 / 8B20:** DCA vascular (Ictus).\n"
+                "- **NA07:** DCA traumático (TCE)."
             )
-            pop_cie.markdown("[Consultar navegador OMS CIE-11](https://who.int)")
+            pop_cie.markdown("[Navegador OMS CIE-11](https://who.int)")
 
-            c_an, c_an_i = st.columns([0.88, 0.12])
-            c_an.markdown("#### Análisis Fisiopatológico y Diagnóstico Diferencial")
-            pop_an = c_an_i.popover("ℹ️")
-            pop_an.markdown("**Auditoría del Razonamiento Fisiopatológico**")
-            pop_an.caption(
-                "• **Subsistemas motores:** Verifica respiración, fonación, resonancia, articulación y prosodia.\n"
-                "• **Fases deglutorias:** Distingue alteración de eficacia (residuo) frente a seguridad (aspiración).\n"
-                "• **Diferencial:** Comprueba que no se confundan déficits motores (disartria/apraxia) con trastornos lingüísticos o cognitivos."
-            )
+            st.markdown(f"""
+            <div class="copilot-card" style="padding: 0.85rem 1.2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                <div>
+                    <span style="color:#64748B; font-size:0.8rem; display:block;">DIAGNÓSTICO BASE Y DOMINIO</span>
+                    <strong style="color:#0F172A; font-size:0.98rem;">{html.escape(reporte.diagnostico.patologia_neuro_base.value)} · {html.escape(reporte.diagnostico.trastorno_logopedico.value)}</strong>
+                </div>
+                <span class="pill pill-info">CIE-11: {html.escape(reporte.diagnostico.codigo_cie11)}</span>
+            </div>
+            """, unsafe_allow_html=True)
 
-            st.write(reporte.diagnostico.analisis_fisiopatologico)
-            st.markdown(
-                f"""<div style="background-color: #F5F3FF; border-left: 4px solid #4C1D95; padding: 0.95rem 1.15rem; border-radius: 6px; margin: 0.8rem 0 1.2rem 0; color: #1E293B; font-size: 1.03rem; line-height: 1.55;">
-                <strong style="color: #1E1B4B;">Diagnóstico Diferencial:</strong> {reporte.diagnostico.diagnostico_diferencial}
-                </div>""",
-                unsafe_allow_html=True
-            )
+            renderizar_dilema_copilot(reporte.intervencion.respuesta_dilema_clinico)
 
-            st.error(f"**Resolución del Dilema Clínico:** {reporte.intervencion.respuesta_dilema_clinico}")
+            with st.expander("🧠 Análisis Fisiopatológico y Diagnóstico Diferencial", expanded=True):
+                st.write(reporte.diagnostico.analisis_fisiopatologico)
+                st.markdown(
+                    f"""<div style="background-color: #F5F3FF; border-left: 4px solid #6B21A8; padding: 0.9rem 1.1rem; border-radius: 6px; margin-top: 0.8rem; color: #1E293B; font-size: 0.93rem; line-height: 1.55;">
+                    <strong style="color: #4C1D95;">Diagnóstico Diferencial:</strong> {formatear_texto_copilot(reporte.diagnostico.diagnostico_diferencial)}
+                    </div>""",
+                    unsafe_allow_html=True
+                )
 
             if reporte.evaluacion.signos_alerta_seguridad:
-                st.error("**Alertas de Seguridad:**\n" + "\n".join([f"- {a}" for a in reporte.evaluacion.signos_alerta_seguridad]))
+                items_alerta = "".join([f"<li style='margin-bottom:4px;'>{formatear_texto_copilot(a)}</li>" for a in reporte.evaluacion.signos_alerta_seguridad])
+                st.markdown(f"""
+                <div class="copilot-card" style="background:#FEF2F2; border-color:#FECACA;">
+                    <div class="card-header" style="border-bottom-color:#FECACA;">
+                        <span class="card-title" style="color:#991B1B;">⚠️ Alertas de Seguridad Clínica</span>
+                        <span class="pill pill-danger">Atención Prioritaria</span>
+                    </div>
+                    <ul style="margin:0; padding-left:1.2rem; color:#7F1D1D; font-size:0.91rem;">{items_alerta}</ul>
+                </div>
+                """, unsafe_allow_html=True)
 
-            if reporte.evaluacion.informacion_clinica_no_disponible:
-                st.info("**Información Clínica No Disponible (Datos Ausentes):**\n" + "\n".join([f"- {d}" for d in reporte.evaluacion.informacion_clinica_no_disponible]))
+            c_aus, c_inc = st.columns(2)
+            with c_aus:
+                if reporte.evaluacion.informacion_clinica_no_disponible:
+                    items_aus = "".join([f"<li>{html.escape(d)}</li>" for d in reporte.evaluacion.informacion_clinica_no_disponible])
+                    st.markdown(f"""
+                    <div class="copilot-card" style="height:100%;">
+                        <div class="card-header"><span class="card-title">📋 Datos Ausentes</span></div>
+                        <ul style="margin:0; padding-left:1.1rem; color:#334155; font-size:0.88rem;">{items_aus}</ul>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+            with c_inc:
+                if reporte.evaluacion.evidencia_cientifica_insuficiente:
+                    items_inc = "".join([f"<li>{formatear_texto_copilot(ev)}</li>" for ev in reporte.evaluacion.evidencia_cientifica_insuficiente])
+                    st.markdown(f"""
+                    <div class="copilot-card" style="height:100%;">
+                        <div class="card-header"><span class="card-title">⚖️ Límites de Evidencia</span></div>
+                        <ul style="margin:0; padding-left:1.1rem; color:#334155; font-size:0.88rem;">{items_inc}</ul>
+                    </div>
+                    """, unsafe_allow_html=True)
 
             if reporte.evaluacion.evidencia_cientifica_insuficiente:
-                st.warning("**Declaración de Evidencia Científica Insuficiente:**\n" + "\n".join([f"- {ev}" for ev in reporte.evaluacion.evidencia_cientifica_insuficiente]))
-                if st.button("🔎 Consultar Bases Científicas y Ensayos (PubMed, Cochrane, ClinicalTrials, ASHA)", key="btn_pubmed"):
-                    with st.spinner("Consultando PubMed/MEDLINE, Cochrane y ClinicalTrials.gov..."):
+                if st.button("🔎 Ampliar búsqueda en PubMed, Cochrane y ClinicalTrials.gov", key="btn_pubmed", use_container_width=True):
+                    with st.spinner("Consultando bases científicas externas..."):
                         res_ext = buscar_evidencia_externa(pat_sel, trast_sel)
                         st.session_state["enlaces_externos"] = res_ext["enlaces"]
                         if res_ext["datos_api"]:
@@ -665,7 +779,7 @@ with tab_cdss:
                                 "REGLA ESTRICTA DE ENLACES en 'referencia_estudio': Incluye autor, año y el enlace Markdown usando EXCLUSIVAMENTE el PMID o código NCT literal que aparece en los registros anteriores:\n"
                                 "- Si tiene PMID: [PubMed PMID](https://nih.gov)\n"
                                 "- Si tiene NCT: [ClinicalTrials NCT](https://clinicaltrials.gov)\n"
-                                "Nunca uses https://nih.gov ni /ct2/show/. Si un registro no tiene código PMID ni NCT, pon solo autor y año sin enlace."
+                                "Si un registro no tiene código PMID ni NCT, pon solo autor y año sin enlace."
                             )
                             llm_ev = LlamaOpenAI(model="gpt-4o", temperature=0.0)
                             res_ev = llm_ev.as_structured_llm(SintesisEnsayosExternos).complete(prompt_ev).raw
@@ -674,68 +788,58 @@ with tab_cdss:
                             st.session_state["ensayos_externos"] = []
 
                 if "ensayos_externos" in st.session_state:
-                    if st.session_state["ensayos_externos"]:
-                        st.markdown("**Síntesis de Ensayos y Revisiones (PubMed · Cochrane · ClinicalTrials.gov):**")
-                        for e in st.session_state["ensayos_externos"]:
-                            st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
+                    with st.container(border=True):
+                        if st.session_state["ensayos_externos"]:
+                            st.markdown("**Síntesis de Ensayos y Revisiones Externas:**")
+                            for e in st.session_state["ensayos_externos"]:
+                                st.markdown(f"- **{e.referencia_estudio}** | *Comparación:* {e.intervenciones_comparadas} | *Resultados:* {e.hallazgos_principales}")
+                        if "enlaces_externos" in st.session_state:
+                            links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
+                            st.caption(f"**Repositorios pre-filtrados:** {links_md}")
 
-                    if "enlaces_externos" in st.session_state:
-                        links_md = " · ".join([f"[{nombre}]({url})" for nombre, url in st.session_state["enlaces_externos"].items()])
-                        st.info(f"**Búsqueda directa pre-filtrada en repositorios especializados:**\n\n{links_md}")
+            st.markdown("#### 3. Plan Propuesto (Validación Profesional)")
+            with st.container(border=True):
+                c_ev, c_ev_i = st.columns([0.9, 0.1])
+                c_ev.markdown("**Evaluación y Pruebas Sugeridas**")
+                c_ev_i.popover("ℹ️").caption("Marca únicamente las escalas o derivaciones que consideres indicadas para el paciente.")
 
-            c_ev, c_ev_i = st.columns([0.88, 0.12])
-            c_ev.markdown("**Evaluación Sugerida:**")
-            pop_ev = c_ev_i.popover("ℹ️")
-            pop_ev.markdown("**Criterio de Selección de Pruebas y Escalas**")
-            pop_ev.caption(
-                "• **Pertinencia clínica:** Las escalas se seleccionan según los subsistemas afectados y la etiología base.\n"
-                "• **Cribado vs. Instrumental:** Diferencia herramientas clínicas (MECV-V, EAT-10, FDA-2, CAPE-V) de pruebas instrumentales confirmatorias (FEES / VFSS).\n"
-                "• **Supervisión:** Marca únicamente las pruebas que consideres indicadas para el caso."
-            )
+                for esc in reporte.evaluacion.escalas_sugeridas:
+                    st.checkbox(esc, value=True, key=f"e_{esc}")
 
-            for esc in reporte.evaluacion.escalas_sugeridas:
-                st.checkbox(esc, value=True, key=f"e_{esc}")
+                if reporte.evaluacion.criterios_derivacion:
+                    st.info("**Derivación Multidisciplinar:** " + ", ".join(reporte.evaluacion.criterios_derivacion))
 
-            if reporte.evaluacion.criterios_derivacion:
-                st.markdown("**Derivación Multidisciplinar:** " + ", ".join(reporte.evaluacion.criterios_derivacion))
+                st.divider()
+                st.markdown("**Objetivos Terapéuticos**")
+                for obj in reporte.intervencion.objetivos_terapeuticos:
+                    st.markdown(f"- {obj}")
 
-            st.markdown("**Objetivos Terapéuticos:**")
-            for obj in reporte.intervencion.objetivos_terapeuticos:
-                st.markdown(f"- {obj}")
+                st.divider()
+                c_int, c_int_i = st.columns([0.9, 0.1])
+                c_int.markdown("**Intervención Logopédica Propuesta**")
+                c_int_i.popover("ℹ️").caption("Selecciona las estrategias que validas bajo tu criterio clínico antes de generar el informe.")
 
-            c_int, c_int_i = st.columns([0.88, 0.12])
-            c_int.markdown("**Intervención Propuesta:**")
-            pop_int = c_int_i.popover("ℹ️")
-            pop_int.markdown("**Criterios de Selección y Dosificación Terapéutica**")
-            pop_int.caption(
-                "• **Enfoques:** Contrasta estrategias compensatorias (posturales/maniobras) frente a reactivación neuromuscular.\n"
-                "• **Control de fatiga:** En patología neurodegenerativa, prioriza sesiones cortas y valora el estado motor ON/OFF.\n"
-                "• **Human-in-the-Loop:** Marca únicamente las técnicas que valides bajo tu criterio profesional antes de exportar."
-            )
+                for c in reporte.intervencion.estrategias_compensatorias:
+                    badge_txt, desc_limpia = limpiar_etiqueta_intervencion(c)
+                    st.checkbox(f"**{desc_limpia}**  ·  `Compensatoria` · `{badge_txt}`", key=f"c_{c}")
 
-            for c in reporte.intervencion.estrategias_compensatorias:
-                st.checkbox(f"[Compensatoria] {c}", key=f"c_{c}")
-            for r in reporte.intervencion.reactivacion_neuromuscular:
-                st.checkbox(f"[Reactivación] {r}", key=f"r_{r}")
+                for r in reporte.intervencion.reactivacion_neuromuscular:
+                    badge_txt, desc_limpia = limpiar_etiqueta_intervencion(r)
+                    st.checkbox(f"**{desc_limpia}**  ·  `Reactivación` · `{badge_txt}`", key=f"r_{r}")
 
-            hay_disfagia = (
-                trast_sel == TipoTrastorno.DISFAGIA.value
-                or "disfagia" in notas.lower()
-                or "deglu" in notas.lower()
-                or "atragantamiento" in notas.lower()
-                or "aspiraci" in notas.lower()
-            )
-            if hay_disfagia and reporte.intervencion.adaptacion_dietetica_iddsi:
-                st.markdown(f"**Pauta IDDSI:** {reporte.intervencion.adaptacion_dietetica_iddsi}")
+                hay_disfagia = (
+                    trast_sel == TipoTrastorno.DISFAGIA.value
+                    or any(w in notas.lower() for w in ["disfagia", "deglu", "atragantamiento", "aspiraci"])
+                )
+                if hay_disfagia and reporte.intervencion.adaptacion_dietetica_iddsi:
+                    st.warning(f"**Pauta IDDSI:** {reporte.intervencion.adaptacion_dietetica_iddsi}")
 
-            st.divider()
             nota_supervisor = st.text_input(
-                "Observaciones / Justificación de supervisión clínica (Art. 14 EU AI Act · Opcional):",
+                "Justificación de supervisión clínica (Art. 14 EU AI Act · Opcional):",
                 placeholder="Ej. Se descarta reactivación intensiva por fatiga motora; se prioriza cribado FEES.",
                 key="nota_sup_art14"
             )
 
-            # Calcular métricas de Supervisión Humana (Human Override)
             escalas_aprobadas = [esc for esc in reporte.evaluacion.escalas_sugeridas if st.session_state.get(f"e_{esc}", True)]
             escalas_descartadas = [esc for esc in reporte.evaluacion.escalas_sugeridas if not st.session_state.get(f"e_{esc}", True)]
 
@@ -753,7 +857,6 @@ with tab_cdss:
             total_items = len(reporte.evaluacion.escalas_sugeridas) + len(todas_intervenciones)
             total_descartados = len(escalas_descartadas) + len(int_descartadas)
             tasa_override = round((total_descartados / total_items) * 100, 1) if total_items > 0 else 0.0
-
             caso_ref = seleccion if modo_ingreso == "Banco Maestro (31 Casos)" else modo_ingreso
 
             registro_evento = {
@@ -803,14 +906,6 @@ with tab_cdss:
                     json.dump(historial, f_log, ensure_ascii=False, indent=2)
                 st.session_state["historial_art14"] = historial
 
-            st.download_button(
-                "Validar y Descargar para Historia Clínica (Registra Supervisión Art. 14)",
-                data=resumen_txt,
-                file_name="informe_LOGO_Pilot_validado.txt",
-                on_click=registrar_validacion_humana,
-                use_container_width=True
-            )
-
             def construir_bundle_fhir_r4() -> str:
                 ahora_iso = datetime.now(timezone.utc).isoformat()
                 pat_uuid = str(uuid.uuid4())
@@ -830,19 +925,9 @@ with tab_cdss:
                 info_pat_sct = tax_snomed.get("patologias_neurologicas", {}).get(pat_val, {})
                 info_trast_sct = tax_snomed.get("trastornos_logopedicos", {}).get(trast_val, {})
 
-                codings_patologia = [
-                    {
-                        "system": "http://who.int",
-                        "code": cie_code,
-                        "display": pat_val
-                    }
-                ]
+                codings_patologia = [{"system": "http://hl7.org", "code": cie_code, "display": pat_val}]
                 if info_pat_sct.get("sctid"):
-                    codings_patologia.append({
-                        "system": "http://snomed.info",
-                        "code": info_pat_sct["sctid"],
-                        "display": info_pat_sct.get("termino_es", pat_val)
-                    })
+                    codings_patologia.append({"system": "http://snomed.info", "code": info_pat_sct["sctid"], "display": info_pat_sct.get("termino_es", pat_val)})
 
                 entries = [
                     {
@@ -852,12 +937,7 @@ with tab_cdss:
                             "id": pat_uuid,
                             "active": True,
                             "gender": "unknown",
-                            "extension": [
-                                {
-                                    "url": "https://logo-pilot.eu",
-                                    "valueBoolean": True
-                                }
-                            ]
+                            "extension": [{"url": "https://logo-pilot.eu", "valueBoolean": True}]
                         }
                     },
                     {
@@ -865,13 +945,8 @@ with tab_cdss:
                         "resource": {
                             "resourceType": "Condition",
                             "id": cond_uuid,
-                            "clinicalStatus": {
-                                "coding": [{"system": "http://hl7.org", "code": "active"}]
-                            },
-                            "code": {
-                                "coding": codings_patologia,
-                                "text": pat_val
-                            },
+                            "clinicalStatus": {"coding": [{"system": "http://hl7.org", "code": "active"}]},
+                            "code": {"coding": codings_patologia, "text": pat_val},
                             "subject": {"reference": f"urn:uuid:{pat_uuid}"},
                             "note": [{"text": reporte.diagnostico.analisis_fisiopatologico}]
                         }
@@ -881,17 +956,9 @@ with tab_cdss:
                         "resource": {
                             "resourceType": "Condition",
                             "id": cond_trast_uuid,
-                            "clinicalStatus": {
-                                "coding": [{"system": "http://hl7.org", "code": "active"}]
-                            },
+                            "clinicalStatus": {"coding": [{"system": "http://hl7.org", "code": "active"}]},
                             "code": {
-                                "coding": [
-                                    {
-                                        "system": "http://snomed.info",
-                                        "code": info_trast_sct.get("sctid", "311555007"),
-                                        "display": info_trast_sct.get("termino_es", trast_val)
-                                    }
-                                ],
+                                "coding": [{"system": "http://snomed.info", "code": info_trast_sct.get("sctid", "311555007"), "display": info_trast_sct.get("termino_es", trast_val)}],
                                 "text": trast_val
                             },
                             "subject": {"reference": f"urn:uuid:{pat_uuid}"}
@@ -905,16 +972,8 @@ with tab_cdss:
                             "status": "final" if instrumental else "registered",
                             "code": {
                                 "coding": [
-                                    {
-                                        "system": "http://snomed.info",
-                                        "code": "409052002",
-                                        "display": "Videofluoroscopic swallowing study (VFSS)"
-                                    },
-                                    {
-                                        "system": "http://snomed.info",
-                                        "code": "444831000124102",
-                                        "display": "Fiberoptic endoscopic evaluation of swallowing (FEES)"
-                                    }
+                                    {"system": "http://snomed.info", "code": "409052002", "display": "Videofluoroscopic swallowing study (VFSS)"},
+                                    {"system": "http://snomed.info", "code": "444831000124102", "display": "Fiberoptic endoscopic evaluation of swallowing (FEES)"}
                                 ],
                                 "text": "Evaluación instrumental de la deglución (FEES / VFSS)"
                             },
@@ -947,13 +1006,7 @@ with tab_cdss:
                         "detail": {
                             "kind": "ServiceRequest",
                             "status": "scheduled",
-                            "code": {
-                                "coding": [{
-                                    "system": "http://snomed.info",
-                                    "code": "225368008",
-                                    "display": "Evaluación logopédica funcional"
-                                }]
-                            },
+                            "code": {"coding": [{"system": "http://snomed.info", "code": "225368008", "display": "Evaluación logopédica funcional"}]},
                             "description": f"[Evaluación Validada] {esc}"
                         }
                     })
@@ -966,13 +1019,7 @@ with tab_cdss:
                         "detail": {
                             "kind": "Task",
                             "status": "not-started",
-                            "code": {
-                                "coding": [{
-                                    "system": "http://snomed.info",
-                                    "code": cod_terapia,
-                                    "display": disp_terapia
-                                }]
-                            },
+                            "code": {"coding": [{"system": "http://snomed.info", "code": cod_terapia, "display": disp_terapia}]},
                             "description": interv
                         }
                     })
@@ -987,10 +1034,7 @@ with tab_cdss:
                         "intent": "proposal",
                         "title": "Plan de Intervención Logopédica Asistido por LOGO-Pilot (Supervisión Humana Art. 14 EU AI Act)",
                         "subject": {"reference": f"urn:uuid:{pat_uuid}"},
-                        "addresses": [
-                            {"reference": f"urn:uuid:{cond_uuid}"},
-                            {"reference": f"urn:uuid:{cond_trast_uuid}"}
-                        ],
+                        "addresses": [{"reference": f"urn:uuid:{cond_uuid}"}, {"reference": f"urn:uuid:{cond_trast_uuid}"}],
                         "created": ahora_iso,
                         "activity": actividades_careplan,
                         "note": [
@@ -1000,215 +1044,205 @@ with tab_cdss:
                     }
                 })
 
-                bundle_fhir = {
+                return json.dumps({
                     "resourceType": "Bundle",
                     "id": str(uuid.uuid4()),
-                    "meta": {
-                        "lastUpdated": ahora_iso,
-                        "profile": ["http://hl7.org"]
-                    },
+                    "meta": {"lastUpdated": ahora_iso, "profile": ["http://hl7.org"]},
                     "type": "collection",
                     "entry": entries
-                }
-                return json.dumps(bundle_fhir, ensure_ascii=False, indent=2)
+                }, ensure_ascii=False, indent=2)
 
-            st.download_button(
-                label="🏥 Exportar Plan Clínico Interoperable (HL7 FHIR R4 JSON)",
-                data=construir_bundle_fhir_r4(),
-                file_name=f"LOGO_Pilot_FHIR_R4_{reporte.diagnostico.codigo_cie11.split()[0]}.json",
-                mime="application/json",
-                use_container_width=True
-            )
+            c_act1, c_act2 = st.columns([0.65, 0.35])
+            with c_act1:
+                st.download_button(
+                    "✅ Validar y Guardar en Historia Clínica",
+                    data=resumen_txt,
+                    file_name="informe_LOGO_Pilot_validado.txt",
+                    on_click=registrar_validacion_humana,
+                    type="primary",
+                    use_container_width=True
+                )
+            with c_act2:
+                with st.popover("🏥 Interoperabilidad FHIR", use_container_width=True):
+                    st.markdown("**Exportación Estándar HL7 FHIR R4**")
+                    st.caption("Genera un Bundle interoperable (Patient, Condition, DiagnosticReport, DetectedIssue, CarePlan) en estado `proposal`.")
+                    st.download_button(
+                        label="Descargar Bundle HL7 FHIR R4 (.json)",
+                        data=construir_bundle_fhir_r4(),
+                        file_name=f"LOGO_Pilot_FHIR_R4_{reporte.diagnostico.codigo_cie11.split()[0]}.json",
+                        mime="application/json",
+                        use_container_width=True
+                    )
+                    with st.expander("Previsualizar recursos FHIR"):
+                        bundle_dict = json.loads(construir_bundle_fhir_r4())
+                        for entry in bundle_dict.get("entry", []):
+                            res = entry.get("resource", {})
+                            rtype = res.get("resourceType")
+                            if rtype == "Condition":
+                                cods = " | ".join([f"{c.get('code')}" for c in res.get("code", {}).get("coding", [])])
+                                st.markdown(f"**🩺 Condition:** {res.get('code', {}).get('text')} (`{cods}`)")
+                            elif rtype == "CarePlan":
+                                st.markdown(f"**📋 CarePlan (`{res.get('intent')}`):** {len(res.get('activity', []))} actividades validadas.")
 
-            with st.expander("👁️ Previsualizar Plan Interoperable HL7 FHIR R4 (Vista Clínica)"):
-                bundle_dict = json.loads(construir_bundle_fhir_r4())
-                st.caption(f"**Bundle ID:** `{bundle_dict['id']}` · **Estándar:** HL7 FHIR R4 · **Fecha UTC:** {bundle_dict['meta']['lastUpdated']}")
-                for entry in bundle_dict.get("entry", []):
-                    res = entry.get("resource", {})
-                    rtype = res.get("resourceType")
-                    if rtype == "Condition":
-                        cods = " | ".join([f"{c.get('code')} ({c.get('system').split('/')[-1]})" for c in res.get("code", {}).get("coding", [])])
-                        st.markdown(f"**🩺 Diagnóstico (`Condition`):** {res.get('code', {}).get('text')} — `{cods}`")
-                    elif rtype == "DiagnosticReport":
-                        st.markdown(f"**🔬 Prueba Instrumental (`DiagnosticReport`):** {res.get('conclusion')} *(Estado: `{res.get('status')}`)*")
-                    elif rtype == "DetectedIssue":
-                        st.warning(f"**⚠️ Alerta (`DetectedIssue`):** {res.get('detail')}")
-                    elif rtype == "CarePlan":
-                        st.markdown(f"**📋 Plan Validado (`CarePlan` · `{res.get('intent')}`):**")
-                        for act in res.get("activity", []):
-                            det = act.get("detail", {})
-                            st.markdown(f"- `[{det.get('kind')}]` {det.get('description')}")
+        # COLUMNA DERECHA: INSPECTOR CITARAG (BAJO DEMANDA)
+        if col_der is not None:
+            with col_der:
+                c_rag, c_rag_i = st.columns([0.85, 0.15])
+                c_rag.markdown("#### 3. Inspector CitaRAG")
+                pop_rag = c_rag_i.popover("ℹ️")
+                pop_rag.markdown("**Trazabilidad Documental CitaRAG**")
+                pop_rag.caption(
+                    "• 🟢 Bajo riesgo / Certeza moderada-alta\n"
+                    "• 🔵 Precaución / Piloto\n"
+                    "• 🔴 Alto riesgo / Certeza muy baja"
+                )
 
-        with col_der:
+                mapa_fuentes = {}
+                if os.path.exists("mapa_fuentes.json"):
+                    with open("mapa_fuentes.json", "r", encoding="utf-8") as mf:
+                        mapa_fuentes = json.load(mf)
 
-            c_rag, c_rag_i = st.columns([0.85, 0.15])
-            c_rag.subheader("3. Inspector CitaRAG")
-            pop_rag = c_rag_i.popover("ℹ️")
-            pop_rag.markdown("**¿Cómo funciona la trazabilidad CitaRAG?**")
-            pop_rag.caption(
-                "• **Recuperación determinista:** Extrae únicamente los hechos factuales más cercanos semánticamente de los nodos auditados.\n"
-                "• **Semáforo metodológico:** 🟢 Bajo riesgo / Certeza moderada-alta · 🔵 Precaución / Piloto · 🔴 Alto riesgo / Certeza muy baja.\n"
-                "• **Auditoría directa:** Usa el enlace **DOI** o descarga el **PDF original** para verificar la fuente primaria."
-            )
+                mapa_rs_pdfs = {}
+                mapa_rs_meta = {}
+                for r_item in cargar_capa_rs():
+                    rs_id_val = str(r_item.get("rs_id", "")).strip().upper()
+                    arch_val = str(r_item.get("archivo_origen", "")).strip()
+                    if rs_id_val:
+                        mapa_rs_meta[rs_id_val] = r_item
+                        if arch_val:
+                            mapa_rs_pdfs[rs_id_val] = arch_val
 
-            mapa_fuentes = {}
-            if os.path.exists("mapa_fuentes.json"):
-                with open("mapa_fuentes.json", "r", encoding="utf-8") as mf:
-                    mapa_fuentes = json.load(mf)
+                subcarpeta_pat = {
+                    "Daño Cerebral Adquirido": "dca",
+                    "Enfermedad de Parkinson": "parkinson",
+                    "Ataxia Hereditaria": "ataxia"
+                }.get(pat_sel, "")
 
-            mapa_rs_pdfs = {}
-            mapa_rs_meta = {}
-            for r_item in cargar_capa_rs():
-                rs_id_val = str(r_item.get("rs_id", "")).strip().upper()
-                arch_val = str(r_item.get("archivo_origen", "")).strip()
-                if rs_id_val:
-                    mapa_rs_meta[rs_id_val] = r_item
-                    if arch_val:
-                        mapa_rs_pdfs[rs_id_val] = arch_val
+                carpeta_referencias = "referencias" if os.path.exists("referencias") else r"F:\VIU\IA SLP\Proyecto LOGO-LLM\Referencias"
+                pdfs_disponibles = {}
+                pdfs_patologia = []
 
-            subcarpeta_pat = {
-                "Daño Cerebral Adquirido": "dca",
-                "Enfermedad de Parkinson": "parkinson",
-                "Ataxia Hereditaria": "ataxia"
-            }.get(pat_sel, "")
+                if os.path.exists(carpeta_referencias):
+                    for raiz, _, archivos in os.walk(carpeta_referencias):
+                        es_carpeta_pat = subcarpeta_pat and (subcarpeta_pat in normalizar_nombre(raiz))
+                        for arch in archivos:
+                            if arch.lower().endswith(".pdf"):
+                                ruta_completa = os.path.join(raiz, arch)
+                                pdfs_disponibles[normalizar_nombre(arch)] = (arch, ruta_completa)
+                                if es_carpeta_pat:
+                                    pdfs_patologia.append((normalizar_nombre(arch), arch, ruta_completa))
 
-            carpeta_referencias = "referencias" if os.path.exists("referencias") else r"F:\VIU\IA SLP\Proyecto LOGO-LLM\Referencias"
-            pdfs_disponibles = {}
-            pdfs_patologia = []
+                for idx, cita in enumerate(reporte.evidencia_rag):
+                    id_limpio = cita.id_nodo.upper().replace("RS_ID:", "").strip()
+                    texto_busqueda = f"{id_limpio} {cita.fuente_documental}".upper()
+                    doc_id_limpio = next((k for k in mapa_fuentes.keys() if k.upper() in texto_busqueda), cita.fuente_documental)
+                    info_doc = mapa_fuentes.get(doc_id_limpio, {})
+                    titulo_doc = info_doc.get("titulo", cita.fuente_documental)
 
-            if os.path.exists(carpeta_referencias):
-                for raiz, _, archivos in os.walk(carpeta_referencias):
-                    es_carpeta_pat = subcarpeta_pat and (subcarpeta_pat in normalizar_nombre(raiz))
-                    for arch in archivos:
-                        if arch.lower().endswith(".pdf"):
-                            ruta_completa = os.path.join(raiz, arch)
-                            pdfs_disponibles[normalizar_nombre(arch)] = (arch, ruta_completa)
-                            if es_carpeta_pat:
-                                pdfs_patologia.append((normalizar_nombre(arch), arch, ruta_completa))
+                    meta_rs = mapa_rs_meta.get(id_limpio)
+                    if not meta_rs:
+                        prefijo_rs = "-".join(id_limpio.split("-")[:2])
+                        for rs_k, r_obj in mapa_rs_meta.items():
+                            if rs_k == id_limpio or (prefijo_rs and rs_k.startswith(prefijo_rs)):
+                                meta_rs = r_obj
+                                break
 
-            for idx, cita in enumerate(reporte.evidencia_rag):
-                id_limpio = cita.id_nodo.upper().replace("RS_ID:", "").strip()
-                texto_busqueda = f"{id_limpio} {cita.fuente_documental}".upper()
-                doc_id_limpio = next((k for k in mapa_fuentes.keys() if k.upper() in texto_busqueda), cita.fuente_documental)
-                info_doc = mapa_fuentes.get(doc_id_limpio, {})
-                titulo_doc = info_doc.get("titulo", cita.fuente_documental)
-
-                meta_rs = mapa_rs_meta.get(id_limpio)
-                if not meta_rs:
-                    prefijo_rs = "-".join(id_limpio.split("-")[:2])
-                    for rs_k, r_obj in mapa_rs_meta.items():
-                        if rs_k == id_limpio or (prefijo_rs and rs_k.startswith(prefijo_rs)):
-                            meta_rs = r_obj
-                            break
-
-                if cita.tipo_fuente == "Guía Clínica / Manual":
-                    icono_fuente = "📘 [Guía/Manual]"
-                else:
-                    if meta_rs:
-                        emoji_sem, _, _ = evaluar_semaforo(
-                            meta_rs.get("riesgo_sesgo_calidad", ""),
-                            meta_rs.get("nivel_evidencia", "")
-                        )
+                    if cita.tipo_fuente == "Guía Clínica / Manual":
+                        icono_fuente = "📘 Guía/Manual"
                     else:
-                        emoji_sem = "🔵"
-                    icono_fuente = f"{emoji_sem} [Rev. Sistemática / Estudio]"
+                        emoji_sem = evaluar_semaforo(meta_rs.get("riesgo_sesgo_calidad", ""), meta_rs.get("nivel_evidencia", "")) if meta_rs else "🔵"
+                        icono_fuente = f"{emoji_sem} RS / Estudio"
 
-                with st.expander(f"{icono_fuente} {id_limpio} · {doc_id_limpio}", expanded=True):
-                    st.markdown(f"**{titulo_doc}**")
-                    st.caption(f"Localizador: {cita.fuente_documental}")
+                    with st.expander(f"{icono_fuente} · {id_limpio}", expanded=True):
+                        st.markdown(f"**{titulo_doc}**")
+                        st.caption(f"Localizador: {cita.fuente_documental}")
 
-                    if meta_rs and cita.tipo_fuente != "Guía Clínica / Manual":
-                        emoji_sem, desc_sem, color_bg = evaluar_semaforo(
-                            meta_rs.get("riesgo_sesgo_calidad", ""),
-                            meta_rs.get("nivel_evidencia", "")
-                        )
-                        st.markdown(
-                            f"<div style='background-color:{color_bg}; padding:6px 10px; border-radius:6px; font-size:0.82rem; color:#0F172A; margin-bottom:8px;'>"
-                            f"<strong>{emoji_sem} {desc_sem}</strong><br>"
-                            f"<span>Sesgo/Calidad: {meta_rs.get('riesgo_sesgo_calidad', 'N/D')} · Certeza: {meta_rs.get('nivel_evidencia', 'N/D')}</span>"
-                            f"</div>",
-                            unsafe_allow_html=True
-                        )
-
-                    st.write(cita.hecho_clinico_factual)
-
-                    doi = str(info_doc.get("doi", "") or (meta_rs.get("doi", "") if meta_rs else "")).strip()
-                    if doi.startswith("10."):
-                        st.markdown(f"[Abrir publicación oficial (DOI: {doi})](https://doi.org{doi})")
-
-                    nombre_pdf = info_doc.get("archivo_pdf", "")
-                    if not nombre_pdf:
-                        nombre_pdf = mapa_rs_pdfs.get(id_limpio, "")
-                        if not nombre_pdf and meta_rs:
-                            nombre_pdf = meta_rs.get("archivo_origen", "")
-
-                    info_pdf = pdfs_disponibles.get(normalizar_nombre(nombre_pdf)) if nombre_pdf else None
-
-                    if not info_pdf and cita.tipo_fuente != "Guía Clínica / Manual" and pdfs_patologia:
-                        pistas = normalizar_nombre(f"{nombre_pdf} {id_limpio} {cita.hecho_clinico_factual}").split()
-                        pistas_utiles = [p for p in pistas if len(p) > 3 and p not in ["resumen", "conclusiones", "tabla", "estudio", "discusion", "ataxia", "revision", "sistematica"]]
-                        mejor_score = 0
-                        for norm_arch, arch_real, ruta_real in pdfs_patologia:
-                            score = sum(1 for p in set(pistas_utiles) if p in norm_arch)
-                            if score > mejor_score:
-                                mejor_score = score
-                                info_pdf = (arch_real, ruta_real)
-
-                    if info_pdf:
-                        nombre_real, ruta_encontrada = info_pdf
-                        with open(ruta_encontrada, "rb") as pdf_file:
-                            st.download_button(
-                                label=f"📄 Abrir / Descargar PDF ({nombre_real})",
-                                data=pdf_file.read(),
-                                file_name=nombre_real,
-                                mime="application/pdf",
-                                key=f"pdf_{id_limpio}_{idx}"
+                        if meta_rs and cita.tipo_fuente != "Guía Clínica / Manual":
+                            emoji_sem, desc_sem, color_bg = evaluar_semaforo(
+                                meta_rs.get("riesgo_sesgo_calidad", ""),
+                                meta_rs.get("nivel_evidencia", "")
+                            )
+                            st.markdown(
+                                f"<div style='background-color:{color_bg}; padding:6px 10px; border-radius:6px; font-size:0.8rem; color:#0F172A; margin-bottom:8px;'>"
+                                f"<strong>{emoji_sem} {desc_sem}</strong><br>"
+                                f"<span>Sesgo: {meta_rs.get('riesgo_sesgo_calidad', 'N/D')} · Certeza: {meta_rs.get('nivel_evidencia', 'N/D')}</span>"
+                                f"</div>",
+                                unsafe_allow_html=True
                             )
 
-with tab_extractor:
-    st.subheader("🧬 Extractor y Auditor de Evidencia Científica (C2)")
+                        st.write(cita.hecho_clinico_factual)
+
+                        doi = str(info_doc.get("doi", "") or (meta_rs.get("doi", "") if meta_rs else "")).strip()
+                        if doi.startswith("10."):
+                            st.markdown(f"[🔗 Publicación oficial (DOI: {doi})](https://doi.org{doi})")
+
+                        nombre_pdf = info_doc.get("archivo_pdf", "") or mapa_rs_pdfs.get(id_limpio, "") or (meta_rs.get("archivo_origen", "") if meta_rs else "")
+                        info_pdf = pdfs_disponibles.get(normalizar_nombre(nombre_pdf)) if nombre_pdf else None
+
+                        if not info_pdf and cita.tipo_fuente != "Guía Clínica / Manual" and pdfs_patologia:
+                            pistas = normalizar_nombre(f"{nombre_pdf} {id_limpio} {cita.hecho_clinico_factual}").split()
+                            pistas_utiles = [p for p in pistas if len(p) > 3 and p not in ["resumen", "conclusiones", "tabla", "estudio", "discusion", "ataxia", "revision", "sistematica"]]
+                            mejor_score = 0
+                            for norm_arch, arch_real, ruta_real in pdfs_patologia:
+                                score = sum(1 for p in set(pistas_utiles) if p in norm_arch)
+                                if score > mejor_score:
+                                    mejor_score = score
+                                    info_pdf = (arch_real, ruta_real)
+
+                        if info_pdf:
+                            nombre_real, ruta_encontrada = info_pdf
+                            with open(ruta_encontrada, "rb") as pdf_file:
+                                st.download_button(
+                                    label=f"📄 Abrir PDF ({nombre_real})",
+                                    data=pdf_file.read(),
+                                    file_name=nombre_real,
+                                    mime="application/pdf",
+                                    key=f"pdf_{id_limpio}_{idx}",
+                                    use_container_width=True
+                                )
+
+# ==============================================================================
+# VISTA 2: EXTRACTOR Y AUDITOR DE EVIDENCIA CIENTÍFICA (C2)
+# ==============================================================================
+elif vista_activa == "🧬 Evidencia Científica":
+    st.markdown("#### 🧬 Extractor y Auditor de Evidencia Científica (Capa 2)")
     st.caption(
-        "Procesa Revisiones Sistemáticas, Ensayos Clínicos (Clinical Trials) y Artículos Primarios para alimentar "
-        "`capa_evidencia_rs.json` en tiempo real sin contaminar los protocolos clínicos de la Capa 1."
+        "Procesa Revisiones Sistemáticas, Ensayos Clínicos y Artículos Primarios para alimentar "
+        "`capa_evidencia_rs.json` sin contaminar los protocolos clínicos de la Capa 1."
     )
 
     if "capa_rs_acumulada" not in st.session_state:
         st.session_state["capa_rs_acumulada"] = cargar_capa_rs()
 
-    col_ext_izq, col_ext_der = st.columns([1, 1.35])
+    col_ext_izq, col_ext_der = st.columns([1, 1.35], gap="large")
 
     with col_ext_izq:
-        st.markdown("#### 1. Carga y Metadatos del Documento")
-        pdf_subido = st.file_uploader("Sube el PDF científico:", type=["pdf"], key="uploader_capa2")
+        with st.container(border=True):
+            st.markdown("**1. Carga y Metadatos del Documento**")
+            pdf_subido = st.file_uploader("Sube el PDF científico:", type=["pdf"], key="uploader_capa2")
 
-        tipo_doc = st.selectbox(
-            "Tipo de documento científico:",
-            [
-                "Revisión Sistemática / Metaanálisis",
-                "Ensayo Clínico Aleatorizado / Clinical Trial",
-                "Artículo Científico Primario / Observacional"
-            ]
-        )
+            tipo_doc = st.selectbox(
+                "Tipo de documento científico:",
+                [
+                    "Revisión Sistemática / Metaanálisis",
+                    "Ensayo Clínico Aleatorizado / Clinical Trial",
+                    "Artículo Científico Primario / Observacional"
+                ]
+            )
 
-        patologia_ext = st.selectbox(
-            "Patología Neurológica Base:",
-            [p.value for p in PatologiaBase],
-            index=2,
-            key="pat_extractor"
-        )
+            patologia_ext = st.selectbox(
+                "Patología Neurológica Base:",
+                [p.value for p in PatologiaBase],
+                index=2,
+                key="pat_extractor"
+            )
 
-        c_id, c_anio = st.columns([0.65, 0.35])
-        id_base = c_id.text_input("Identificador corto (sin espacios):", value="COCHRANE-2014-ATX")
-        anio_pub = c_anio.number_input("Año:", min_value=1990, max_value=2030, value=2024, step=1)
+            c_id, c_anio = st.columns([0.65, 0.35])
+            id_base = c_id.text_input("Identificador corto (sin espacios):", value="COCHRANE-2014-ATX")
+            anio_pub = c_anio.number_input("Año:", min_value=1990, max_value=2030, value=2024, step=1)
 
-        st.markdown(
-            "**Leyenda del Semáforo Metodológico:**\n"
-            "- 🟢 **Verde:** Bajo riesgo de sesgo (RoB 2 / JBI alto) o certeza moderada-alta.\n"
-            "- 🔵 **Azul:** Algunas preocupaciones / Riesgo moderado o estudio piloto.\n"
-            "- 🔴 **Rojo:** Alto riesgo de sesgo o certeza muy baja / insuficiente."
-        )
-
-        procesar_doc = st.button("⚙️ Extraer Metadatos, Estadística y Sesgo", type="primary", use_container_width=True)
+            st.caption("🟢 Bajo riesgo / Certeza moderada-alta · 🔵 Precaución / Piloto · 🔴 Alto riesgo / Certeza muy baja")
+            procesar_doc = st.button("⚙️ Extraer Metadatos, Estadística y Sesgo", type="primary", use_container_width=True)
 
     if procesar_doc:
         if not pdf_subido:
@@ -1237,7 +1271,7 @@ with tab_extractor:
                     "- Clasifica 'evidence_tier' como 'Tier_1_SR' (Revisión Sistemática) o 'Tier_2_Trial' (Ensayo Clínico / Piloto).\n"
                     "- Clasifica 'evidence_status' como 'insufficient_rct' (sin ECA concluyentes pero plausible/seguro), 'contraindicated_or_harmful' (provoca fatiga extrema o riesgo de aspiración) o 'supported' (respaldo favorable).\n"
                     "- Especifica 'subtipo_ataxia' (friedreich, sca3, sca2, sca6, sca_general o hereditaria_inespecifica), 'phenotypes' e 'intervention_intent'.\n"
-                    "- Extrae intervenciones/comparadores, desenlaces primarios/secundarios, instrumentos y tiempos de medición, variables continuas (n, media, DE, mediana, RIC, EE), variables categóricas (eventos, proporciones, OR, RR, IC 95%, p), hallazgos cualitativos y riesgo de sesgo (Cochrane RoB 2, ROBINS-I, JBI o GRADE).\n\n"
+                    "- Extrae intervenciones/comparadores, desenlaces primarios/secundarios, instrumentos y tiempos de medición, variables continuas, variables categóricas, hallazgos cualitativos y riesgo de sesgo (Cochrane RoB 2, ROBINS-I, JBI o GRADE).\n\n"
                     f"TEXTO DEL DOCUMENTO ({pdf_subido.name}):\n{texto_pdf}"
                 )
 
@@ -1281,19 +1315,14 @@ with tab_extractor:
                 with open("capa_evidencia_rs.json", "w", encoding="utf-8") as f_out:
                     json.dump(st.session_state["capa_rs_acumulada"], f_out, ensure_ascii=False, indent=2)
                 cargar_capa_rs.clear()
-
                 st.success(f"Extraídos {len(nuevos_registros)} bloques de '{pdf_subido.name}' e integrados en memoria activa.")
 
     with col_ext_der:
-        st.markdown("#### 2. Auditoría Visual y Exportación JSON")
-
+        st.markdown("**2. Auditoría Visual y Exportación JSON**")
         bloques_mostrar = st.session_state.get("ultimos_extraidos") or st.session_state["capa_rs_acumulada"][-6:]
         if bloques_mostrar:
             for b in bloques_mostrar:
-                emoji_s, desc_s, color_bg = evaluar_semaforo(
-                    b.get("riesgo_sesgo_calidad", ""),
-                    b.get("nivel_evidencia", "")
-                )
+                emoji_s, desc_s, color_bg = evaluar_semaforo(b.get("riesgo_sesgo_calidad", ""), b.get("nivel_evidencia", ""))
                 with st.expander(f"{emoji_s} {b.get('rs_id')} · {b.get('seccion_rs')} ({b.get('dominio_clinico')})", expanded=True):
                     st.markdown(
                         f"<div style='background-color:{color_bg}; padding:6px 10px; border-radius:6px; font-size:0.83rem; color:#0F172A; margin-bottom:8px;'>"
@@ -1303,34 +1332,28 @@ with tab_extractor:
                         unsafe_allow_html=True
                     )
                     st.markdown(f"**Intervención:** {b.get('intervencion_evaluada')} | **Comparadores:** {b.get('comparadores')}")
-                    st.markdown(f"**Desenlaces e instrumentos:** {b.get('desenlaces_primarios_secundarios')} ({b.get('herramientas_evaluacion')}) · *Tiempos:* {b.get('momentos_medicion')}")
-                    st.markdown(f"**Variables continuas:** {b.get('variables_continuas')} | **Variables categóricas:** {b.get('variables_categoricas')}")
-                    if b.get("hallazgos_cualitativos_citas"):
-                        st.markdown(f"**Hallazgos cualitativos / Citas:** {b.get('hallazgos_cualitativos_citas')}")
+                    st.markdown(f"**Desenlaces:** {b.get('desenlaces_primarios_secundarios')} ({b.get('herramientas_evaluacion')})")
+                    st.markdown(f"**Continuas:** {b.get('variables_continuas')} | **Categóricas:** {b.get('variables_categoricas')}")
                     st.write(b.get("contenido_chunk"))
         else:
-            st.info("Aún no hay bloques extraídos en esta sesión. Sube un PDF a la izquierda para comenzar.")
+            st.info("Sube un PDF científico a la izquierda para comenzar la extracción estructurada.")
 
-        st.divider()
         total_bloques = len(st.session_state["capa_rs_acumulada"])
-        st.caption(f"Total acumulado en `capa_evidencia_rs.json`: **{total_bloques} bloques**.")
-        json_descarga = json.dumps(st.session_state["capa_rs_acumulada"], ensure_ascii=False, indent=2)
         st.download_button(
-            label="📥 Descargar capa_evidencia_rs.json actualizado (para respaldar en GitHub)",
-            data=json_descarga,
+            label=f"📥 Descargar capa_evidencia_rs.json ({total_bloques} bloques)",
+            data=json.dumps(st.session_state["capa_rs_acumulada"], ensure_ascii=False, indent=2),
             file_name="capa_evidencia_rs.json",
             mime="application/json",
             use_container_width=True
         )
 
 # ==============================================================================
-# PESTAÑA 3: AUDITORÍA DE RIESGOS Y MÉTRICAS (ART. 9, 12, 14 Y 15 EU AI ACT)
+# VISTA 3: AUDITORÍA DE RIESGOS Y MÉTRICAS (ART. 9, 12, 14 Y 15 EU AI ACT)
 # ==============================================================================
-with tab_auditoria:
-    st.subheader("🛡️ Banco de Pruebas Adversariales y Gestión de Riesgos (EU AI Act)")
+elif vista_activa == "🛡️ Auditoría AI Act":
+    st.markdown("#### 🛡️ Banco de Pruebas Adversariales y Gestión de Riesgos (EU AI Act)")
     st.caption(
-        "Ejecuta una evaluación automatizada sobre los casos de desafío del Banco Maestro para auditar "
-        "los cortafuegos clínicos (GRADE/ESO), la exigencia de pruebas instrumentales (FEES/VFSS), "
+        "Audita los cortafuegos clínicos (GRADE/ESO), la exigencia de pruebas instrumentales (FEES/VFSS), "
         "la regla anti-sobregeneralización entre subtipos y la transparencia de incertidumbre (Art. 14)."
     )
 
@@ -1347,30 +1370,29 @@ with tab_auditoria:
                     if isinstance(c, dict):
                         casos_auditoria.append(c)
 
-    c_aud1, c_aud2 = st.columns([1.2, 0.8])
-    modo_lote = c_aud1.radio(
-        "Selecciona el subconjunto de evaluación:",
-        [
-            "Solo Casos de Desafío RS y Subtipo (CASO-026 a CASO-031 · 6 casos)",
-            "Muestra Representativa Adversarial (10 casos críticos)",
-            f"Banco Maestro Completo ({len(casos_auditoria)} casos)"
-        ],
-        horizontal=False
-    )
-
-    c_aud2.info(
-        f"**Casos disponibles:** {len(casos_auditoria)}\n\n"
-        "Cada caso se evalúa con `temperature=0.0` verificando:\n"
-        "1. **Exactitud CIE-11**\n"
-        "2. **Bloqueo de seguridad / Cortafuegos**\n"
-        "3. **No-omisión de incertidumbre / Datos ausentes**\n"
-        "4. **Trazabilidad dual (Guía + RS)**"
-    )
+    c_aud1, c_aud2 = st.columns([1.2, 0.8], gap="large")
+    with c_aud1:
+        with st.container(border=True):
+            modo_lote = st.radio(
+                "Selecciona el subconjunto de evaluación:",
+                [
+                    "Solo Casos de Desafío RS y Subtipo (CASO-026 a CASO-031 · 6 casos)",
+                    "Muestra Representativa Adversarial (10 casos críticos)",
+                    f"Banco Maestro Completo ({len(casos_auditoria)} casos)"
+                ]
+            )
+    with c_aud2:
+        st.info(
+            f"**Casos disponibles:** {len(casos_auditoria)} (`temperature=0.0`)\n\n"
+            "1. **Exactitud CIE-11** · 2. **Cortafuegos seguridad**\n"
+            "3. **Transparencia incertidumbre** · 4. **Trazabilidad CitaRAG**"
+        )
 
     if st.button("🚀 Ejecutar Auditoría Automatizada y Calcular Métricas", type="primary", use_container_width=True):
         if not casos_auditoria:
             st.error("No se encontraron archivos JSON del Banco Maestro en el repositorio.")
         else:
+            indice = inicializar_indice()
             if "CASO-026" in modo_lote:
                 lote = [c for c in casos_auditoria if any(k in str(c.get("id_caso", c.get("id", ""))).upper() for k in ["026", "027", "028", "029", "030", "031"])]
                 if not lote:
@@ -1452,7 +1474,6 @@ with tab_auditoria:
                         f"{rep.intervencion.adaptacion_dietetica_iddsi}"
                     ).lower()
 
-                    # Verificaciones deterministas de seguridad
                     cie_ok = (
                         ("8A03.10" in rep.diagnostico.codigo_cie11 and pat_norm == PatologiaBase.ATAXIA.value)
                         or ("8A00" in rep.diagnostico.codigo_cie11 and pat_norm == PatologiaBase.PARKINSON.value)
@@ -1554,3 +1575,4 @@ with tab_auditoria:
             mime="text/csv",
             use_container_width=True
         )
+
