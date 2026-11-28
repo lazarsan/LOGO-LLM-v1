@@ -415,7 +415,8 @@ def recuperar_evidencia_rs(patologia: str, trastorno: str, notas_clinicas: str =
         if r.get("seccion_rs") != "resumen_conclusiones"
         and (
             r.get("dominio_clinico", "").lower() in [trastorno.lower(), "evaluación", "general"]
-            or trastorno.lower().split() in r.get("dominio_clinico", "").lower()
+            or trastorno.lower().split()[0] in r.get("dominio_clinico", "").lower()
+
         )
     ]
 
