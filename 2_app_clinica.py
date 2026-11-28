@@ -10,6 +10,74 @@ import urllib.parse
 from enum import Enum
 from typing import List, Literal, Optional
 import streamlit as st
+def apply_copilot_theme():
+    st.markdown("""
+    <style>
+        /* 1. Limpieza del entorno Streamlit */
+        #MainMenu, footer, header {visibility: hidden;}
+        .block-container {
+            padding-top: 1.2rem;
+            padding-bottom: 4rem;
+            max-width: 96%;
+        }
+        .stApp {
+            background-color: #F8FAFC;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* 2. Barra superior compacta (48px) */
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .nav-title { font-weight: 600; font-size: 1.05rem; color: #0F172A; }
+        .nav-badge {
+            background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;
+            padding: 2px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 500;
+        }
+
+        /* 3. Tarjetas modulares estilo Copilot */
+        .copilot-card {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+        }
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 0.75rem; border-bottom: 1px solid #F1F5F9; padding-bottom: 0.5rem;
+        }
+        .card-title { font-weight: 600; font-size: 0.95rem; color: #1E293B; }
+
+        /* 4. Badges semánticos (reemplazan corchetes técnicos) */
+        .pill {
+            display: inline-block; padding: 2px 8px; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 600; letter-spacing: 0.01em;
+        }
+        .pill-info { background: #F1F5F9; color: #475569; }
+        .pill-warn { background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; }
+        .pill-danger { background: #FEE2E2; color: #B91C1C; border: 1px solid #FECACA; }
+        .pill-success { background: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0; }
+
+        /* 5. Citas interactivas en línea */
+        .cite-chip {
+            display: inline-flex; align-items: center;
+            background: #EFF6FF; color: #0F6CBD; border: 1px solid #BFDBFE;
+            border-radius: 4px; padding: 0 5px; margin: 0 2px;
+            font-size: 0.75rem; font-weight: 600; cursor: pointer;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
 from pydantic import BaseModel, Field, model_validator, ValidationError
 from llama_index.core import Document, VectorStoreIndex, Settings
 from llama_index.llms.openai import OpenAI as LlamaOpenAI
