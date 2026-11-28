@@ -533,7 +533,7 @@ st.set_page_config(page_title="LOGO-Pilot | CDSS Logopedia Neurológica", page_i
 apply_copilot_theme()
 
 archivos_img = glob.glob("**/*.png", recursive=True) + glob.glob("**/*.jpg", recursive=True) + glob.glob("**/*.jpeg", recursive=True)
-img_b64 = base64.b64encode(open(archivos_img, "rb").read()).decode() if archivos_img else ""
+img_b64 = base64.b64encode(open(archivos_img[0], "rb").read()).decode() if archivos_img else ""
 logo_html = f'<img src="data:image/png;base64,{img_b64}" style="height:34px; margin-right:12px; border-radius:6px;">' if img_b64 else '<span style="font-size:1.4rem; margin-right:10px;">🧭</span>'
 
 st.markdown(f"""
