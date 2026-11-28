@@ -132,26 +132,19 @@ def renderizar_ficha_resumen_caso(caso_dict: dict):
     historia = html.escape(str(caso_dict.get("historia_clinica") or caso_dict.get("descripcion") or ""))
     dilema = html.escape(str(caso_dict.get("dilema_clinico") or caso_dict.get("pregunta_clinica") or ""))
 
-    dilema_html = ""
-    if dilema:
-        dilema_html = f"""
-        <div style="margin-top:0.65rem; padding-top:0.55rem; border-top:1px dashed #E2E8F0; color:#0F6CBD; font-size:0.86rem;">
-            <strong>Consulta clínica:</strong> {dilema}
-        </div>
-        """
+    dilema_html = (
+        f'<div style="margin-top:0.65rem; padding-top:0.55rem; border-top:1px dashed #E2E8F0; color:#0F6CBD; font-size:0.86rem;">'
+        f'<strong>Consulta clínica:</strong> {dilema}</div>'
+    ) if dilema else ""
 
-    st.markdown(f"""
-    <div class="copilot-card" style="background:#FFFFFF; border-left: 4px solid #0F6CBD;">
-        <div class="card-header">
-            <span class="card-title">{cid}</span>
-            <span class="pill pill-info">Ficha Estructurada</span>
-        </div>
-        <div style="font-weight:600; color:#1E293B; font-size:0.9rem; margin-bottom:0.4rem;">{titulo}</div>
-        <div style="color:#475569; font-size:0.86rem; line-height:1.5;">{historia}</div>
-        {dilema_html}
-    </div>
-    """, unsafe_allow_html=True)
-
+    html_tarjeta = (
+        f'<div class="copilot-card" style="background:#FFFFFF; border-left: 4px solid #0F6CBD;">'
+        f'<div class="card-header"><span class="card-title">{cid}</span><span class="pill pill-info">Ficha Estructurada</span></div>'
+        f'<div style="font-weight:600; color:#1E293B; font-size:0.9rem; margin-bottom:0.4rem;">{titulo}</div>'
+        f'<div style="color:#475569; font-size:0.86rem; line-height:1.5;">{historia}</div>'
+        f'{dilema_html}</div>'
+    )
+    st.markdown(html_tarjeta, unsafe_allow_html=True)
 
 def renderizar_dilema_copilot(texto_dilema: str):
     patrones = [
