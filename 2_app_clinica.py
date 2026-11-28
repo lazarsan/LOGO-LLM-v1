@@ -825,8 +825,11 @@ if vista_activa == "🩺 Consulta Clínica":
                     trast_sel == TipoTrastorno.DISFAGIA.value
                     or any(w in notas.lower() for w in ["disfagia", "deglu", "atragantamiento", "aspiraci"])
                 )
-                if hay_disfagia and reporte.intervencion.adaptacion_dietetica_iddsi:
-                    st.warning(f"**Pauta IDDSI:** {reporte.intervencion.adaptacion_dietetica_iddsi}")
+                if hay_disfagia:
+                    if reporte.intervencion.adaptacion_dietetica_iddsi:
+                        st.success(f"**Pauta IDDSI (Validada por FEES/VFSS):** {reporte.intervencion.adaptacion_dietetica_iddsi}")
+                    else:
+                        st.info("🛡️ **Adaptación Dietética (IDDSI) bloqueada por seguridad:** No consta evaluación instrumental previa (FEES/VFSS). Derivación requerida antes de modificar consistencias.")
 
             nota_supervisor = st.text_input(
                 "Justificación de supervisión clínica (Art. 14 EU AI Act · Opcional):",
