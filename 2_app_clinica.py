@@ -1109,25 +1109,29 @@ if vista_activa == "🩺 Consulta Clínica":
                         if arch_val:
                             mapa_rs_pdfs[rs_id_val] = arch_val
 
-                subcarpeta_pat = {
-                    "Daño Cerebral Adquirido": "dca",
-                    "Enfermedad de Parkinson": "parkinson",
-                    "Ataxia Hereditaria": "ataxia"
-                }.get(pat_sel, "")
+                aliases_pat = {
+                    "Daño Cerebral Adquirido": ["dca", "ictus", "stroke", "tce", "cerebral"],
+                    "Enfermedad de Parkinson": ["parkinson", "ep"],
+                    "Ataxia Hereditaria": ["ataxia", "friedreich", "sca"]
+                }.get(pat_sel, [])
 
                 carpeta_referencias = "referencias" if os.path.exists("referencias") else r"F:\VIU\IA SLP\Proyecto LOGO-LLM\Referencias"
                 pdfs_disponibles = {}
                 pdfs_patologia = []
+                todos_los_pdfs = []
 
                 if os.path.exists(carpeta_referencias):
                     for raiz, _, archivos in os.walk(carpeta_referencias):
-                        es_carpeta_pat = subcarpeta_pat and (subcarpeta_pat in normalizar_nombre(raiz))
+                        raiz_norm = normalizar_nombre(raiz)
+                        es_carpeta_pat = any(al in raiz_norm for al in aliases_pat)
                         for arch in archivos:
                             if arch.lower().endswith(".pdf"):
                                 ruta_completa = os.path.join(raiz, arch)
-                                pdfs_disponibles[normalizar_nombre(arch)] = (arch, ruta_completa)
+                                arch_norm = normalizar_nombre(arch)
+                                pdfs_disponibles[arch_norm] = (arch, ruta_completa)
+                                todos_los_pdfs.append((arch_norm, arch, ruta_completa))
                                 if es_carpeta_pat:
-                                    pdfs_patologia.append((normalizar_nombre(arch), arch, ruta_completa))
+                                    pdfs_patologia.append((arch_norm, arch, ruta_completa))
 
                 for idx, cita in enumerate(reporte.evidencia_rag):
                     id_limpio = cita.id_nodo.upper().replace("RS_ID:", "").strip()
@@ -1176,12 +1180,15 @@ if vista_activa == "🩺 Consulta Clínica":
                         nombre_pdf = info_doc.get("archivo_pdf", "") or mapa_rs_pdfs.get(id_limpio, "") or (meta_rs.get("archivo_origen", "") if meta_rs else "")
                         info_pdf = pdfs_disponibles.get(normalizar_nombre(nombre_pdf)) if nombre_pdf else None
 
-                        if not info_pdf and cita.tipo_fuente != "Guía Clínica / Manual" and pdfs_patologia:
-                            pistas = normalizar_nombre(f"{nombre_pdf} {id_limpio} {cita.hecho_clinico_factual}").split()
-                            pistas_utiles = [p for p in pistas if len(p) > 3 and p not in ["resumen", "conclusiones", "tabla", "estudio", "discusion", "ataxia", "revision", "sistematica"]]
+                        if not info_pdf:
+                            pool_busqueda = pdfs_patologia if pdfs_patologia else todos_los_pdfs
+                            pistas = normalizar_nombre(f"{nombre_pdf} {titulo_doc} {id_limpio} {cita.fuente_documental}").split()
+                            stop_words = {"resumen", "conclusiones", "tabla", "estudio", "discusion", "ataxia", "parkinson", "ictus", "revision", "sistematica", "guia", "clinica", "manual", "para", "sobre", "tratamiento", "claim", "node"}
+                            pistas_utiles = [p for p in set(pistas) if len(p) > 3 and p not in stop_words]
+                            
                             mejor_score = 0
-                            for norm_arch, arch_real, ruta_real in pdfs_patologia:
-                                score = sum(1 for p in set(pistas_utiles) if p in norm_arch)
+                            for norm_arch, arch_real, ruta_real in pool_busqueda:
+                                score = sum(1 for p in pistas_utiles if p in norm_arch)
                                 if score > mejor_score:
                                     mejor_score = score
                                     info_pdf = (arch_real, ruta_real)
